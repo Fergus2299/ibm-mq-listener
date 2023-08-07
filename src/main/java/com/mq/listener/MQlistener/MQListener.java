@@ -1,5 +1,8 @@
 package com.mq.listener.MQlistener;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import jakarta.jms.BytesMessage;
@@ -9,6 +12,7 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.MQMessage;
+import com.ibm.mq.constants.MQConstants;
 
 @Component
 public class MQListener {
@@ -31,10 +35,22 @@ public class MQListener {
                 mqMsg.seek(0);
 
                 PCFMessage pcfMsg = new PCFMessage(mqMsg);
-//                String parsedOutput = PCFParser.parsePCFMessage(pcfMsg);
-//                log.info("Parsed PCF message:\n{}", parsedOutput);
+                String parsedOutput = PCFParser.parsePCFMessage(pcfMsg);
+                log.info("Parsed PCF message:\n{}", parsedOutput);
                 
                 log.info("Listener received PCF message: {}", pcfMsg);
+//                String qMgrName = (String) pcfMsg.getParameterValue(MQConstants.MQCA_Q_MGR_NAME);
+                String eventJson = PcfJsonParser.toPcfJson(pcfMsg);
+                
+                try (FileWriter file = new FileWriter("Sample.json")) {
+                    file.write(eventJson);
+                    System.out.println("Successfully written JSON to " + "Sample.json");
+                } catch (IOException e) {
+                    System.out.println("An error occurred while writing to the file: " + e.getMessage());
+                }
+                
+                log.info(eventJson);
+//                MQEventLogger.logEvent(pcfMsg);
             } catch (Exception e) {
                 log.error("Error processing PCF message", e);
             }

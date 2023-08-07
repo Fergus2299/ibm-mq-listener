@@ -1,0 +1,13 @@
+{
+  "CompCode": 1,
+  "ParameterCount": 7,
+  "Type": 7,
+  "Control": 1,
+  "Command": 44,
+  "QName": "INACCESSIBLE.QUEUE                              ",
+  "UserId": "app         ",
+  "MsgSeqNumber": 1,
+  "Reason": 2035,
+  "QMgrName": "QM1                                             ",
+  "AppName": "IBM MQ REST API             "
+}
