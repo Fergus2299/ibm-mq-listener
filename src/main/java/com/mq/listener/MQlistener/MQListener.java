@@ -11,11 +11,9 @@ import jakarta.jms.Message;
 import jakarta.jms.JMSException;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
-import com.ibm.mq.headers.pcf.PCFMessage;
-import com.ibm.mq.headers.pcf.PCFParameter;
-import com.ibm.mq.headers.pcf.MQCFGR;
+
 import com.ibm.mq.headers.pcf.MQCFH;
-import com.ibm.mq.headers.pcf.MQCFIN;
+import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.constants.MQConstants;
 
@@ -24,7 +22,7 @@ public class MQListener {
     private static final Logger log = LoggerFactory.getLogger(MQListener.class);
 
     @JmsListener(destination = "SYSTEM.ADMIN.QMGR.EVENT")
-    public void receive(Message receivedMessage) throws JMSException {
+    public void QMGRListener(Message receivedMessage) throws JMSException {
         if (receivedMessage instanceof BytesMessage) {
         	
         	// getting the BytesMesage
@@ -42,17 +40,29 @@ public class MQListener {
 
                 PCFMessage pcfMsg = new PCFMessage(mqMsg);
                 // method for logging output
-                PCFParser.parsePCFMessage(pcfMsg);
-
-			    
-                // getting the header info into a json and creating file
-                String eventHeaderJson = PCFParser.toPcfMessageJson(pcfMsg);
-                try (FileWriter file = new FileWriter("eventHeader.json")) {
-                    file.write(eventHeaderJson);
-                    System.out.println("Successfully written JSON to " + "eventHeader.json");
-                } catch (IOException e) {
-                    System.out.println("An error occurred while writing to the file: " + e.getMessage());
+//                PCFParser.parsePCFMessage(pcfMsg);
+                
+                // getting the reason code
+                MQCFH cfh = pcfMsg.getHeader();
+    	        int eventReason = cfh.getReason();
+    	        
+    	        // getting the queue
+    	        
+                if (eventReason == 2035) {
+        	        // getting the queue
+                    String eventQueueName = pcfMsg.getStringParameterValue(MQConstants.MQCA_Q_NAME).trim();
+                    // we add it to the count of 2035 errors, and check it hasn't gone above 
+                    ErrorCounter.countError(eventQueueName, eventReason);
                 }
+			    
+                // getting the event info into a json and creating file
+//                String eventHeaderJson = PCFParser.toPcfMessageJson(pcfMsg);
+//                try (FileWriter file = new FileWriter("eventHeader.json")) {
+//                    file.write(eventHeaderJson);
+//                    System.out.println("Successfully written JSON to " + "eventHeader.json");
+//                } catch (IOException e) {
+//                    System.out.println("An error occurred while writing to the file: " + e.getMessage());
+//                }
                 
             } catch (Exception e) {
                 log.error("Error processing PCF message", e);

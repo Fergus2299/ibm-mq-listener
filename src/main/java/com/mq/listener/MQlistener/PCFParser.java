@@ -42,8 +42,6 @@ public class PCFParser {
         }
     	try {
     		parsePCFHeader(pcfMsg);
-    	
-  
 	        Enumeration<?> parameters = pcfMsg.getParameters();
 	        while (parameters.hasMoreElements()) {
 	            PCFParameter parameter = (PCFParameter) parameters.nextElement();
@@ -289,8 +287,5 @@ public class PCFParser {
      */
     private static String trimString(String input) {
         return input == null ? null : input.trim();
-    }
-    
-    
-    
+    }  
 }
