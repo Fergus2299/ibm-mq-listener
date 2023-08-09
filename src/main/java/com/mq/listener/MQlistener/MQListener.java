@@ -2,6 +2,7 @@ package com.mq.listener.MQlistener;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Enumeration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,17 +12,22 @@ import jakarta.jms.JMSException;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 import com.ibm.mq.headers.pcf.PCFMessage;
+import com.ibm.mq.headers.pcf.PCFParameter;
+import com.ibm.mq.headers.pcf.MQCFGR;
+import com.ibm.mq.headers.pcf.MQCFH;
+import com.ibm.mq.headers.pcf.MQCFIN;
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.constants.MQConstants;
 
 @Component
 public class MQListener {
-
     private static final Logger log = LoggerFactory.getLogger(MQListener.class);
 
     @JmsListener(destination = "SYSTEM.ADMIN.QMGR.EVENT")
     public void receive(Message receivedMessage) throws JMSException {
         if (receivedMessage instanceof BytesMessage) {
+        	
+        	// getting the BytesMesage
             BytesMessage bytesMessage = (BytesMessage) receivedMessage;
             byte[] bytesreceived = new byte[(int) bytesMessage.getBodyLength()];
             bytesMessage.readBytes(bytesreceived);
@@ -35,22 +41,19 @@ public class MQListener {
                 mqMsg.seek(0);
 
                 PCFMessage pcfMsg = new PCFMessage(mqMsg);
-                String parsedOutput = PCFParser.parsePCFMessage(pcfMsg);
-                log.info("Parsed PCF message:\n{}", parsedOutput);
-                
-                log.info("Listener received PCF message: {}", pcfMsg);
-//                String qMgrName = (String) pcfMsg.getParameterValue(MQConstants.MQCA_Q_MGR_NAME);
-                String eventJson = PcfJsonParser.toPcfJson(pcfMsg);
-                
-                try (FileWriter file = new FileWriter("Sample.json")) {
-                    file.write(eventJson);
-                    System.out.println("Successfully written JSON to " + "Sample.json");
+                // method for logging output
+                PCFParser.parsePCFMessage(pcfMsg);
+
+			    
+                // getting the header info into a json and creating file
+                String eventHeaderJson = PCFParser.toPcfMessageJson(pcfMsg);
+                try (FileWriter file = new FileWriter("eventHeader.json")) {
+                    file.write(eventHeaderJson);
+                    System.out.println("Successfully written JSON to " + "eventHeader.json");
                 } catch (IOException e) {
                     System.out.println("An error occurred while writing to the file: " + e.getMessage());
                 }
                 
-                log.info(eventJson);
-//                MQEventLogger.logEvent(pcfMsg);
             } catch (Exception e) {
                 log.error("Error processing PCF message", e);
             }

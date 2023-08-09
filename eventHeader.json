@@ -1,0 +1,41 @@
+{
+    "header": {
+        "reason": 2035,
+        "paramCount": 7,
+        "reasonString": "MQRC_NOT_AUTHORIZED",
+        "type": 7,
+        "commandString": "MQCMD_Q_MGR_EVENT",
+        "command": 44,
+        "compCode": 1
+    },
+    "parameters": [
+        {
+            "parameterName": "MQCA_Q_MGR_NAME",
+            "parameterValue": "QM1"
+        },
+        {
+            "parameterName": "MQIACF_REASON_QUALIFIER",
+            "parameterValue": "2"
+        },
+        {
+            "parameterName": "MQCA_Q_NAME",
+            "parameterValue": "INACCESSIBLE.QUEUE"
+        },
+        {
+            "parameterName": "MQIACF_OPEN_OPTIONS",
+            "parameterValue": "14352"
+        },
+        {
+            "parameterName": "MQCACF_USER_IDENTIFIER",
+            "parameterValue": "app"
+        },
+        {
+            "parameterName": "MQIA_APPL_TYPE/MQIAMO_MONITOR_FLAGS_OBJNAME/MQIAMO_MONITOR_UNIT",
+            "parameterValue": "6"
+        },
+        {
+            "parameterName": "MQCACF_APPL_NAME",
+            "parameterValue": "IBM MQ REST API"
+        }
+    ]
+}
