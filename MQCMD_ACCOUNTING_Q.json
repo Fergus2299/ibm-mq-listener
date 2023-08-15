@@ -1,0 +1,443 @@
+{
+    "header": {
+        "reason": 0,
+        "paramCount": 16,
+        "reasonString": "MQRC_NONE",
+        "type": 22,
+        "commandString": "MQCMD_ACCOUNTING_Q",
+        "command": 168,
+        "compCode": 0
+    },
+    "parameters": [
+        {
+            "parameterName": "MQCA_Q_MGR_NAME",
+            "parameterValue": "QM1"
+        },
+        {
+            "parameterName": "MQCAMO_START_DATE",
+            "parameterValue": "2023-08-10"
+        },
+        {
+            "parameterName": "MQCAMO_START_TIME",
+            "parameterValue": "12.31.18"
+        },
+        {
+            "parameterName": "MQCAMO_END_DATE",
+            "parameterValue": "2023-08-10"
+        },
+        {
+            "parameterName": "MQCAMO_END_TIME",
+            "parameterValue": "12.31.18"
+        },
+        {
+            "parameterName": "MQIA_COMMAND_LEVEL",
+            "parameterValue": "933"
+        },
+        {
+            "parameterName": "MQBACF_CONNECTION_ID",
+            "parameterValue": "414d5143514d3120202020202020202038c9d06410230240"
+        },
+        {
+            "parameterName": "MQIACF_SEQUENCE_NUMBER",
+            "parameterValue": "0"
+        },
+        {
+            "parameterName": "MQCACF_APPL_NAME",
+            "parameterValue": "IBM MQ REST API"
+        },
+        {
+            "parameterName": "MQIAMO_MONITOR_KB/MQIACF_PROCESS_ID",
+            "parameterValue": "378"
+        },
+        {
+            "parameterName": "MQIACF_THREAD_ID",
+            "parameterValue": "50"
+        },
+        {
+            "parameterName": "MQCACF_USER_IDENTIFIER",
+            "parameterValue": "mqm"
+        },
+        {
+            "parameterName": "MQIAMO_OBJECT_COUNT",
+            "parameterValue": "3"
+        },
+        {
+            "nestedParameters": [
+                {
+                    "parameterName": "MQCA_Q_NAME",
+                    "parameterValue": "SYSTEM.ADMIN.COMMAND.QUEUE                      "
+                },
+                {
+                    "parameterName": "MQCA_CREATION_DATE",
+                    "parameterValue": "2023-07-21  "
+                },
+                {
+                    "parameterName": "MQCA_CREATION_TIME",
+                    "parameterValue": "14.05.16"
+                },
+                {
+                    "parameterName": "MQIA_Q_TYPE",
+                    "parameterValue": "MQQT_LOCAL"
+                },
+                {
+                    "parameterName": "MQIA_DEFINITION_TYPE",
+                    "parameterValue": "1"
+                },
+                {
+                    "parameterName": "MQIAMO_OPENS",
+                    "parameterValue": "1"
+                },
+                {
+                    "parameterName": "MQCAMO_OPEN_DATE",
+                    "parameterValue": "2023-08-10"
+                },
+                {
+                    "parameterName": "MQCAMO_OPEN_TIME",
+                    "parameterValue": "12.31.18"
+                },
+                {
+                    "parameterName": "MQIAMO_CLOSES",
+                    "parameterValue": "1"
+                },
+                {
+                    "parameterName": "MQCAMO_CLOSE_DATE",
+                    "parameterValue": "2023-08-10"
+                },
+                {
+                    "parameterName": "MQCAMO_CLOSE_TIME",
+                    "parameterValue": "12.31.18"
+                },
+                {
+                    "parameterName": "MQIAMO_PUTS",
+                    "parameterValue": "1 0"
+                },
+                {
+                    "parameterName": "MQIAMO_PUTS_FAILED",
+                    "parameterValue": "0"
+                },
+                {
+                    "parameterName": "MQIAMO_PUT1S",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_PUT1S_FAILED",
+                    "parameterValue": "0"
+                },
+                {
+                    "parameterName": "MQIAMO64_PUT_BYTES",
+                    "parameterValue": "100 0 "
+                },
+                {
+                    "parameterName": "MQIAMO_PUT_MIN_BYTES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_PUT_MAX_BYTES",
+                    "parameterValue": "100 0"
+                },
+                {
+                    "parameterName": "MQIAMO_GETS",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_GETS_FAILED",
+                    "parameterValue": "0"
+                },
+                {
+                    "parameterName": "MQIAMO64_GET_BYTES",
+                    "parameterValue": "0 0 "
+                },
+                {
+                    "parameterName": "MQIAMO_GET_MIN_BYTES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_GET_MAX_BYTES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_BROWSES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_BROWSES_FAILED",
+                    "parameterValue": "0"
+                },
+                {
+                    "parameterName": "MQIAMO64_BROWSE_BYTES",
+                    "parameterValue": "0 0 "
+                },
+                {
+                    "parameterName": "MQIAMO_BROWSE_MIN_BYTES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_BROWSE_MAX_BYTES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_GENERATED_MSGS",
+                    "parameterValue": "0"
+                }
+            ],
+            "parameterCount": 29,
+            "parameterName": "MQGACF_Q_ACCOUNTING_DATA"
+        },
+        {
+            "nestedParameters": [
+                {
+                    "parameterName": "MQCA_Q_NAME",
+                    "parameterValue": "SYSTEM.PROTECTION.POLICY.QUEUE                  "
+                },
+                {
+                    "parameterName": "MQCA_CREATION_DATE",
+                    "parameterValue": "2023-07-21  "
+                },
+                {
+                    "parameterName": "MQCA_CREATION_TIME",
+                    "parameterValue": "14.05.17"
+                },
+                {
+                    "parameterName": "MQIA_Q_TYPE",
+                    "parameterValue": "MQQT_LOCAL"
+                },
+                {
+                    "parameterName": "MQIA_DEFINITION_TYPE",
+                    "parameterValue": "1"
+                },
+                {
+                    "parameterName": "MQIAMO_OPENS",
+                    "parameterValue": "2"
+                },
+                {
+                    "parameterName": "MQCAMO_OPEN_DATE",
+                    "parameterValue": "2023-08-10"
+                },
+                {
+                    "parameterName": "MQCAMO_OPEN_TIME",
+                    "parameterValue": "12.31.18"
+                },
+                {
+                    "parameterName": "MQIAMO_CLOSES",
+                    "parameterValue": "2"
+                },
+                {
+                    "parameterName": "MQCAMO_CLOSE_DATE",
+                    "parameterValue": "2023-08-10"
+                },
+                {
+                    "parameterName": "MQCAMO_CLOSE_TIME",
+                    "parameterValue": "12.31.18"
+                },
+                {
+                    "parameterName": "MQIAMO_PUTS",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_PUTS_FAILED",
+                    "parameterValue": "0"
+                },
+                {
+                    "parameterName": "MQIAMO_PUT1S",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_PUT1S_FAILED",
+                    "parameterValue": "0"
+                },
+                {
+                    "parameterName": "MQIAMO64_PUT_BYTES",
+                    "parameterValue": "0 0 "
+                },
+                {
+                    "parameterName": "MQIAMO_PUT_MIN_BYTES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_PUT_MAX_BYTES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_GETS",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_GETS_FAILED",
+                    "parameterValue": "4"
+                },
+                {
+                    "parameterName": "MQIAMO64_GET_BYTES",
+                    "parameterValue": "0 0 "
+                },
+                {
+                    "parameterName": "MQIAMO_GET_MIN_BYTES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_GET_MAX_BYTES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_BROWSES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_BROWSES_FAILED",
+                    "parameterValue": "0"
+                },
+                {
+                    "parameterName": "MQIAMO64_BROWSE_BYTES",
+                    "parameterValue": "0 0 "
+                },
+                {
+                    "parameterName": "MQIAMO_BROWSE_MIN_BYTES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_BROWSE_MAX_BYTES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_GENERATED_MSGS",
+                    "parameterValue": "0"
+                }
+            ],
+            "parameterCount": 29,
+            "parameterName": "MQGACF_Q_ACCOUNTING_DATA"
+        },
+        {
+            "nestedParameters": [
+                {
+                    "parameterName": "MQCA_Q_NAME",
+                    "parameterValue": "SYSTEM.REST.REPLY.QUEUE                         "
+                },
+                {
+                    "parameterName": "MQCA_CREATION_DATE",
+                    "parameterValue": "2023-07-21  "
+                },
+                {
+                    "parameterName": "MQCA_CREATION_TIME",
+                    "parameterValue": "14.05.18"
+                },
+                {
+                    "parameterName": "MQIA_Q_TYPE",
+                    "parameterValue": "MQQT_LOCAL"
+                },
+                {
+                    "parameterName": "MQIA_DEFINITION_TYPE",
+                    "parameterValue": "1"
+                },
+                {
+                    "parameterName": "MQIAMO_OPENS",
+                    "parameterValue": "1"
+                },
+                {
+                    "parameterName": "MQCAMO_OPEN_DATE",
+                    "parameterValue": "2023-08-10"
+                },
+                {
+                    "parameterName": "MQCAMO_OPEN_TIME",
+                    "parameterValue": "12.31.18"
+                },
+                {
+                    "parameterName": "MQIAMO_CLOSES",
+                    "parameterValue": "1"
+                },
+                {
+                    "parameterName": "MQCAMO_CLOSE_DATE",
+                    "parameterValue": "2023-08-10"
+                },
+                {
+                    "parameterName": "MQCAMO_CLOSE_TIME",
+                    "parameterValue": "12.31.18"
+                },
+                {
+                    "parameterName": "MQIAMO_PUTS",
+                    "parameterValue": "1 0"
+                },
+                {
+                    "parameterName": "MQIAMO_PUTS_FAILED",
+                    "parameterValue": "0"
+                },
+                {
+                    "parameterName": "MQIAMO_PUT1S",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_PUT1S_FAILED",
+                    "parameterValue": "0"
+                },
+                {
+                    "parameterName": "MQIAMO64_PUT_BYTES",
+                    "parameterValue": "0 0 "
+                },
+                {
+                    "parameterName": "MQIAMO_PUT_MIN_BYTES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_PUT_MAX_BYTES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_GETS",
+                    "parameterValue": "68 0"
+                },
+                {
+                    "parameterName": "MQIAMO_GETS_FAILED",
+                    "parameterValue": "0"
+                },
+                {
+                    "parameterName": "MQIAMO64_GET_BYTES",
+                    "parameterValue": "38208 0 "
+                },
+                {
+                    "parameterName": "MQIAMO_GET_MIN_BYTES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_GET_MAX_BYTES",
+                    "parameterValue": "976 0"
+                },
+                {
+                    "parameterName": "MQIAMO_BROWSES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_BROWSES_FAILED",
+                    "parameterValue": "0"
+                },
+                {
+                    "parameterName": "MQIAMO64_BROWSE_BYTES",
+                    "parameterValue": "0 0 "
+                },
+                {
+                    "parameterName": "MQIAMO_BROWSE_MIN_BYTES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_BROWSE_MAX_BYTES",
+                    "parameterValue": "0 0"
+                },
+                {
+                    "parameterName": "MQIAMO_GENERATED_MSGS",
+                    "parameterValue": "0"
+                },
+                {
+                    "parameterName": "MQIAMO_Q_TIME_MIN/MQIAMO64_Q_TIME_MIN",
+                    "parameterValue": "81 0 "
+                },
+                {
+                    "parameterName": "MQIAMO_Q_TIME_MAX/MQIAMO64_Q_TIME_MAX",
+                    "parameterValue": "3571 0 "
+                },
+                {
+                    "parameterName": "MQIAMO_Q_TIME_AVG/MQIAMO64_Q_TIME_AVG",
+                    "parameterValue": "2611 0 "
+                }
+            ],
+            "parameterCount": 32,
+            "parameterName": "MQGACF_Q_ACCOUNTING_DATA"
+        }
+    ]
+}

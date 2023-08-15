@@ -20,65 +20,51 @@ import com.ibm.mq.constants.MQConstants;
 //TODO: We only want to detect errors while the tool is turned on, it might be advisable to
 // delete everything off the event queues when the app starts. - Might be worth advising IBM MQ
 // to include date-time for events because of this because then we could have used this information.
-@Component
+
+//TODO:Threading
+
 public class MQListener {
     private static final Logger log = LoggerFactory.getLogger(MQListener.class);
 
-    @JmsListener(destination = "SYSTEM.ADMIN.QMGR.EVENT")
-    public void QMGRListener(Message receivedMessage) throws JMSException {
-        if (receivedMessage instanceof BytesMessage) {
-        	
-        	// getting the BytesMesage
-            BytesMessage bytesMessage = (BytesMessage) receivedMessage;
-            byte[] bytesreceived = new byte[(int) bytesMessage.getBodyLength()];
-            bytesMessage.readBytes(bytesreceived);
+    public static MQMessage convertToMQMessage(BytesMessage bytesMessage) throws JMSException, IOException {
+        byte[] bytesReceived = new byte[(int) bytesMessage.getBodyLength()];
+        bytesMessage.readBytes(bytesReceived);
+        MQMessage mqMsg = new MQMessage();
+        mqMsg.write(bytesReceived);
+        mqMsg.encoding = bytesMessage.getIntProperty("JMS_IBM_Encoding");
+        mqMsg.format = bytesMessage.getStringProperty("JMS_IBM_Format");
+        mqMsg.seek(0);
+        return mqMsg;
+    }
+    
 
-            // convert to MQMessage then to PCFMessage
-            MQMessage mqMsg = new MQMessage();
-            try {
-                mqMsg.write(bytesreceived);
-                mqMsg.encoding = receivedMessage.getIntProperty("JMS_IBM_Encoding");
-                mqMsg.format = receivedMessage.getStringProperty("JMS_IBM_Format");
-                mqMsg.seek(0);
-
-                PCFMessage pcfMsg = new PCFMessage(mqMsg);
-                // method for logging output
-//                PCFParser.parsePCFMessage(pcfMsg);
-                
-                // getting the reason code
-                MQCFH cfh = pcfMsg.getHeader();
-                // we always need the reason because it's necessary fo r diagnosing the problem
-    	        int eventReason = cfh.getReason();
-    	        // we always need QM because the user might switch QM and then the log files are for a
-    	        // different QM.
-//                String eventQueueManagerName = pcfMsg.getStringParameterValue(MQConstants.MQCA_QM_NAME).trim();
-                if (eventReason == 2035) {
-        	        // getting the queue
-                    String eventQueueName = pcfMsg.getStringParameterValue(MQConstants.MQCA_Q_NAME).trim();
-                    // we add it to the count of 2035 errors, and check it hasn't gone above 
-                    ErrorCounter.countError(eventQueueName, eventReason);
-                } else {
-                	System.out.println("Recieved QMGR EVENT which was not a 2035!");
-                }
-			    
-                // getting the event info into a json and creating file
-//                String eventHeaderJson = PCFParser.toPcfMessageJson(pcfMsg);
-//                try (FileWriter file = new FileWriter("eventHeader.json")) {
-//                    file.write(eventHeaderJson);
-//                    System.out.println("Successfully written JSON to " + "eventHeader.json");
-//                } catch (IOException e) {
-//                    System.out.println("An error occurred while writing to the file: " + e.getMessage());
-//                }
-                
-                
-                
-            } catch (Exception e) {
-                log.error("Error processing PCF message", e);
-            }
-        } else {
-            log.warn("Received non-bytes message: {}", receivedMessage);
+    
+    public static void saveToFile(String data, String filename) {
+        try (FileWriter file = new FileWriter(filename)) {
+            file.write(data);
+            System.out.println("Successfully written data to " + filename);
+        } catch (IOException e) {
+            log.error("An error occurred while writing to the file: {}", e.getMessage());
         }
     }
+    public static void logProcessingError(Exception e, String context) {
+        log.error("Error processing {} message", context, e);
+    }
+    
+//    
+//    @JmsListener(destination = "SYSTEM.ADMIN.QMGR.EVENT")
+//    public void QMGRListener(Message receivedMessage) throws JMSException {
+//        if (receivedMessage instanceof BytesMessage) {
+//        	MQMessage mqMsg = MQListener.convertToMQMessage(receivedMessage);
+//        	// getting the BytesMesage
+//            BytesMessage bytesMessage = (BytesMessage) receivedMessage;
+//            
+//
+//            // convert to MQMessage then to PCFMessage
+//            MQMessage mqMsg = new MQMessage();
+//
+//        }
+//    }
     /**
      * Accounting Listener Method
      *
@@ -104,41 +90,65 @@ public class MQListener {
      */
     
     
-    @JmsListener(destination = "SYSTEM.ADMIN.ACCOUNTING.QUEUE")
-    public void AccountingListener(Message receivedMessage) throws JMSException {
-        if (receivedMessage instanceof BytesMessage) {
-        	
-            // Getting the BytesMessage
-            BytesMessage bytesMessage = (BytesMessage) receivedMessage;
-            byte[] bytesReceived = new byte[(int) bytesMessage.getBodyLength()];
-            bytesMessage.readBytes(bytesReceived);
-
-            // Convert to MQMessage 
-            MQMessage mqMsg = new MQMessage();
-            try {
-                mqMsg.write(bytesReceived);
-                mqMsg.encoding = receivedMessage.getIntProperty("JMS_IBM_Encoding");
-                mqMsg.format = receivedMessage.getStringProperty("JMS_IBM_Format");
-                mqMsg.seek(0);
-                
-                // try to convert to PCF message
-                PCFMessage pcfMsg = new PCFMessage(mqMsg);
-
-                // TODO: Further process the MQ Accounting message as per your requirements
-                log.info("Received accounting message: {}", pcfMsg);
-
-                // Optionally, convert and save the accounting data to another format, e.g. JSON
-                // This requires you to build a function to transform MQMessage to JSON.
-                // String accountingDataJson = MQMessageToJson(mqMsg);
-                // SaveJsonToFile(accountingDataJson, "accountingData.json");
-
-            } catch (Exception e) {
-                log.error("Error processing MQ Accounting message", e);
-            }
-        } else {
-            log.warn("Received non-bytes message: {}", receivedMessage);
-        }
-    }
-    
-    
+//    @JmsListener(destination = "SYSTEM.ADMIN.ACCOUNTING.QUEUE")
+//    public void AccountingListener(Message receivedMessage) throws JMSException {
+//        if (receivedMessage instanceof BytesMessage) {
+//        	
+//            // Getting the BytesMessage
+//            BytesMessage bytesMessage = (BytesMessage) receivedMessage;
+//            byte[] bytesReceived = new byte[(int) bytesMessage.getBodyLength()];
+//            bytesMessage.readBytes(bytesReceived);
+//
+//            // Convert to MQMessage 
+//            MQMessage mqMsg = new MQMessage();
+//            try {
+//                mqMsg.write(bytesReceived);
+//                mqMsg.encoding = receivedMessage.getIntProperty("JMS_IBM_Encoding");
+//                mqMsg.format = receivedMessage.getStringProperty("JMS_IBM_Format");
+//                mqMsg.seek(0);
+//                
+//                // try to convert to PCF message
+//                PCFMessage pcfMsg = new PCFMessage(mqMsg);
+//                String parsedPCF = PCFParser.toPcfMessageJson(pcfMsg);
+//                
+//                
+//                // getting the command code
+//                // TODO: ensure that you have captured all possible command codes
+//                // comand being 167 means: MQCMD_ACCOUNTING_MQI
+//                // command being 168 means: MQCMD_ACCOUNTING_Q
+//                MQCFH cfh = pcfMsg.getHeader();
+//                int command = cfh.getCommand();
+//                String fileName;
+//
+//                switch (command) {
+//                    case 167: // MQCMD_ACCOUNTING_MQI
+//                        fileName = "AccountingMQI.json";
+//                        break;
+//                    case 168: // MQCMD_ACCOUNTING_Q
+//                        fileName = "AccountingQ.json";
+//                        break;
+//                    default:
+//                        fileName = "UnknownAccounting.json"; // for any other command codes that you haven't explicitly handled
+//                        log.warn("Received an unhandled accounting command code: {}", command);
+//                        break;
+//                }
+//
+//                PCFParser.saveJsonToFile(parsedPCF, fileName);
+//                // we always need the reason because it's necessary fo r diagnosing the problem
+//    	        String eventHeaders = PCFParser.toJsonPcfHeaders(pcfMsg);
+//                // TODO: Further process the MQ Accounting message as per your requirements
+////                log.info("Received accounting message: {}", pcfMsg);
+//    	        log.info("Received accounting message: {}", eventHeaders);
+//                // Optionally, convert and save the accounting data to another format, e.g. JSON
+//                // This requires you to build a function to transform MQMessage to JSON.
+//                // String accountingDataJson = MQMessageToJson(mqMsg);
+//                // SaveJsonToFile(accountingDataJson, "accountingData.json");
+//
+//            } catch (Exception e) {
+//                log.error("Error processing MQ Accounting message", e);
+//            }
+//        } else {
+//            log.warn("Received non-bytes message: {}", receivedMessage);
+//        }
+//    }
 }

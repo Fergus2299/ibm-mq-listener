@@ -32,6 +32,8 @@ public class ErrorCounter {
         // that they aren't shared by different QMs
         startTimestamps.putIfAbsent(queueName, System.currentTimeMillis());
         tempCounts.put(queueName, tempCounts.getOrDefault(queueName, 0) + 1);
+        
+//        System.out.println("Updated tempCounts: " + tempCounts);
     }
 
     // Evaluate error rates and reset counts at a fixed rate
@@ -89,7 +91,7 @@ public class ErrorCounter {
     
  // Print current issues to the console
     private void printCurrentIssues() {
-        System.out.println("---- CURRENT ISSUES ----");
+        System.out.println("---- CURRENT 2035 ISSUES ----");
         if (activeIssues.isEmpty()) {
             System.out.println("No issues detected.");
         } else {

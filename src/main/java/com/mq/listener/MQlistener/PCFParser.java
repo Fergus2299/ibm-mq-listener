@@ -6,6 +6,8 @@ import com.ibm.mq.headers.pcf.MQCFH;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.headers.pcf.PCFParameter;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Enumeration;
 
 import org.json.JSONArray;
@@ -269,6 +271,16 @@ public class PCFParser {
         }
         
         return jsonObject.toString();
+    }
+    
+    
+    public static void saveJsonToFile(String jsonString, String fileName) {
+        try (FileWriter file = new FileWriter(fileName)) {
+            file.write(jsonString);
+            log.info("Successfully wrote JSON data to {}", fileName);
+        } catch (IOException e) {
+            log.error("Error occurred while writing JSON to file", e);
+        }
     }
     
     /**
