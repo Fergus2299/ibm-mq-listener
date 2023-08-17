@@ -26,6 +26,8 @@ public class AccountingMetrics {
     private static Map<String, Integer> connectionCounts = new HashMap<>();
     private static Map<String, Integer> putGetCounts = new HashMap<>();
     // synchronized allows for no one of these to be running at one time and therefore is more thread safe
+    
+    // TODO: this function may not need to exist
     public static synchronized void addMessage(AccountingData data) {
         String userId = data.getUserIdentifier();
 

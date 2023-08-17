@@ -10,7 +10,6 @@ public abstract class Issue {
     protected String endTimestamp; // this could be null if the issue has not ended
     protected String Q;
     
-    // getters and setters
     public String getIssueCode() {
 		return issueCode;
 	}

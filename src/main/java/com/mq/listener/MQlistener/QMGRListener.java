@@ -23,7 +23,8 @@ public class QMGRListener {
             try {
                 MQMessage mqMsg = MQListener.convertToMQMessage((BytesMessage) receivedMessage);
                 PCFMessage pcfMsg = new PCFMessage(mqMsg);
-                processQMGRMessage(pcfMsg);
+//                System.out.println(pcfMsg);
+//                processQMGRMessage(pcfMsg);
             } catch (Exception e) {
                 MQListener.logProcessingError(e, "PCF");
             }
@@ -36,13 +37,20 @@ public class QMGRListener {
     	try {
 			MQCFH cfh = pcfMsg.getHeader();
 	        int eventReason = cfh.getReason();
-	        if (eventReason == 2035) {
-//	        	PCFParser.parsePCFMessage(pcfMsg);
-	            String eventQueueName = pcfMsg.getStringParameterValue(MQConstants.MQCA_Q_NAME).trim();
-//	            // TODO: countError needs to be thread safe
-	            ErrorCounter.countError(eventQueueName, eventReason);
-	        } else {
-	            System.out.println("Recieved QMGR EVENT which was not a 2035!");
+	        switch (eventReason) {
+	        	case 2035:
+	//	        	PCFParser.parsePCFMessage(pcfMsg);
+		            String eventQueueName = pcfMsg.getStringParameterValue(MQConstants.MQCA_Q_NAME).trim();
+	//	            // TODO: countError needs to be thread safe
+		            ErrorCounter.countError(eventQueueName, eventReason);
+	                break;
+	            case 2085:
+	                System.out.println("Received QMGR EVENT with a 2085 error!");
+	                System.out.println(pcfMsg);
+	                break;
+	        	default:
+	            	System.out.println("Recieved QMGR EVENT which was not a 2035!");
+	            	break;
 	        }
     	} catch (Exception e) {
     		log.error("Error processing PCF message", e);

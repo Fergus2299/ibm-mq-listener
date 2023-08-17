@@ -297,7 +297,7 @@ public class PCFParser {
      * @param input The original string that might contain unnecessary whitespace or unwanted characters.
      * @return A cleaned-up version of the input string, with whitespace trimmed and unwanted characters removed.
      */
-    private static String trimString(String input) {
+    public static String trimString(String input) {
         return input == null ? null : input.trim();
     }  
 }
