@@ -1,16 +1,17 @@
 package com.mq.listener.MQlistener.models;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import TimeFormatter.TimeFormatter;
 
 public class AuthErrorDetails {
 
-	private String startTime;
 	private int count;
 	private String userId;
 	private String appName;
 	
 	public AuthErrorDetails(int count, String userId, String appName) {
-	this.startTime = TimeFormatter.formatNow();
     this.count = count;
     this.userId = userId;
     this.appName = appName;
@@ -45,6 +46,27 @@ public class AuthErrorDetails {
         this.count++;
     }
 
-	
+
+	@Override
+    public String toString() {
+        return " { "  +
+               "count=" + count +
+               ", userId='" + userId + '\'' +
+               ", appName='" + appName + '\'' +
+               " }";
+    }
+	public Map<String, Object> toHashMap() {
+	    Map<String, Object> map = new HashMap<>();
+	    map.put("count", this.count);
+	    map.put("userId", this.userId);
+	    map.put("appName", this.appName);
+	    return map;
+	}
+
+    public void printSelf() {
+        System.out.println(this.toString());
+    }
+
+
 }    
 

@@ -1,5 +1,9 @@
 package com.mq.listener.MQlistener.models;
 
+import java.util.Map;
+
+import TimeFormatter.TimeFormatter;
+
 public class Auth1ErrorDetails extends AuthErrorDetails {
 
     private String channelName;
@@ -43,4 +47,36 @@ public class Auth1ErrorDetails extends AuthErrorDetails {
     public void setCSPUserId(String CSPUserId) {
         this.CSPUserId = CSPUserId;
     }
+    
+    @Override
+    public String toString() {
+        return super.toString().replace("}", ", ") + 
+               "channelName='" + channelName + '\'' +
+               ", connName='" + connName + '\'' +
+               ", CSPUserId='" + CSPUserId + '\'' +
+               '}';
+    }
+    
+    @Override
+    public Map<String, Object> toHashMap() {
+        Map<String, Object> map = super.toHashMap();
+        map.put("channelName", this.channelName);
+        map.put("connName", this.connName);
+        map.put("CSPUserId", this.CSPUserId);
+        return map;
+    }
+    
+    public void reset() {
+        this.setCount(0);
+        this.setUserId("");
+        this.setAppName("");
+        this.channelName = "";
+        this.connName = "";
+        this.CSPUserId = "";
+    }
+
+
+
+    
+    
 }
