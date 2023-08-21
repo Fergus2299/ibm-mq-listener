@@ -1,4 +1,4 @@
-package com.mq.listener.MQlistener;
+package com.mq.listener.MQlistener.parsers;
 
 import com.ibm.mq.headers.*;
 import com.ibm.mq.headers.pcf.MQCFGR;

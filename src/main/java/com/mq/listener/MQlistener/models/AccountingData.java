@@ -1,4 +1,4 @@
-package com.mq.listener.MQlistener;
+package com.mq.listener.MQlistener.models;
 
 public class AccountingData {
 

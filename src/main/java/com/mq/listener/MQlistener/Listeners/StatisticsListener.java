@@ -1,4 +1,4 @@
-package com.mq.listener.MQlistener;
+package com.mq.listener.MQlistener.Listeners;
 
 import jakarta.jms.BytesMessage;
 import jakarta.jms.Message;
