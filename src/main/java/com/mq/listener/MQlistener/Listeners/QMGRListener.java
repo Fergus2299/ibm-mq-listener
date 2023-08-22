@@ -33,7 +33,4 @@ public class QMGRListener {
             log.warn("Received non-bytes message: {}", receivedMessage);
         }
     }
-    
-
-    
 }

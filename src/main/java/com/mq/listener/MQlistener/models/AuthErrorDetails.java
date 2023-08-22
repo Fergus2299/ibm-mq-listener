@@ -1,29 +1,16 @@
 package com.mq.listener.MQlistener.models;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import TimeFormatter.TimeFormatter;
+public class AuthErrorDetails extends ErrorDetails {
 
-public class AuthErrorDetails {
+    private String userId;
 
-	private int count;
-	private String userId;
-	private String appName;
-	
-	public AuthErrorDetails(int count, String userId, String appName) {
-    this.count = count;
-    this.userId = userId;
-    this.appName = appName;
+    public AuthErrorDetails(int count, String userId, String appName) {
+        super(count, appName);
+        this.userId = userId;
     }
 
-	public int getCount() {
-		return count;
-	}
-
-	public void setCount(int count) {
-		this.count = count;
-	}
 
 	public String getUserId() {
 		return userId;
@@ -33,38 +20,20 @@ public class AuthErrorDetails {
 		this.userId = userId;
 	}
 
-	public String getAppName() {
-		return appName;
-	}
 
-	public void setAppName(String appName) {
-		this.appName = appName;
-	}
-	
-	//////////////////////////////
-    public void incrementCount() {
-        this.count++;
-    }
-
-
-	@Override
+    @Override
     public String toString() {
-        return " { "  +
-               "count=" + count +
+        return super.toString().replace("}", "") +
                ", userId='" + userId + '\'' +
-               ", appName='" + appName + '\'' +
                " }";
     }
-	public Map<String, Object> toHashMap() {
-	    Map<String, Object> map = new HashMap<>();
-	    map.put("count", this.count);
-	    map.put("userId", this.userId);
-	    map.put("appName", this.appName);
-	    return map;
-	}
-
-    public void printSelf() {
-        System.out.println(this.toString());
+    
+    
+    @Override
+    public Map<String, Object> toHashMap() {
+        Map<String, Object> map = super.toHashMap();
+        map.put("userId", this.userId);
+        return map;
     }
 
 

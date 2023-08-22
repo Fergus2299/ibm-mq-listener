@@ -21,9 +21,9 @@ public class AuthCounter {
     private static final long MILLIS_IN_MINUTE = 60 * 1000; // 60 seconds * 1000 milliseconds/second
     
     // Counting the total 2035 - 1 for the whole QM
-    private static Auth1ErrorDetails authConnCount = new Auth1ErrorDetails(0, "", "", "", "", "");
+//    private static Auth1ErrorDetails authConnCount = new Auth1ErrorDetails(0, "", "", "", "", "");
     // the count is the key and the details we want for that window are the vals
-    private static Map<String, TooMany2035sIssue> activeType1Issues = new HashMap<>();
+//    private static Map<String, TooMany2035sIssue> activeType1Issues = new HashMap<>();
     
     // Active issues for each queue
     private static Map<String, TooMany2035sIssue> activeType2Issues = new HashMap<>();
@@ -37,12 +37,18 @@ public class AuthCounter {
     public static void countType1Error(String userId, String appName, String channelName, String connName, String CSPUserId) {
     	// default the count to zero for this window and input the vals
 //    	Auth1ErrorDetails currentDetails = authConnCount.getOrDefault("QMGR", new Auth1ErrorDetails(0, userId, appName, channelName, connName, CSPUserId));
-    	authConnCount.incrementCount();
-    	authConnCount.setUserId(userId);
-    	authConnCount.setAppName(appName);
-    	authConnCount.setChannelName(channelName);
-    	authConnCount.setConnName(connName);
-    	authConnCount.setCSPUserId(CSPUserId);
+//    	authConnCount.incrementCount();
+//    	authConnCount.setUserId(userId);
+//    	authConnCount.setAppName(appName);
+//    	authConnCount.setChannelName(channelName);
+//    	authConnCount.setConnName(connName);
+//    	authConnCount.setCSPUserId(CSPUserId);
+    	startTimestamps.putIfAbsent("<QMGR>", System.currentTimeMillis());
+    	AuthErrorDetails currentDetails = tempCounts.getOrDefault(
+    			"<QMGR>", 
+    			new Auth1ErrorDetails(0, userId, appName,channelName,connName,CSPUserId));
+    	currentDetails.incrementCount();
+    	tempCounts.put("<QMGR>", currentDetails);
     	}
     
     // Count 2035 - 2 errors for the given queue and error code
@@ -59,40 +65,62 @@ public class AuthCounter {
     // Evaluate error rates and reset counts at a fixed rate
     @Scheduled(fixedRate = WINDOW_DURATION_MILLIS)
     public void evaluateAndResetCounts() {
+    	System.out.println(startTimestamps.toString());
         long currentTimeMillis = System.currentTimeMillis();
-        // check num of type 1
-        double rate = ((double) authConnCount.getCount() / WINDOW_DURATION_MILLIS) * MILLIS_IN_MINUTE;
         
-        if (rate >= ERRORS_PER_MINUTE_THRESHOLD) {
-        	System.out.println("too many type 1's");
-        	// get or default issue and add window data
-        	TooMany2035sIssue issue = activeType1Issues.getOrDefault("QMGR", new TooMany2035sIssue("QMGR", "_"));
-        	issue.addWindowData(authConnCount, rate);
-        	// put back in
-        	activeType1Issues.put("QMGR", issue);
-        } 
-        if (activeType1Issues.containsKey("QMGR") && rate < ERRORS_PER_MINUTE_THRESHOLD) { // if issue already exists but now below rate
-        	TooMany2035sIssue issue = activeType1Issues.get("QMGR");
-        	// close the issue and remove from active issues
-        	System.out.println("Deleting Type 1 Issue");
-            issue.closeIssue();
-        	activeType1Issues.remove("QMGR");
-        }
+        double rate;
+        
+        /////////////
+        // check num of type 1
+//        double rate = ((double) authConnCount.getCount() / WINDOW_DURATION_MILLIS) * MILLIS_IN_MINUTE;
+//        
+//        if (rate >= ERRORS_PER_MINUTE_THRESHOLD) {
+//        	System.out.println("too many type 1's");
+//        	// get or default issue and add window data
+//        	TooMany2035sIssue issue = activeType1Issues.getOrDefault("QMGR", new TooMany2035sIssue("QMGR", "_"));
+//        	issue.addWindowData(authConnCount, rate);
+//        	// put back in
+//        	activeType1Issues.put("QMGR", issue);
+//        } 
+//        if (activeType1Issues.containsKey("QMGR") && rate < ERRORS_PER_MINUTE_THRESHOLD) { // if issue already exists but now below rate
+//        	TooMany2035sIssue issue = activeType1Issues.get("QMGR");
+//        	// close the issue and remove from active issues
+//        	System.out.println("Deleting Type 1 Issue");
+//            issue.closeIssue();
+//        	activeType1Issues.remove("QMGR");
+//        }
 
-        // Iterate over all queues with active issues and get counts
+        
+        ////////////
+        
+        
+        // Iterate over all queues with active issues and those in tempCounts
         Set<String> queuesToEvaluate = new HashSet<>(queuesWithIssues);
         queuesToEvaluate.addAll(tempCounts.keySet());
-        
         for (String queue : queuesToEvaluate) {
+        	AuthErrorDetails errorInfo;
         	// getting current info about the temp count
-        	AuthErrorDetails errorInfo = tempCounts.getOrDefault(queue, new AuthErrorDetails(0, "", ""));
+        	if (queue != "<QMGR>") {
+        		 errorInfo = tempCounts.getOrDefault(queue, new AuthErrorDetails(0, "", ""));
+
+        	} else {
+        		 errorInfo = tempCounts.getOrDefault(queue, new Auth1ErrorDetails(0, "", "", "", "", ""));
+        	}
+        	
         	int count = errorInfo.getCount();
+        	// time since the first issue
             long durationMillis = currentTimeMillis - startTimestamps.getOrDefault(queue, currentTimeMillis);
             rate = ((double) count / durationMillis) * MILLIS_IN_MINUTE;
             // Check the rate and handle the issues accordingly
             if (durationMillis > 0 && rate > ERRORS_PER_MINUTE_THRESHOLD) {
-            	// will get the active issue for this queue or will create one
-                TooMany2035sIssue issue = activeType2Issues.getOrDefault(queue, new TooMany2035sIssue("queue",queue));
+            	// get or create issue for this queue or whole queue manager
+            	TooMany2035sIssue issue;
+            	if (queue != "<QMGR>") {
+            		issue = activeType2Issues.getOrDefault(queue, new TooMany2035sIssue("<Q>",queue));
+            	} else {
+            		issue = activeType2Issues.getOrDefault(queue, new TooMany2035sIssue("<QMGR>",queue));
+            	}
+
                 // adding the error info
                 issue.addWindowData(errorInfo, rate);
                 // we re-put into active issues
@@ -120,7 +148,7 @@ public class AuthCounter {
         startTimestamps.keySet().removeAll(queuesWithIssues);
         
         // reset whole QMGR conns
-        authConnCount.reset();
+//        authConnCount.reset();
     }
     // TODO: Implement a reset mechanism. Create a method or mechanism to reset counters outside of the threshold check (e.g., every hour or every day).
     
@@ -149,7 +177,4 @@ public class AuthCounter {
         System.out.println("--------------------------");  // End line
     }
 
-    public static Map<String, TooMany2035sIssue> getActiveIssues() {
-        return activeType2Issues;
-    }
 }

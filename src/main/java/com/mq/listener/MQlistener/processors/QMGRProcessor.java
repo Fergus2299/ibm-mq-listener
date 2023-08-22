@@ -7,7 +7,8 @@ import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.headers.pcf.MQCFH;
 import com.ibm.mq.headers.pcf.PCFException;
 import com.ibm.mq.headers.pcf.PCFMessage;
-import com.mq.listener.MQlistener.issue_makers.AuthCounter;
+import com.mq.listener.MQlistener.issue_makers.QMGRCounter;
+import com.mq.listener.MQlistener.parsers.PCFParser;
 
 public class QMGRProcessor {
     private static final Logger log = LoggerFactory.getLogger(QMGRProcessor.class);
@@ -26,7 +27,7 @@ public class QMGRProcessor {
 	                break;
 	            case 2085:
 	                System.out.println("Received QMGR EVENT with a 2085 error!");
-//	                System.out.println(pcfMsg);
+	                process2085Message(pcfMsg);
 	                break;
 	        	default:
 	            	System.out.println("Recieved QMGR EVENT which was not a 2035!");
@@ -71,7 +72,7 @@ public class QMGRProcessor {
 	            if (pcfMsg.getStringParameterValue(MQConstants.MQCACF_CSP_USER_IDENTIFIER) != null) {
 	            	CSPUserId = pcfMsg.getStringParameterValue(MQConstants.MQCACF_CSP_USER_IDENTIFIER).trim();
 	            } else {CSPUserId = "";}
-	            AuthCounter.countType1Error(userId, appName, channelName, connName, CSPUserId);
+	            QMGRCounter.countType1AuthError(userId, appName, channelName, connName, CSPUserId);
     			break;
     		// type 2: open not auth
     		case "MQRQ_OPEN_NOT_AUTHORIZED":
@@ -84,7 +85,7 @@ public class QMGRProcessor {
 	            } else {QName = "";}
 	            
 	            if (QName != "") {
-	            	AuthCounter.countType2Error(userId, appName, QName);
+	            	QMGRCounter.countType2AuthError(userId, appName, QName);
 	            } else {
 	            	System.out.println("2035 type 2 had no queue associated with it!");
 	            }
@@ -104,11 +105,35 @@ public class QMGRProcessor {
     		default:
     			System.out.println("Recieved 2035 error of unknown origin!");
             	break;
-    			
     	}
-    	
-    	
     }
-
+    private static void process2085Message(PCFMessage pcfMsg) throws PCFException {
+    	
+    	// The 2085 means some MQOPEN or PUT1 command was unsuccessful due to trying to 
+    	// access an object which doesn't exist. more info: https://www.ibm.com/docs/en/ibm-mq/9.3?topic=descriptions-unknown-object-name
+    	String appName;
+    	String connName;
+    	String channelName;
+    	String QName;
+    	
+        appName = pcfMsg.getStringParameterValue(MQConstants.MQCACF_APPL_NAME).trim();
+        if (pcfMsg.getStringParameterValue(MQConstants.MQCACH_CONNECTION_NAME) != null) {
+            connName = pcfMsg.getStringParameterValue(MQConstants.MQCACH_CONNECTION_NAME).trim();
+        } else {connName = "";}
+        if (pcfMsg.getStringParameterValue(MQConstants.MQCACH_CHANNEL_NAME) != null) {
+            channelName = pcfMsg.getStringParameterValue(MQConstants.MQCACH_CHANNEL_NAME).trim();
+        } else {channelName = "";}
+        if (pcfMsg.getStringParameterValue(MQConstants.MQCA_Q_NAME) != null) {
+            QName = pcfMsg.getStringParameterValue(MQConstants.MQCA_Q_NAME).trim();
+        } else {QName = "";}
+        
+        // there are cases where a user might try and put to a topic (not a queue)
+        // for now our app is ignoring this case. - This could be a future development
+        if (QName != "") {
+        	QMGRCounter.countUnknownObjectError(appName, connName, channelName, QName);
+        } else {
+        	System.out.println("2035 type 2 had no queue associated with it!");
+        }
+    }
 
 }
