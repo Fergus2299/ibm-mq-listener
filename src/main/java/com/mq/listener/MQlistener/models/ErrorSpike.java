@@ -27,7 +27,6 @@ public class ErrorSpike extends Issue {
             this.technicalDetails += ", ";
         }
         this.technicalDetails += detailsHashMap.toString();
-    
     }
 
     public void printIssueDetails() {

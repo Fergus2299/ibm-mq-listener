@@ -3,6 +3,8 @@ package com.mq.listener.MQlistener.models;
 public class AccountingData {
 
     private String userIdentifier;
+    private String appName;
+    private String connName;
     private String startDate;
     private String startTime;
     private String endDate;
@@ -80,24 +82,39 @@ public class AccountingData {
 		this.getsFailed = getsFailed;
 	}
     
-    // a method for console logging the object
-    @Override
-    public String toString() {
-        return "AccountingData{" +
-                "userIdentifier='" + userIdentifier + '\'' +
-                ", startDate='" + startDate + '\'' +
-                ", startTime='" + startTime + '\'' +
-                ", endDate='" + endDate + '\'' +
-                ", endTime='" + endTime + '\'' +
-                ", puts=" + puts +
-                ", putsFailed=" + putsFailed +
-                ", put1s=" + put1s +
-                ", put1sFailed=" + put1sFailed +
-                ", gets=" + gets +
-                ", getsFailed=" + getsFailed +
-                '}';
-    }
-    
-    
-
+    public String getAppName() {
+		return appName;
+	}
+	public void setAppName(String setAppName) {
+		this.appName = setAppName;
+	}
+	public String getConnName() {
+		return connName;
+	}
+	public void setConnName(String connName) {
+		this.connName = connName;
+	}
+	// a method for console logging the object
+	@Override
+	public String toString() {
+	    return "AccountingData{" +
+	            "userIdentifier='" + userIdentifier + '\'' +
+	            ", setAppName='" + appName + '\'' +
+	            ", connName='" + connName + '\'' +
+	            ", startDate='" + startDate + '\'' +
+	            ", startTime='" + startTime + '\'' +
+	            ", endDate='" + endDate + '\'' +
+	            ", endTime='" + endTime + '\'' +
+	            ", puts=" + puts +
+	            ", putsFailed=" + putsFailed +
+	            ", put1s=" + put1s +
+	            ", put1sFailed=" + put1sFailed +
+	            ", gets=" + gets +
+	            ", getsFailed=" + getsFailed +
+	            '}';
+	}
 }
+
+
+
+
