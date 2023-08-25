@@ -10,8 +10,6 @@ import com.mq.listener.MQlistener.parsers.PCFParser;
 public class AccountingProcessor {
     static public void processAccountingMessage(PCFMessage pcfMsg) {
 	try {
-		// for now we're just sending this to a file
-        String parsedPCF = PCFParser.toPcfMessageJson(pcfMsg);
         // check what command it is
 		MQCFH cfh = pcfMsg.getHeader();
         int command = cfh.getCommand();
@@ -22,10 +20,7 @@ public class AccountingProcessor {
                 
                 // Note: we are assuming a model of only applications which put and get
                 // in reality the landscape of MQ is richer and there can be other calls e.g. MQIAMO_TOPIC_PUTS
-            	
-	            // get the necessary data in one method
-            	PCFParser.parsePCFMessage(pcfMsg);
-            	
+            	            	
 	            // creating the AccoutingData object
 	            AccountingData data = extractAccountingData(pcfMsg);
 //    	            System.out.println(data.toString());

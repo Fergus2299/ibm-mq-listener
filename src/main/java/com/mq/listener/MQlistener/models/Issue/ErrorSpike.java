@@ -1,7 +1,9 @@
-package com.mq.listener.MQlistener.models;
+package com.mq.listener.MQlistener.models.Issue;
 
 
 import java.util.Map;
+
+import com.mq.listener.MQlistener.models.Errors.ErrorDetails;
 
 import TimeFormatter.TimeFormatter;
 
@@ -28,22 +30,6 @@ public class ErrorSpike extends Issue {
         }
         this.technicalDetails += detailsHashMap.toString();
     }
-
-    public void printIssueDetails() {
-        System.out.println("----------- Issue Details -----------");
-        System.out.println("Issue Code: " + this.issueCode);
-        System.out.println("Start Timestamp: " + this.startTimeStamp);
-        
-        if(this.endTimestamp != null) { // Print the end timestamp if it exists
-            System.out.println("End Timestamp: " + this.endTimestamp);
-        }
-        
-        System.out.println("MQ Object Type: " + this.MQObjectType);
-        System.out.println("MQ Object Name: " + this.MQObjectName);
-        
-        System.out.println("General Description: " + this.generalDesc);
-        System.out.println("Technical Details:" + this.technicalDetails);
-        }
 
     
     @Override

@@ -1,4 +1,4 @@
-package com.mq.listener.MQlistener.models;
+package com.mq.listener.MQlistener.models.Errors;
 
 import java.util.Map;
 
@@ -74,9 +74,4 @@ public class Auth1ErrorDetails extends AuthErrorDetails {
         this.connName = "";
         this.CSPUserId = "";
     }
-
-
-
-    
-    
 }

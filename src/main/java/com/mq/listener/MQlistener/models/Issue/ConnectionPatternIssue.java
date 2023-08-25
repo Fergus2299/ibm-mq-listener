@@ -1,17 +1,16 @@
-package com.mq.listener.MQlistener.models;
+package com.mq.listener.MQlistener.models.Issue;
 
 
 import TimeFormatter.TimeFormatter;
 
 
 public class ConnectionPatternIssue extends Issue {
-	    public ConnectionPatternIssue(int connectionCount, double putGetCount, String userId) {
+	    public ConnectionPatternIssue(int connectionCount,String generalDescription, double putGetCount, String userId) {
 	        this.issueCode = "Missconfigured_Connection_Pattern";
 	        this.startTimeStamp = TimeFormatter.formatNow();
-	        this.endTimestamp = null;
-	        this.generalDesc = "";
+	        this.generalDesc = generalDescription;
 	        this.technicalDetails = 
-	        		"{\"connectionCount\": " 
+	        		"{\"connectionCount\": "
 			        + connectionCount 
 			        + ", \"putGetCount\": " 
 			        + putGetCount + "}";
@@ -23,5 +22,6 @@ public class ConnectionPatternIssue extends Issue {
 	    // TODO: add addWindowData function
 	    
 	    
+
 	    
 }

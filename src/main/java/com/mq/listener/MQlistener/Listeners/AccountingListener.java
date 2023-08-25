@@ -39,8 +39,4 @@ public class AccountingListener {
             log.warn("Received non-bytes message: {}", receivedMessage);
         }
     }
-    
-
-    
-
 }

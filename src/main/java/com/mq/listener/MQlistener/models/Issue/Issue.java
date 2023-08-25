@@ -1,4 +1,4 @@
-package com.mq.listener.MQlistener.models;
+package com.mq.listener.MQlistener.models.Issue;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -10,7 +10,6 @@ import TimeFormatter.TimeFormatter;
 public abstract class Issue {
     protected String issueCode;
     protected String startTimeStamp;
-    protected String endTimestamp; // this could be null if the issue has not ended
     protected String generalDesc;
     protected String technicalDetails;
     protected String MQObjectType; // in {queue, channel, app, queueManager}
@@ -32,12 +31,7 @@ public abstract class Issue {
 	public void setStartTimeStamp(String startTimeStamp) {
 		this.startTimeStamp = startTimeStamp;
 	}
-	public String getEndTimestamp() {
-		return endTimestamp;
-	}
-	public void setEndTimestamp(String endTimestamp) {
-		this.endTimestamp = endTimestamp;
-	}
+
 	public String getGeneralDesc() {
 		return generalDesc;
 	}
@@ -62,9 +56,21 @@ public abstract class Issue {
 	public void setMQObjectName(String mQObjectName) {
 		MQObjectName = mQObjectName;
 	}
-	// 
+	
+    public void printIssueDetails() {
+        System.out.println("----------- Issue Details -----------");
+        System.out.println("Issue Code: " + this.issueCode);
+        System.out.println("Start Timestamp: " + this.startTimeStamp);
+        
+
+        
+        System.out.println("MQ Object Type: " + this.MQObjectType);
+        System.out.println("MQ Object Name: " + this.MQObjectName);
+        System.out.println("General Description: " + this.generalDesc);
+        System.out.println("Technical Details: " + this.technicalDetails);
+    }
+	
     public void closeIssue() {
-        this.endTimestamp = TimeFormatter.formatNow();
     }
 
 }
