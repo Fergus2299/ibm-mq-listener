@@ -16,9 +16,6 @@ public abstract class Issue {
     protected String MQObjectName;
     
 
-
-    
-    
     public String getIssueCode() {
 		return issueCode;
 	}
@@ -50,8 +47,6 @@ public abstract class Issue {
 	public void setMQObjectName(String mQObjectName) {
 		MQObjectName = mQObjectName;
 	}
-	
-	
     public Map<String, Object> getTechnicalDetails() {
 		return technicalDetails;
 	}
@@ -76,7 +71,5 @@ public abstract class Issue {
 	        }
 	    }
 	}
-	
-
 
 }

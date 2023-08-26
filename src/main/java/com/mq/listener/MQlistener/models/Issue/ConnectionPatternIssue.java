@@ -16,8 +16,5 @@ public class ConnectionPatternIssue extends Issue {
 	    }
 	    
 	    // TODO: add addWindowData function
-	    
-	    
 
-	    
 }

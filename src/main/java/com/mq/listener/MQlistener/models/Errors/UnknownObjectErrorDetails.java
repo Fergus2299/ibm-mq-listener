@@ -12,8 +12,8 @@ public class UnknownObjectErrorDetails extends ErrorDetails {
     public UnknownObjectErrorDetails(
     		int count, 
     		String appName,
-    		String connName, 
-    		String channelName, 
+    		String connName,
+    		String channelName,
     		String QName) {
         super(count, appName);
         this.connName = connName;

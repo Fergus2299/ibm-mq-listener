@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Service
 public class IssueAggregatorService {
     private static final Map<String, Object> aggregatedIssues = new HashMap<>();
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-    public static void sendIssues(String type, Object issues) throws Exception {
+    private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());    public static void sendIssues(String type, Object issues) throws Exception {
         // Update the aggregated issues map based on type
         aggregatedIssues.put(type, issues);
         

@@ -12,7 +12,7 @@ public class Auth1ErrorDetails extends AuthErrorDetails {
     private String CSPUserId;
 
     public Auth1ErrorDetails(
-    		int count, 
+    		int count,
     		String userId, 
     		String appName,
     		String channelName, 

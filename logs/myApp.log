@@ -682,3 +682,110 @@ c902000027000000050000001c000000ca0200000300000005000000000000000000000005000000
 2023-08-26 18:53:06,469 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 243.0 per minute, ConnRate = 0.0 per minute
 2023-08-26 18:53:06,525 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 8
 2023-08-26 18:53:15,346 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 24.0
+2023-08-27 00:17:41,490 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 17311 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-27 00:17:41,494 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-27 00:17:42,189 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-27 00:17:42,194 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-27 00:17:42,196 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-27 00:17:42,196 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-27 00:17:42,273 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-27 00:17:42,274 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 736 ms
+2023-08-27 00:17:42,845 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-27 00:17:42,861 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-27 00:17:43,175 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.933 seconds (process running for 2.42)
+2023-08-27 00:17:51,151 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 340.5 per minute, ConnRate = 0.0 per minute
+2023-08-27 00:17:51,153 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: "<QMGR>"
+2023-08-27 00:17:51,213 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 339.0 per minute, ConnRate = 0.0 per minute
+2023-08-27 00:17:51,213 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: "<QMGR>"
+2023-08-27 00:17:51,429 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 340.5 per minute, ConnRate = 0.0 per minute
+2023-08-27 00:17:51,429 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: "<QMGR>"
+2023-08-27 00:17:51,514 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 340.5 per minute, ConnRate = 0.0 per minute
+2023-08-27 00:17:51,514 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: "<QMGR>"
+2023-08-27 00:17:51,777 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 336.0 per minute, ConnRate = 0.0 per minute
+2023-08-27 00:17:51,777 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: "<QMGR>"
+2023-08-27 00:17:51,861 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 340.5 per minute, ConnRate = 0.0 per minute
+2023-08-27 00:17:51,861 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: "<QMGR>"
+2023-08-27 00:17:52,855 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 340.5 per minute, ConnRate = 0.0 per minute
+2023-08-27 00:17:52,855 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: "<QMGR>"
+2023-08-27 00:17:52,919 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 340.5 per minute, ConnRate = 0.0 per minute
+2023-08-27 00:17:52,919 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: "<QMGR>"
+2023-08-27 00:17:54,480 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 358.5 per minute, ConnRate = 0.0 per minute
+2023-08-27 00:17:54,480 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: "<QMGR>"
+2023-08-27 00:18:00,784 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 17404 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-27 00:18:00,787 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-27 00:18:01,425 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-27 00:18:01,430 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-27 00:18:01,432 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-27 00:18:01,432 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-27 00:18:01,506 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-27 00:18:01,507 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 670 ms
+2023-08-27 00:18:02,172 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-27 00:18:02,194 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-27 00:18:02,593 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.982 seconds (process running for 2.315)
+2023-08-27 00:18:26,689 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 552.0 per minute, ConnRate = 0.0 per minute
+2023-08-27 00:18:26,691 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: "<QMGR>"
+2023-08-27 00:22:52,606 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 18290 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-27 00:22:52,609 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-27 00:22:53,258 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-27 00:22:53,263 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-27 00:22:53,264 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-27 00:22:53,264 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-27 00:22:53,328 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-27 00:22:53,329 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 681 ms
+2023-08-27 00:22:53,847 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-27 00:22:53,863 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-27 00:22:54,268 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.843 seconds (process running for 2.168)
+2023-08-27 00:22:54,749 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 172.5 per minute, ConnRate = 0.0 per minute
+2023-08-27 00:22:54,750 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: "<QMGR>"
+2023-08-27 00:22:54,777 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in PUT activity detected for queue DEV.QUEUE.2: Rate = 150.0 per minute
+2023-08-27 00:22:54,777 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: DEV.QUEUE.2
+2023-08-27 00:23:06,778 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in PUT activity detected for queue DEV.QUEUE.2: Rate = 39.0 per minute
+2023-08-27 00:23:06,779 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: DEV.QUEUE.2
+2023-08-27 00:23:46,759 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 123.0 per minute, ConnRate = 0.0 per minute
+2023-08-27 00:23:46,760 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: "<QMGR>"
+2023-08-27 00:23:46,833 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in PUT activity detected for queue DEV.QUEUE.2: Rate = 111.0 per minute
+2023-08-27 00:23:46,834 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: DEV.QUEUE.2
+2023-08-27 00:24:26,794 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 162.0 per minute, ConnRate = 0.0 per minute
+2023-08-27 00:24:26,794 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: "<QMGR>"
+2023-08-27 00:24:26,821 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in PUT activity detected for queue DEV.QUEUE.2: Rate = 150.0 per minute
+2023-08-27 00:24:26,821 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: DEV.QUEUE.2
+2023-08-27 00:25:46,668 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 381.0 per minute, ConnRate = 0.0 per minute
+2023-08-27 00:25:46,669 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: "<QMGR>"
+2023-08-27 00:25:46,693 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in PUT activity detected for queue DEV.QUEUE.1: Rate = 75.0 per minute
+2023-08-27 00:25:46,694 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: DEV.QUEUE.1
+2023-08-27 00:26:50,457 [org.springframework.jms.JmsListenerEndpointContainer#0-1] WARN  o.s.j.l.DefaultMessageListenerContainer - Rejecting received message because of the listener container having been stopped in the meantime: 
+  JMSMessage class: jms_bytes
+  JMSType:          null
+  JMSDeliveryMode:  1
+  JMSDeliveryDelay: 0
+  JMSDeliveryTime:  0
+  JMSExpiration:    0
+  JMSPriority:      0
+  JMSMessageID:     ID:414d5120514d3120202020202020202038c9d06402630a40
+  JMSTimestamp:     1693092410380
+  JMSCorrelationID: ID:414d5143514d3120202020202020202038c9d06400630a40
+  JMSDestination:   null
+  JMSReplyTo:       null
+  JMSRedelivered:   false
+    JMSXAppID: QM1                         
+    JMSXDeliveryCount: 1
+    JMSXUserID:             
+    JMS_IBM_Character_Set: ISO-8859-1
+    JMS_IBM_Encoding: 546
+    JMS_IBM_Format: MQADMIN 
+    JMS_IBM_MsgType: 8
+    JMS_IBM_PutApplType: 7
+    JMS_IBM_PutDate: 20230826
+    JMS_IBM_PutTime: 23265038
+160000002400000003000000a7000000010000000100000000000000000000003b00000004000000
+44000000df0700000000000030000000514d31202020202020202020202020202020202020202020
+2020202020202020202020202020202020202020202020200400000020000000970a000000000000
+0a000000323032332d30382d32362020040000001c000000980a0000000000000800000032332e32
+342e35360400000020000000930a0000000000000a000000323032332d30382d3236232a04000000
+1c000000940a0000000000000800000032332e32362e353003000000100000001f000000a5030000
+09000000280000005e1b000018000000414d5143514d3120202020202020202038c9d06400630a40
+030000001000000037040000010000000400000030000000d00b0000000000001c0000004d714c69
+7374656e65724170706c69636174696f6e2020202020202003000000100000000004000014030000
+030000001000000001040000901300000400000020000000d10b0000000000000c0000006d716d20
+...
+

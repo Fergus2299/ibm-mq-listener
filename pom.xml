@@ -54,6 +54,13 @@
 		    <artifactId>jackson-databind</artifactId>
 		</dependency>
 		
+		<!-- to have date time in json-->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.datatype</groupId>
+		    <artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+
+		
 		<!--don't need slf4j because it's included in this -->
 		<dependency>
 		    <groupId>ch.qos.logback</groupId>

@@ -249,7 +249,7 @@ public class StatisticsProcessor {
         Map.Entry<LocalTime, LocalTime> timeKey = new AbstractMap.SimpleEntry<>(startTimeFormatted, endTimeFormatted);
         QMTimeSeriesStats.put(timeKey, statsForQM);
         printTimeSeriesStatsQueueManager();
-        checkQueueManagerActivity(startTimeFormatted, endTimeFormatted, statsForQM);
+        checkQueueManagerActivity(timeKey, statsForQM);
         
     }
     
@@ -292,8 +292,9 @@ public class StatisticsProcessor {
             LocalTime endTimeFormatted = LocalTime.parse(endTime, formatter);
             
             // check whether there is a spike of activity for any of the queues
-            checkQueueActivity(startTimeFormatted,endTimeFormatted);
+            
             Map.Entry<LocalTime, LocalTime> timeKey = new AbstractMap.SimpleEntry<>(startTimeFormatted, endTimeFormatted);
+            checkQueueActivity(timeKey);
             
             // add to accumulator
             try {
@@ -342,9 +343,9 @@ public class StatisticsProcessor {
         });
     }
     
-    private static void checkQueueActivity(LocalTime startTimeFormatted, LocalTime endTimeFormatted) {
+    private static void checkQueueActivity(Map.Entry<LocalTime, LocalTime> timeKey) {
     	// so find rate per minute of put/gets and handle the logic
-        long intervalInSeconds = java.time.Duration.between(startTimeFormatted, endTimeFormatted).getSeconds();
+        long intervalInSeconds = java.time.Duration.between(timeKey.getKey(), timeKey.getValue()).getSeconds();
         if (intervalInSeconds <= 0) {
             log.warn("Invalid time interval.");
             return;
@@ -359,19 +360,21 @@ public class StatisticsProcessor {
             		+ stats.getOrDefault("GETS_FAILED", 0);
             double requestRatePerMinute = (60.0 * requests) / intervalInSeconds;
             if (requestRatePerMinute > QUEUE_SPIKE_OF_ACTIVITY_THRESHOLD) {
-                log.warn("Spike in PUT activity detected for queue {}: Rate = {} per minute", queueName, requestRatePerMinute);
-                if (!issueObjectMap.containsKey(queueName)) {
-                	ActivitySpike issue = new ActivitySpike("<QUEUE>", queueName);
-                    issueObjectMap.put(queueName, issue);
-                    log.info("New issue detected and added for queue: {}", queueName);
-                }
+	                log.warn("Spike in PUT activity detected for queue {}: Rate = {} per minute", queueName, requestRatePerMinute);
+	                ActivitySpike issue = issueObjectMap.getOrDefault(queueName, new ActivitySpike("<QUEUE>", queueName));
+	            	Map<String, String> detailsHashMap = new HashMap<>();
+	            	detailsHashMap.put("requestRate", Double.toString(requestRatePerMinute));
+	            	issue.addWindowData(detailsHashMap, timeKey);
+	                issueObjectMap.put(queueName, issue);
+	                log.info("New issue detected and added for queue: {}", queueName);
+                
                 // TODO: else we can add window data
             }
        }
     }
-    private static void checkQueueManagerActivity(LocalTime startTimeFormatted, LocalTime endTimeFormatted, Map<String, Integer> stats) {
+    private static void checkQueueManagerActivity( Map.Entry<LocalTime, LocalTime> timeKey, Map<String, Integer> stats) {
     	// so find rate per minute of put/gets and handle the logic
-        long intervalInSeconds = java.time.Duration.between(startTimeFormatted, endTimeFormatted).getSeconds();
+        long intervalInSeconds = java.time.Duration.between(timeKey.getKey(), timeKey.getValue()).getSeconds();
         if (intervalInSeconds <= 0) {
             log.warn("Invalid time interval.");
             return;
@@ -386,12 +389,17 @@ public class StatisticsProcessor {
         if (requestRatePerMinute > QM_SPIKE_OF_ACTIVITY_THRESHOLD || connsRatePerMinute > QM_MAX_CONNS) {
             log.warn("Spike in activity detected for QMGR: PutGetRate = {} per minute, ConnRate = {} per minute", 
             		requestRatePerMinute, connsRatePerMinute);
-            if (!issueObjectMap.containsKey("<QMGR>")) {
-            	ActivitySpike issue = new ActivitySpike("<QMGR>", "<QMGR>");
-                issueObjectMap.put("<QMGR>", issue);
-                log.info("New issue detected and added for queue: \"<QMGR>\"");
-            }
+        	ActivitySpike issue = issueObjectMap.getOrDefault("<QMGR>", new ActivitySpike("<QMGR>", "<QMGR>"));
+        	Map<String, String> detailsHashMap = new HashMap<>();
+        	detailsHashMap.put("requestRate", Double.toString(requestRatePerMinute));
+        	detailsHashMap.put("connRate", Double.toString(connsRatePerMinute));
+        	issue.addWindowData(detailsHashMap, timeKey);
+        	
+            issueObjectMap.put("<QMGR>", issue);
+            log.info("New issue detected and added for queue: \"<QMGR>\"");
+            
             // TODO: else we can add window data
+            
         }
       
     }
