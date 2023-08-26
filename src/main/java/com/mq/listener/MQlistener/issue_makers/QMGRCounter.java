@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -14,12 +16,16 @@ import com.mq.listener.MQlistener.models.Errors.AuthErrorDetails;
 import com.mq.listener.MQlistener.models.Errors.ErrorDetails;
 import com.mq.listener.MQlistener.models.Errors.UnknownObjectErrorDetails;
 import com.mq.listener.MQlistener.models.Issue.ErrorSpike;
+import com.mq.listener.MQlistener.processors.QMGRProcessor;
 import com.mq.listener.MQlistener.utils.ConsoleLogger;
 import com.mq.listener.MQlistener.utils.IssueAggregatorService;
 import com.mq.listener.MQlistener.utils.JsonUtil;
 
 @Component
 public class QMGRCounter {
+    private static final Logger log = LoggerFactory.getLogger(QMGRCounter.class);
+
+	
     private static final double ERRORS_PER_MINUTE_THRESHOLD = 10; // Threshold for errors per minute
     private static final long WINDOW_DURATION_MILLIS = 20 * 1000; // 10 seconds window
     private static final long MILLIS_IN_MINUTE = 60 * 1000; // 60 seconds * 1000 milliseconds/second
@@ -42,6 +48,7 @@ public class QMGRCounter {
     			"<QMGR - Auth>", 
     			new Auth1ErrorDetails(0, userId, appName,channelName,connName,CSPUserId));
     	currentDetails.incrementCount();
+    	log.info("\"<QMGR - Auth>\" incremented to: " + currentDetails.getCount());
     	tempCounts.put("<QMGR - Auth>", currentDetails);
     	}
     
@@ -50,6 +57,7 @@ public class QMGRCounter {
 //        startTimestamps.putIfAbsent(queueName, System.currentTimeMillis());
         ErrorDetails currentDetails = tempCounts.getOrDefault(queueName, new AuthErrorDetails(0, userId, appName));
         currentDetails.incrementCount();
+        log.info(queueName + " incremented to: " + currentDetails.getCount());
         tempCounts.put(queueName, currentDetails);
     }
     
@@ -59,6 +67,7 @@ public class QMGRCounter {
     			"<QMGR - UnknownObject>", 
     			new UnknownObjectErrorDetails(0, appName, connName,channelName,queueName));
     	currentDetails.incrementCount();
+    	log.info("\"<QMGR - UnknownObject>\" incremented to: " + currentDetails.getCount());
     	tempCounts.put("<QMGR - UnknownObject>", currentDetails);
     	}
     
@@ -89,6 +98,7 @@ public class QMGRCounter {
             if (rate > ERRORS_PER_MINUTE_THRESHOLD) {
             	// get or create issue for this queue or whole queue manager
             	ErrorSpike issue;
+            	log.info("ErrorSpike issue for the queue manager, object: " + mqObject + ". Rate of error is: " + rate);
             	if (mqObject == "<QMGR - Auth>") {
             		issue = issueObjectMap.getOrDefault(mqObject, new ErrorSpike("Too_Many_2035s","<QMGR>","<QMGR>"));
             		
@@ -103,32 +113,20 @@ public class QMGRCounter {
                 issue.addWindowData(errorInfo, rate);
                 // we re-put into active issues
                 issueObjectMap.put(mqObject, issue);
-            } else {
-            	// if the issue exists and has gone below the threshold then we can close the issue
-                ErrorSpike issue = issueObjectMap.get(mqObject);
-                if (issue != null) {
-                    System.out.println("Deleting Issue");
-                    issueObjectMap.remove(mqObject);
-                }
             }
-            
             if (issueObjectMap.containsKey(mqObject)) {
                 objectsWithIssues.add(mqObject);
-            } else {
-                objectsWithIssues.remove(mqObject);
-            }
+            } 
         }
-        
-        
         // sending to the accumulator
         try {
-        	aggregatorService.sendIssues("ErrorSpikeIssues", issueObjectMap);
+        	IssueAggregatorService.sendIssues("ErrorSpikeIssues", issueObjectMap);
         } catch (Exception e) {
             System.err.println("Failed to send issues to aggregator: " + e.getMessage());
         }
         
 
-        ConsoleLogger.printQueueCurrentIssues(issueObjectMap, "Error Rates");
+//        ConsoleLogger.printQueueCurrentIssues(issueObjectMap, "Error Rates");
         // Clear only queues without active issues
         tempCounts.keySet().removeAll(objectsWithIssues);
 

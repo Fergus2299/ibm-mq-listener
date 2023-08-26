@@ -11,6 +11,7 @@ import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.headers.pcf.MQCFH;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.mq.listener.MQlistener.models.Issue.QueueServiceHighIssue;
+import com.mq.listener.MQlistener.parsers.PCFParser;
 import com.mq.listener.MQlistener.utils.IssueAggregatorService;
 
 public class PerformanceProcessor {
@@ -44,7 +45,7 @@ public class PerformanceProcessor {
             	issueObjectMap.putIfAbsent(Q, issue);
                 // sending to the accumulator
                 try {
-                	aggregatorService.sendIssues("PerformanceIssues", issueObjectMap);
+                	IssueAggregatorService.sendIssues("PerformanceIssues", issueObjectMap);
                 } catch (Exception e) {
                     System.err.println("Failed to send issues to aggregator: " + e.getMessage());
                 }
@@ -57,7 +58,8 @@ public class PerformanceProcessor {
             }
 
     	} catch (Exception e) {
-    		log.error("Error processing PCF message", e);
+    		log.error("Error processing performance PCF message", e);
+    		PCFParser.parsePCFMessage(pcfMsg);
     	}
     }
     

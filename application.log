@@ -1,0 +1,5 @@
+2023-08-26 10:57:40,591 INFO [main] c.m.l.M.MqListenerApplication [StartupInfoLogger.java:51] Starting MqListenerApplication using Java 17.0.5 with PID 15668 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 10:57:40,594 INFO [main] c.m.l.M.MqListenerApplication [SpringApplication.java:634] No active profile set, falling back to 1 default profile: "default"
+2023-08-26 10:57:41,216 INFO [main] o.s.b.w.e.t.TomcatWebServer [TomcatWebServer.java:108] Tomcat initialized with port 8080 (http)
+2023-08-26 10:57:41,221 INFO [main] o.a.c.h.Http11NioProtocol [DirectJDKLog.java:173] Initializing ProtocolHandler ["http-nio-8080"]
+

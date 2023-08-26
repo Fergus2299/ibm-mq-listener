@@ -5,7 +5,8 @@ import java.util.Map;
 import com.mq.listener.MQlistener.models.Issue.Issue;
 
 public class ConsoleLogger {
-    // Print current issues to the console for a datastructure which has {mqobjects: issues}
+    // Print current issues to the console for a datastructure which has {mqobjects: issues} structure
+	// useful for debugging but will likely be replaced with log files for final product
 	public static void printQueueCurrentIssues(Map<String, ? extends Issue> issueObjectMap, String title) {
 	    System.out.println("---- " + title + " ----");
 	    if (issueObjectMap.isEmpty()) {

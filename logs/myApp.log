@@ -1,0 +1,336 @@
+2023-08-26 12:13:09,068 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 19010 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 12:13:09,070 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 12:13:09,601 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 12:13:09,605 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:13:09,607 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 12:13:09,607 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 12:13:09,664 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 12:13:09,665 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 561 ms
+2023-08-26 12:13:10,172 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:13:10,196 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 12:13:10,455 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.554 seconds (process running for 1.87)
+2023-08-26 12:17:40,195 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 19358 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 12:17:40,198 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 12:17:40,748 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 12:17:40,753 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:17:40,754 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 12:17:40,754 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 12:17:40,813 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 12:17:40,814 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 575 ms
+2023-08-26 12:17:41,364 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:17:41,388 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 12:17:41,626 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.598 seconds (process running for 1.929)
+2023-08-26 12:18:42,211 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 19557 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 12:18:42,214 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 12:18:42,776 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 12:18:42,782 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:18:42,784 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 12:18:42,784 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 12:18:42,848 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 12:18:42,849 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 596 ms
+2023-08-26 12:18:43,306 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:18:43,323 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 12:18:43,597 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.595 seconds (process running for 1.905)
+2023-08-26 12:20:05,689 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 19667 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 12:20:05,693 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 12:20:06,282 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 12:20:06,287 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:20:06,289 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 12:20:06,289 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 12:20:06,351 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 12:20:06,352 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 625 ms
+2023-08-26 12:20:06,810 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:20:06,827 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 12:20:07,053 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.538 seconds (process running for 1.864)
+2023-08-26 12:22:17,724 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in PUT activity detected for queue DEV.QUEUE.2: Rate = 20.0 per minute
+2023-08-26 12:22:17,728 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: DEV.QUEUE.2
+2023-08-26 12:41:24,414 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 21133 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 12:41:24,417 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 12:41:24,990 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 12:41:24,996 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:41:24,998 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 12:41:24,998 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 12:41:25,058 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 12:41:25,059 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 599 ms
+2023-08-26 12:41:25,591 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:41:25,613 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 12:41:25,842 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.596 seconds (process running for 1.911)
+2023-08-26 12:50:14,027 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 21796 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 12:50:14,030 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 12:50:14,586 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 12:50:14,591 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:50:14,593 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 12:50:14,594 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 12:50:14,653 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 12:50:14,654 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 594 ms
+2023-08-26 12:50:15,186 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:50:15,205 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 12:50:15,436 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.579 seconds (process running for 1.883)
+2023-08-26 12:51:10,880 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 21910 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 12:51:10,883 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 12:51:11,451 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 12:51:11,456 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:51:11,457 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 12:51:11,458 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 12:51:11,516 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 12:51:11,517 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 589 ms
+2023-08-26 12:51:11,974 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:51:11,997 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 12:51:12,242 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.525 seconds (process running for 1.843)
+2023-08-26 12:53:17,971 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 22149 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 12:53:17,973 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 12:53:18,519 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 12:53:18,524 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:53:18,526 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 12:53:18,526 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 12:53:18,595 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 12:53:18,598 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 593 ms
+2023-08-26 12:53:19,068 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:53:19,085 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 12:53:19,318 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.526 seconds (process running for 1.848)
+2023-08-26 12:54:15,915 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 22266 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 12:54:15,918 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 12:54:16,471 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 12:54:16,476 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:54:16,477 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 12:54:16,478 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 12:54:16,537 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 12:54:16,538 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 589 ms
+2023-08-26 12:54:17,070 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 12:54:17,091 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 12:54:17,348 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.603 seconds (process running for 1.92)
+2023-08-26 14:07:39,205 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 24759 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 14:07:39,207 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 14:07:39,772 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 14:07:39,777 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 14:07:39,778 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 14:07:39,779 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 14:07:39,849 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 14:07:39,849 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 608 ms
+2023-08-26 14:07:40,273 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 14:07:40,288 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 14:07:40,556 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.522 seconds (process running for 1.85)
+2023-08-26 14:15:08,944 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 25172 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 14:15:08,946 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 14:15:09,497 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 14:15:09,502 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 14:15:09,503 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 14:15:09,503 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 14:15:09,572 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 14:15:09,573 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 593 ms
+2023-08-26 14:15:10,108 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 14:15:10,119 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 14:15:10,485 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.716 seconds (process running for 2.046)
+2023-08-26 14:16:52,651 [org.springframework.jms.JmsListenerEndpointContainer#0-1] WARN  o.s.j.l.DefaultMessageListenerContainer - Rejecting received message because of the listener container having been stopped in the meantime: 
+  JMSMessage class: jms_bytes
+  JMSType:          null
+  JMSDeliveryMode:  1
+  JMSDeliveryDelay: 0
+  JMSDeliveryTime:  0
+  JMSExpiration:    0
+  JMSPriority:      0
+  JMSMessageID:     ID:414d5120514d3120202020202020202038c9d064010a0a40
+  JMSTimestamp:     1693055812620
+  JMSCorrelationID: ID:414d5143514d3120202020202020202038c9d064000a0a40
+  JMSDestination:   null
+  JMSReplyTo:       null
+  JMSRedelivered:   false
+    JMSXAppID: QM1                         
+    JMSXDeliveryCount: 1
+    JMSXUserID:             
+    JMS_IBM_Character_Set: ISO-8859-1
+    JMS_IBM_Encoding: 546
+    JMS_IBM_Format: MQADMIN 
+    JMS_IBM_MsgType: 8
+    JMS_IBM_PutApplType: 7
+    JMS_IBM_PutDate: 20230826
+    JMS_IBM_PutTime: 13165262
+160000002400000003000000a7000000010000000100000000000000000000003b00000004000000
+44000000df0700000000000030000000514d31202020202020202020202020202020202020202020
+2020202020202020202020202020202020202020202020200400000020000000970a000000000000
+0a000000323032332d30382d32365356040000001c000000980a0000000000000800000031332e31
+352e31300400000020000000930a0000000000000a000000323032332d30382d3236000004000000
+1c000000940a0000000000000800000031332e31362e353203000000100000001f000000a5030000
+09000000280000005e1b000018000000414d5143514d3120202020202020202038c9d064000a0a40
+030000001000000037040000000000000400000030000000d00b0000000000001c0000004d714c69
+7374656e65724170706c69636174696f6e2020202020202003000000100000000004000014030000
+0300000010000000010400002a1200000400000020000000d10b0000000000000c0000006d716d20
+...
+
+2023-08-26 14:43:31,092 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 27357 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 14:43:31,094 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 14:43:31,649 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 14:43:31,653 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 14:43:31,655 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 14:43:31,655 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 14:43:31,713 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 14:43:31,714 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 584 ms
+2023-08-26 14:43:32,273 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 14:43:32,290 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 14:43:32,559 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.644 seconds (process running for 1.953)
+2023-08-26 15:16:44,043 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 29988 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 15:16:44,045 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 15:16:44,587 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 15:16:44,592 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 15:16:44,593 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 15:16:44,593 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 15:16:44,654 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 15:16:44,655 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 579 ms
+2023-08-26 15:16:45,097 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 15:16:45,111 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 15:16:45,381 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.499 seconds (process running for 1.817)
+2023-08-26 15:16:51,148 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 30067 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 15:16:51,151 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 15:16:51,660 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 15:16:51,665 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 15:16:51,666 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 15:16:51,666 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 15:16:51,730 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 15:16:51,733 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 549 ms
+2023-08-26 15:16:52,135 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 15:16:52,148 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 15:16:52,400 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.419 seconds (process running for 1.734)
+2023-08-26 15:18:03,550 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 30199 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 15:18:03,553 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 15:18:04,132 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 15:18:04,136 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 15:18:04,137 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 15:18:04,138 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 15:18:04,199 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 15:18:04,200 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 608 ms
+2023-08-26 15:18:04,744 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 15:18:04,758 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 15:18:05,014 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.631 seconds (process running for 1.953)
+2023-08-26 15:21:14,851 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 30595 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 15:21:14,853 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 15:21:15,414 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 15:21:15,419 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 15:21:15,420 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 15:21:15,421 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 15:21:15,481 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 15:21:15,481 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 588 ms
+2023-08-26 15:21:16,007 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 15:21:16,020 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 15:21:16,260 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.581 seconds (process running for 1.896)
+2023-08-26 15:22:02,965 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 30714 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 15:22:02,968 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 15:22:03,541 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 15:22:03,546 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 15:22:03,547 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 15:22:03,547 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 15:22:03,606 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 15:22:03,607 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 598 ms
+2023-08-26 15:22:04,100 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 15:22:04,114 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 15:22:04,360 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.558 seconds (process running for 1.88)
+2023-08-26 15:27:10,008 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 31147 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 15:27:10,011 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 15:27:10,558 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 15:27:10,563 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 15:27:10,564 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 15:27:10,564 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 15:27:10,635 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 15:27:10,636 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 592 ms
+2023-08-26 15:27:11,040 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 15:27:11,054 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 15:27:11,313 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.482 seconds (process running for 1.797)
+2023-08-26 15:27:15,106 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 31225 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 15:27:15,109 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 15:27:15,651 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 15:27:15,655 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 15:27:15,657 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 15:27:15,657 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 15:27:15,716 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 15:27:15,717 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 573 ms
+2023-08-26 15:27:16,231 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 15:27:16,251 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 15:27:16,523 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.591 seconds (process running for 1.905)
+2023-08-26 15:27:46,333 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in PUT activity detected for queue DEV.QUEUE.2: Rate = 15.0 per minute
+2023-08-26 15:27:46,336 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: DEV.QUEUE.2
+2023-08-26 15:28:26,239 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in PUT activity detected for queue DEV.QUEUE.2: Rate = 150.0 per minute
+2023-08-26 15:28:26,239 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in PUT activity detected for queue DEV.QUEUE.1: Rate = 57.0 per minute
+2023-08-26 15:28:26,239 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: DEV.QUEUE.1
+2023-08-26 15:29:06,277 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in PUT activity detected for queue DEV.QUEUE.1: Rate = 18.0 per minute
+2023-08-26 15:44:39,654 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 32643 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 15:44:39,657 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 15:44:40,202 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 15:44:40,207 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 15:44:40,208 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 15:44:40,208 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 15:44:40,270 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 15:44:40,271 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 580 ms
+2023-08-26 15:44:40,833 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 15:44:40,854 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 15:44:41,123 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.641 seconds (process running for 1.954)
+2023-08-26 15:44:41,482 [org.springframework.jms.JmsListenerEndpointContainer#0-1] WARN  o.s.j.l.DefaultMessageListenerContainer - Rejecting received message because of the listener container having been stopped in the meantime: 
+  JMSMessage class: jms_bytes
+  JMSType:          null
+  JMSDeliveryMode:  1
+  JMSDeliveryDelay: 0
+  JMSDeliveryTime:  0
+  JMSExpiration:    0
+  JMSPriority:      0
+  JMSMessageID:     ID:414d5120514d3120202020202020202038c9d064052c0a40
+  JMSTimestamp:     1693060220070
+  JMSCorrelationID: ID:414d5143514d3120202020202020202038c9d064032c0a40
+  JMSDestination:   null
+  JMSReplyTo:       null
+  JMSRedelivered:   false
+    JMSXAppID: QM1                         
+    JMSXDeliveryCount: 1
+    JMSXUserID:             
+    JMS_IBM_Character_Set: ISO-8859-1
+    JMS_IBM_Encoding: 546
+    JMS_IBM_Format: MQADMIN 
+    JMS_IBM_MsgType: 8
+    JMS_IBM_PutApplType: 7
+    JMS_IBM_PutDate: 20230826
+    JMS_IBM_PutTime: 14302007
+160000002400000003000000a7000000010000000100000000000000000000003e00000004000000
+44000000df0700000000000030000000514d31202020202020202020202020202020202020202020
+2020202020202020202020202020202020202020202020200400000020000000970a000000000000
+0a000000323032332d30382d32362020040000001c000000980a0000000000000800000031342e32
+392e30360400000020000000930a0000000000000a000000323032332d30382d3236232a04000000
+1c000000940a0000000000000800000031342e33302e323003000000100000001f000000a5030000
+09000000280000005e1b000018000000414d5143514d3120202020202020202038c9d064032c0a40
+030000001000000037040000010000000400000030000000d00b0000000000001c0000004d714c69
+7374656e65724170706c69636174696f6e2020202020202003000000100000000004000014030000
+030000001000000001040000521200000400000020000000d10b0000000000000c0000006d716d20
+...
+
+2023-08-26 15:44:41,482 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  o.s.j.l.DefaultMessageListenerContainer - Rejecting received message because of the listener container having been stopped in the meantime: 
+  JMSMessage class: jms_bytes
+  JMSType:          null
+  JMSDeliveryMode:  1
+  JMSDeliveryDelay: 0
+  JMSDeliveryTime:  0
+  JMSExpiration:    0
+  JMSPriority:      0
+  JMSMessageID:     ID:414d5120514d3120202020202020202038c9d0643a130a40
+  JMSTimestamp:     1693060226190
+  JMSCorrelationID: null
+  JMSDestination:   null
+  JMSReplyTo:       null
+  JMSRedelivered:   false
+    JMSXAppID: QM1                         
+    JMSXDeliveryCount: 1
+    JMSXUserID:             
+    JMS_IBM_Character_Set: ISO-8859-1
+    JMS_IBM_Encoding: 546
+    JMS_IBM_Format: MQADMIN 
+    JMS_IBM_MsgType: 8
+    JMS_IBM_PutApplType: 7
+    JMS_IBM_PutDate: 20230826
+    JMS_IBM_PutTime: 14302619
+150000002400000003000000a4000000010000000100000000000000000000003b00000004000000
+44000000df0700000000000030000000514d31202020202020202020202020202020202020202020
+2020202020202020202020202020202020202020202020200400000020000000970a000000000000
+0a000000323032332d30382d32360000040000001c000000980a0000000000000800000031342e32
+392e34360400000020000000930a0000000000000a000000323032332d30382d3236000004000000
+1c000000940a0000000000000800000031342e33302e323603000000100000001f000000a5030000
+0300000010000000c8020000000000000300000010000000ed020000000000000300000010000000
+c902000027000000050000001c000000ca0200000300000005000000000000000000000005000000
+44000000dd0200000d00000000000000090000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000500000044000000ef0200000d000000
+...
+

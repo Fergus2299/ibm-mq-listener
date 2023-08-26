@@ -28,6 +28,7 @@ import com.ibm.mq.headers.pcf.MQCFH;
 import com.ibm.mq.headers.pcf.PCFException;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.headers.pcf.PCFParameter;
+import com.mq.listener.MQlistener.parsers.PCFParser;
 import com.mq.listener.MQlistener.processors.StatisticsProcessor;
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.constants.MQConstants;
@@ -43,13 +44,11 @@ public class StatisticsListener {
     @JmsListener(destination = "SYSTEM.ADMIN.STATISTICS.QUEUE")
     public void listen(Message receivedMessage) throws JMSException {
         if (receivedMessage instanceof BytesMessage) {
-        	System.out.println("recieved stats message");
             try {
                 MQMessage mqMsg = MQListener.convertToMQMessage((BytesMessage) receivedMessage);
                 PCFMessage pcfMsg = new PCFMessage(mqMsg);
-                
                 // TODO: assuming StatQ message is the only stats message being produced by MQ
-                StatisticsProcessor.processStatQMessage(pcfMsg);
+                StatisticsProcessor.processStatisticsMessage(pcfMsg);
             } catch (Exception e) {
                 MQListener.logProcessingError(e, "PCF");
             }

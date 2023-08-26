@@ -300,4 +300,17 @@ public class PCFParser {
     public static String trimString(String input) {
         return input == null ? null : input.trim();
     }  
+    
+    
+    public static String extractCommandString(PCFMessage pcfMsg) {
+    	// gettig the command to tell what kind
+    	MQCFH cfh = pcfMsg.getHeader();
+		int command = cfh.getCommand();
+		String commandString = MQConstants.lookup(command, "MQCMD_.*");
+		return commandString;
+    }  
+    
+    
+
+    
 }

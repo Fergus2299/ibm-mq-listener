@@ -118,11 +118,11 @@ public class AccountingMetrics {
         connectionCounts.clear();
         putGetCounts.clear();
         // print the current issues
-        ConsoleLogger.printQueueCurrentIssues(issueObjectMap, "Apps");
+//        ConsoleLogger.printQueueCurrentIssues(issueObjectMap, "Apps");
         
         // send new version of issues to the aggregator
         try {
-        	aggregatorService.sendIssues("ApplicationConfigurationIssues", issueObjectMap);
+        	IssueAggregatorService.sendIssues("ApplicationConfigurationIssues", issueObjectMap);
         } catch (Exception e) {
             System.err.println("Failed to send issues to aggregator: " + e.getMessage());
         }

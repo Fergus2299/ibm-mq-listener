@@ -13,7 +13,6 @@ public class AccountingProcessor {
         // check what command it is
 		MQCFH cfh = pcfMsg.getHeader();
         int command = cfh.getCommand();
-        String fileName;
 
         switch (command) {
             case 167: // MQCMD_ACCOUNTING_MQI
@@ -32,13 +31,13 @@ public class AccountingProcessor {
 //                    fileName = "AccountingQ.json";
                 break;
             default:
-                fileName = "UnknownAccounting.json"; // for any other command codes that you haven't explicitly handled
                 System.out.println("Received an unhandled accounting command code: " + command);
                 break;
         }
 //            PCFParser.saveJsonToFile(parsedPCF, fileName);
 	} catch (Exception e) {
-		System.out.println("Error processing PCF message" + e);
+		System.out.println("Error processing accounting PCF message" + e);
+		PCFParser.parsePCFMessage(pcfMsg);
 	}
 }
 	
@@ -54,33 +53,33 @@ public class AccountingProcessor {
         data.setStartTime(pcfMsg.getStringParameterValue(MQConstants.MQCAMO_START_TIME).trim());
         data.setEndDate(pcfMsg.getStringParameterValue(MQConstants.MQCAMO_END_DATE).trim());
         data.setEndTime(pcfMsg.getStringParameterValue(MQConstants.MQCAMO_END_TIME).trim());
-        
         // variables which aren't always returned follow
-        if (pcfMsg.getStringParameterValue(MQConstants.MQCACH_CONNECTION_NAME) != null) {
-            data.setConnName(pcfMsg.getStringParameterValue(MQConstants.MQCACH_CONNECTION_NAME).trim());
-        } else {data.setConnName("");}
+        try {
+            String connName = pcfMsg.getStringParameterValue(MQConstants.MQCACH_CONNECTION_NAME).trim();
+            data.setConnName(connName);
+        } catch (Exception e) {
+            data.setConnName("");
+        }
 
         
-        
-        // getting the list params
-        if (pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_PUTS) != null 
-                && pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_PUTS).length > 0) {
-            data.setPuts(pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_PUTS)[0]);
-        } else {
+        try {
+            int[] putsArray = pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_PUTS);
+            data.setPuts((putsArray != null && putsArray.length > 0) ? putsArray[0] : 0);
+        } catch (Exception e) {
             data.setPuts(0);
         }
-        
-        if (pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_PUT1S) != null 
-                && pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_PUT1S).length > 0) {
-            data.setPut1s(pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_PUT1S)[0]);
-        } else {
+
+        try {
+            int[] put1sArray = pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_PUT1S);
+            data.setPut1s((put1sArray != null && put1sArray.length > 0) ? put1sArray[0] : 0);
+        } catch (Exception e) {
             data.setPut1s(0);
         }
-        
-        if (pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_GETS) != null 
-                && pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_GETS).length > 0) {
-            data.setGets(pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_GETS)[0]);
-        } else {
+
+        try {
+            int[] getsArray = pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_GETS);
+            data.setGets((getsArray != null && getsArray.length > 0) ? getsArray[0] : 0);
+        } catch (Exception e) {
             data.setGets(0);
         }
         

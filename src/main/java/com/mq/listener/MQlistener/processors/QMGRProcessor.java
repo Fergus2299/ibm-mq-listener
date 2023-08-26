@@ -21,20 +21,23 @@ public class QMGRProcessor {
 	        int eventReason = cfh.getReason();
 	        switch (eventReason) {
 	        	case 2035:
-	        		System.out.println("Received QMGR EVENT with a 2035 error!");
+//	        		log.info("Received QMGR EVENT with a 2035 error!");
 	        		// there are in total 7 types of 2035 error which are handled by this func
 	        		process2035Message(pcfMsg);
 	                break;
 	            case 2085:
-	                System.out.println("Received QMGR EVENT with a 2085 error!");
+//	            	log.info("Received QMGR EVENT with a 2035 error!");
+//	                System.out.println("Received QMGR EVENT with a 2085 error!");
 	                process2085Message(pcfMsg);
 	                break;
 	        	default:
 	            	System.out.println("Recieved QMGR EVENT which was not a 2035!");
+	            	PCFParser.parsePCFMessage(pcfMsg);
 	            	break;
 	        }
     	} catch (Exception e) {
-    		log.error("Error processing PCF message", e);
+    		log.error("Error processing QMGR PCF message", e);
+    		PCFParser.parsePCFMessage(pcfMsg);
     	}
     }
 
@@ -60,7 +63,7 @@ public class QMGRProcessor {
     		case "MQRQ_CONN_NOT_AUTHORIZED":
     		case "MQRQ_SYS_CONN_NOT_AUTHORIZED":
     		case "MQRQ_CSP_NOT_AUTHORIZED":
-    			System.out.println("Recieved 2035 error of type 1!");
+    			log.info("Recieved 2035 error of type 1!");
     			userId = pcfMsg.getStringParameterValue(MQConstants.MQCACF_USER_IDENTIFIER).trim();
 	            appName = pcfMsg.getStringParameterValue(MQConstants.MQCACF_APPL_NAME).trim();
 	            if (pcfMsg.getStringParameterValue(MQConstants.MQCACH_CHANNEL_NAME) != null) {
@@ -76,7 +79,7 @@ public class QMGRProcessor {
     			break;
     		// type 2: open not auth
     		case "MQRQ_OPEN_NOT_AUTHORIZED":
-    			System.out.println("Recieved 2035 error of type 2!");
+    			log.info("Recieved 2035 error of type 2!");
     			userId = pcfMsg.getStringParameterValue(MQConstants.MQCACF_USER_IDENTIFIER).trim();
 	            appName = pcfMsg.getStringParameterValue(MQConstants.MQCACF_APPL_NAME).trim();
 	            // not always returned
@@ -95,15 +98,14 @@ public class QMGRProcessor {
     			
     		// type 3: close not auth
     		case "MQRQ_CLOSE_NOT_AUTHORIZED":
-    			System.out.println("Recieved 2035 error of type 3!");
+    			log.info("Recieved 2035 error of type 3!");
     			break;
     		// type 4: command not auth
     		case "MQRQ_CMD_NOT_AUTHORIZED":
-    			System.out.println("Recieved 2035 error of type 4!");
-    			
+    			log.info("Recieved 2035 error of type 4!");
     			break;
     		default:
-    			System.out.println("Recieved 2035 error of unknown origin!");
+    			log.error("Recieved 2035 error of unknown origin!");
             	break;
     	}
     }
@@ -132,8 +134,8 @@ public class QMGRProcessor {
         if (QName != "") {
         	QMGRCounter.countUnknownObjectError(appName, connName, channelName, QName);
         } else {
-        	System.out.println("2035 type 2 had no queue associated with it!");
+        	log.error("2035 type 2 had no queue associated with it. Could not process PCF!");
+        	PCFParser.parsePCFMessage(pcfMsg);
         }
     }
-
 }
