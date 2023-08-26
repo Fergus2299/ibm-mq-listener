@@ -1,12 +1,16 @@
 package com.mq.listener.MQlistener.models.Errors;
 
+import java.util.List;
 import java.util.Map;
 
 public class AuthErrorDetails extends ErrorDetails {
 
     private String userId;
 
-    public AuthErrorDetails(int count, String userId, String appName) {
+    public AuthErrorDetails(int count, 
+    		String userId, 
+    		String appName
+    		) {
         super(count, appName);
         this.userId = userId;
     }

@@ -1,5 +1,6 @@
 package com.mq.listener.MQlistener.issue_makers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -38,9 +39,7 @@ public class QMGRCounter {
     // this will delete issues as they are closed
     Set<String> objectsWithIssues = new HashSet<>();
     
-    // we wire the aggregator service so that it's there for adding errors
-    @Autowired
-    private IssueAggregatorService aggregatorService;
+
     
     public static void countType1AuthError(String userId, String appName, String channelName, String connName, String CSPUserId) {
 //    	startTimestamps.putIfAbsent("<QMGR - Auth>", System.currentTimeMillis());
@@ -99,6 +98,8 @@ public class QMGRCounter {
             	// get or create issue for this queue or whole queue manager
             	ErrorSpike issue;
             	log.info("ErrorSpike issue for the queue manager, object: " + mqObject + ". Rate of error is: " + rate);
+            	
+            	// TODO: add achived info when initiating to technical details
             	if (mqObject == "<QMGR - Auth>") {
             		issue = issueObjectMap.getOrDefault(mqObject, new ErrorSpike("Too_Many_2035s","<QMGR>","<QMGR>"));
             		
@@ -109,7 +110,7 @@ public class QMGRCounter {
             		issue = issueObjectMap.getOrDefault(mqObject, new ErrorSpike("Too_Many_2035s","<Q>",mqObject));
             	}
 
-                // adding the error info
+                // add new archieved info
                 issue.addWindowData(errorInfo, rate);
                 // we re-put into active issues
                 issueObjectMap.put(mqObject, issue);
@@ -126,7 +127,7 @@ public class QMGRCounter {
         }
         
 
-//        ConsoleLogger.printQueueCurrentIssues(issueObjectMap, "Error Rates");
+        ConsoleLogger.printQueueCurrentIssues(issueObjectMap, "Error Rates");
         // Clear only queues without active issues
         tempCounts.keySet().removeAll(objectsWithIssues);
 

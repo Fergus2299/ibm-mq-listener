@@ -1,6 +1,7 @@
 package com.mq.listener.MQlistener.models.Errors;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ErrorDetails {
@@ -12,6 +13,7 @@ public class ErrorDetails {
         this.count = count;
         this.appName = appName;
     }
+   
 
     public int getCount() {
         return count;
@@ -35,12 +37,12 @@ public class ErrorDetails {
 
     @Override
     public String toString() {
-        return " { "  +
+        return " { " +
                "count=" + count +
                ", appName='" + appName + '\'' +
                " }";
     }
-    
+
     public Map<String, Object> toHashMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("count", this.count);

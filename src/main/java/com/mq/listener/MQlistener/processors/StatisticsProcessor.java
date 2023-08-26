@@ -76,12 +76,12 @@ public class StatisticsProcessor {
 		
 		switch (commandString) {
 			case "MQCMD_STATISTICS_Q":
-				System.out.println("MQCMD_STATISTICS_Q");
+//				System.out.println("MQCMD_STATISTICS_Q");
 				processStatQMessage(pcfMsg);
 				break;
 			case "MQCMD_STATISTICS_MQI":
-				System.out.println("MQCMD_STATISTICS_MQI");
-				PCFParser.parsePCFMessage(pcfMsg);
+//				System.out.println("MQCMD_STATISTICS_MQI");
+//				PCFParser.parsePCFMessage(pcfMsg);
 				processStatMQIMessage(pcfMsg);
 				
 				break;
@@ -94,7 +94,6 @@ public class StatisticsProcessor {
     
     public static void processStatMQIMessage(PCFMessage pcfMsg) throws Exception {
     	// MQIAMO_OPENS is https://www.ibm.com/docs/en/ibm-mq/9.3?topic=reference-notes#q037510___q037510_1
-    	System.out.println("Recieved StatMQI message!");
         String startDate = pcfMsg.getStringParameterValue(MQConstants.MQCAMO_START_DATE).trim();
         String startTime = pcfMsg.getStringParameterValue(MQConstants.MQCAMO_START_TIME).trim();
         String endDate = pcfMsg.getStringParameterValue(MQConstants.MQCAMO_END_DATE).trim();

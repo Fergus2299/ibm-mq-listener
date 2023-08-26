@@ -334,3 +334,351 @@ c902000027000000050000001c000000ca0200000300000005000000000000000000000005000000
 0000000000000000000000000000000000000000000000000500000044000000ef0200000d000000
 ...
 
+2023-08-26 18:33:29,627 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 43929 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 18:33:29,631 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 18:33:30,207 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 18:33:30,213 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 18:33:30,215 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 18:33:30,215 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 18:33:30,301 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 18:33:30,302 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 623 ms
+2023-08-26 18:33:30,799 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 18:33:30,824 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 18:33:31,050 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.592 seconds (process running for 1.917)
+2023-08-26 18:33:38,098 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 44025 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 18:33:38,101 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 18:33:38,672 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 18:33:38,677 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 18:33:38,679 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 18:33:38,679 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 18:33:38,737 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 18:33:38,738 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 611 ms
+2023-08-26 18:33:39,249 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 18:33:39,268 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 18:33:39,509 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.612 seconds (process running for 1.928)
+2023-08-26 18:33:46,465 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 463.5 per minute, ConnRate = 0.0 per minute
+2023-08-26 18:33:46,466 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: "<QMGR>"
+2023-08-26 18:35:11,503 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 44214 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 18:35:11,507 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 18:35:12,097 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 18:35:12,102 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 18:35:12,104 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 18:35:12,104 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 18:35:12,165 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 18:35:12,166 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 612 ms
+2023-08-26 18:35:12,698 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 18:35:12,712 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 18:35:12,947 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.641 seconds (process running for 1.959)
+2023-08-26 18:35:18,263 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 44294 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 18:35:18,268 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 18:35:18,831 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 18:35:18,837 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 18:35:18,838 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 18:35:18,838 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 18:35:18,899 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 18:35:18,900 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 605 ms
+2023-08-26 18:35:19,408 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 18:35:19,429 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 18:35:19,681 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.623 seconds (process running for 1.942)
+2023-08-26 18:35:29,021 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:35:30,597 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:35:32,190 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:35:33,773 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:35:35,358 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 5
+2023-08-26 18:35:36,951 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 6
+2023-08-26 18:35:38,524 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 7
+2023-08-26 18:35:39,701 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 21.0
+2023-08-26 18:35:40,124 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:35:41,699 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:35:43,280 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:35:44,864 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:35:46,478 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 5
+2023-08-26 18:35:46,505 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 133.5 per minute, ConnRate = 0.0 per minute
+2023-08-26 18:35:46,507 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: "<QMGR>"
+2023-08-26 18:35:48,044 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 6
+2023-08-26 18:35:49,630 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 7
+2023-08-26 18:35:51,215 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 8
+2023-08-26 18:35:52,808 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 9
+2023-08-26 18:35:54,391 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 10
+2023-08-26 18:35:55,995 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 11
+2023-08-26 18:35:57,559 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 12
+2023-08-26 18:35:59,147 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 13
+2023-08-26 18:35:59,682 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 39.0
+2023-08-26 18:36:00,747 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:36:02,341 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:36:03,915 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:36:05,519 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:36:07,090 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 5
+2023-08-26 18:36:08,671 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 6
+2023-08-26 18:36:10,254 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 7
+2023-08-26 18:36:11,840 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 8
+2023-08-26 18:36:13,421 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 9
+2023-08-26 18:36:15,008 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 10
+2023-08-26 18:36:16,607 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 11
+2023-08-26 18:36:18,191 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 12
+2023-08-26 18:36:19,682 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 36.0
+2023-08-26 18:36:19,775 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:36:21,366 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:36:22,958 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:36:24,534 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:36:26,432 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 232.5 per minute, ConnRate = 0.0 per minute
+2023-08-26 18:36:39,682 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 12.0
+2023-08-26 18:48:25,792 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 45573 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 18:48:25,795 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 18:48:26,334 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 18:48:26,341 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 18:48:26,342 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 18:48:26,343 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 18:48:26,413 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 18:48:26,414 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 583 ms
+2023-08-26 18:48:26,858 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 18:48:26,880 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 18:48:27,138 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.519 seconds (process running for 1.845)
+2023-08-26 18:48:33,886 [main] INFO  c.m.l.M.MqListenerApplication - Starting MqListenerApplication using Java 17.0.5 with PID 45687 (/home/fergus/eclipse-workspace/MQ-listener/target/classes started by fergus in /home/fergus/eclipse-workspace/MQ-listener)
+2023-08-26 18:48:33,889 [main] INFO  c.m.l.M.MqListenerApplication - No active profile set, falling back to 1 default profile: "default"
+2023-08-26 18:48:34,489 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2023-08-26 18:48:34,494 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2023-08-26 18:48:34,496 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-26 18:48:34,496 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.12]
+2023-08-26 18:48:34,558 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-26 18:48:34,559 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 622 ms
+2023-08-26 18:48:35,031 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2023-08-26 18:48:35,053 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2023-08-26 18:48:35,346 [main] INFO  c.m.l.M.MqListenerApplication - Started MqListenerApplication in 1.627 seconds (process running for 1.945)
+2023-08-26 18:48:39,506 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:48:41,082 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:48:42,671 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:48:43,497 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:48:44,257 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 5
+2023-08-26 18:48:45,033 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 6
+2023-08-26 18:48:45,852 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 7
+2023-08-26 18:48:46,623 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 8
+2023-08-26 18:48:47,443 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 9
+2023-08-26 18:48:48,207 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 10
+2023-08-26 18:48:49,027 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 11
+2023-08-26 18:48:50,623 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 12
+2023-08-26 18:48:52,225 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 13
+2023-08-26 18:48:53,810 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 14
+2023-08-26 18:48:55,363 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 42.0
+2023-08-26 18:48:55,406 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:48:57,001 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:48:58,589 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:49:00,191 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:49:01,771 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 5
+2023-08-26 18:49:03,366 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 6
+2023-08-26 18:49:04,427 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:49:04,428 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 1
+2023-08-26 18:49:04,935 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 7
+2023-08-26 18:49:06,539 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 8
+2023-08-26 18:49:06,544 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 249.0 per minute, ConnRate = 0.0 per minute
+2023-08-26 18:49:06,546 [org.springframework.jms.JmsListenerEndpointContainer#3-1] INFO  c.m.l.M.p.StatisticsProcessor - New issue detected and added for queue: "<QMGR>"
+2023-08-26 18:49:08,107 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 9
+2023-08-26 18:49:09,514 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:49:09,515 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 2
+2023-08-26 18:49:09,785 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 10
+2023-08-26 18:49:11,365 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 11
+2023-08-26 18:49:12,956 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 12
+2023-08-26 18:49:14,544 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 13
+2023-08-26 18:49:14,554 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:49:14,555 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 3
+2023-08-26 18:49:15,346 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 39.0
+2023-08-26 18:49:16,137 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:49:17,720 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:49:19,307 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:49:19,647 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:49:19,648 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 4
+2023-08-26 18:49:20,893 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:49:22,477 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 5
+2023-08-26 18:49:24,068 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 6
+2023-08-26 18:49:24,666 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:49:24,666 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 5
+2023-08-26 18:49:25,659 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 7
+2023-08-26 18:49:27,249 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 8
+2023-08-26 18:49:28,837 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 9
+2023-08-26 18:49:29,683 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:49:29,684 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 6
+2023-08-26 18:49:30,421 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 10
+2023-08-26 18:49:32,010 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 11
+2023-08-26 18:49:33,594 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 12
+2023-08-26 18:49:34,700 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:49:34,700 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 7
+2023-08-26 18:49:35,178 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 13
+2023-08-26 18:49:35,345 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 39.0
+2023-08-26 18:49:35,346 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: INACCESSIBLE.QUEUE. Rate of error is: 21.0
+2023-08-26 18:49:36,766 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:49:38,352 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:49:39,821 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:49:39,822 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 1
+2023-08-26 18:49:39,977 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:49:41,566 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:49:43,143 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 5
+2023-08-26 18:49:44,739 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 6
+2023-08-26 18:49:44,772 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:49:44,772 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 2
+2023-08-26 18:49:46,331 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 7
+2023-08-26 18:49:46,452 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 259.5 per minute, ConnRate = 0.0 per minute
+2023-08-26 18:49:47,920 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 8
+2023-08-26 18:49:49,513 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 9
+2023-08-26 18:49:49,862 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:49:49,863 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 3
+2023-08-26 18:49:51,103 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 10
+2023-08-26 18:49:52,683 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 11
+2023-08-26 18:49:54,268 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 12
+2023-08-26 18:49:54,874 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:49:54,874 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 4
+2023-08-26 18:49:55,346 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 36.0
+2023-08-26 18:49:55,347 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: INACCESSIBLE.QUEUE. Rate of error is: 12.0
+2023-08-26 18:49:55,855 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:49:57,437 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:49:59,020 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:49:59,995 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:49:59,996 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 1
+2023-08-26 18:50:00,610 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:50:02,189 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 5
+2023-08-26 18:50:03,783 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 6
+2023-08-26 18:50:04,926 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:50:04,926 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 2
+2023-08-26 18:50:05,364 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 7
+2023-08-26 18:50:06,962 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 8
+2023-08-26 18:50:08,528 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 9
+2023-08-26 18:50:10,030 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:50:10,031 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 3
+2023-08-26 18:50:10,215 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 10
+2023-08-26 18:50:11,798 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 11
+2023-08-26 18:50:13,385 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 12
+2023-08-26 18:50:14,966 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 13
+2023-08-26 18:50:15,011 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:50:15,011 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 4
+2023-08-26 18:50:15,346 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 39.0
+2023-08-26 18:50:15,347 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: INACCESSIBLE.QUEUE. Rate of error is: 12.0
+2023-08-26 18:50:16,557 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:50:18,142 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:50:19,726 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:50:20,066 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:50:20,067 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 1
+2023-08-26 18:50:21,315 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:50:22,898 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 5
+2023-08-26 18:50:24,490 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 6
+2023-08-26 18:50:25,187 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:50:25,187 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 2
+2023-08-26 18:50:26,075 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 7
+2023-08-26 18:50:26,455 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 267.0 per minute, ConnRate = 0.0 per minute
+2023-08-26 18:50:27,654 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 8
+2023-08-26 18:50:29,239 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 9
+2023-08-26 18:50:30,205 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:50:30,205 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 3
+2023-08-26 18:50:30,828 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 10
+2023-08-26 18:50:32,412 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 11
+2023-08-26 18:50:34,003 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 12
+2023-08-26 18:50:35,224 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.processors.QMGRProcessor - Recieved 2035 error of type 2!
+2023-08-26 18:50:35,224 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - INACCESSIBLE.QUEUE incremented to: 4
+2023-08-26 18:50:35,345 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 36.0
+2023-08-26 18:50:35,345 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: INACCESSIBLE.QUEUE. Rate of error is: 12.0
+2023-08-26 18:50:35,590 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:50:37,178 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:50:38,766 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:50:40,352 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:50:41,940 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 5
+2023-08-26 18:50:43,524 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 6
+2023-08-26 18:50:45,118 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 7
+2023-08-26 18:50:46,706 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 8
+2023-08-26 18:50:48,293 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 9
+2023-08-26 18:50:49,880 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 10
+2023-08-26 18:50:51,467 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 11
+2023-08-26 18:50:53,050 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 12
+2023-08-26 18:50:54,638 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 13
+2023-08-26 18:50:55,347 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 39.0
+2023-08-26 18:50:56,221 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:50:57,811 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:50:59,392 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:51:00,987 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:51:02,574 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 5
+2023-08-26 18:51:04,157 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 6
+2023-08-26 18:51:05,741 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 7
+2023-08-26 18:51:06,563 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 243.0 per minute, ConnRate = 0.0 per minute
+2023-08-26 18:51:07,325 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 8
+2023-08-26 18:51:08,916 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 9
+2023-08-26 18:51:10,503 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 10
+2023-08-26 18:51:12,089 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 11
+2023-08-26 18:51:13,673 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 12
+2023-08-26 18:51:15,265 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 13
+2023-08-26 18:51:15,345 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 39.0
+2023-08-26 18:51:16,845 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:51:18,439 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:51:20,013 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:51:21,616 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:51:23,184 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 5
+2023-08-26 18:51:24,789 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 6
+2023-08-26 18:51:26,360 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 7
+2023-08-26 18:51:27,962 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 8
+2023-08-26 18:51:29,534 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 9
+2023-08-26 18:51:31,138 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 10
+2023-08-26 18:51:32,705 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 11
+2023-08-26 18:51:34,312 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 12
+2023-08-26 18:51:35,345 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 36.0
+2023-08-26 18:51:35,878 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:51:37,486 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:51:39,053 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:51:40,662 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:51:42,220 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 5
+2023-08-26 18:51:43,804 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 6
+2023-08-26 18:51:45,388 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 7
+2023-08-26 18:51:46,501 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 246.0 per minute, ConnRate = 0.0 per minute
+2023-08-26 18:51:46,977 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 8
+2023-08-26 18:51:48,560 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 9
+2023-08-26 18:51:50,145 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 10
+2023-08-26 18:51:51,735 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 11
+2023-08-26 18:51:53,322 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 12
+2023-08-26 18:51:54,907 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 13
+2023-08-26 18:51:55,345 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 39.0
+2023-08-26 18:51:56,500 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:51:58,087 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:51:59,676 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:52:01,262 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:52:02,849 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 5
+2023-08-26 18:52:04,440 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 6
+2023-08-26 18:52:06,024 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 7
+2023-08-26 18:52:07,611 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 8
+2023-08-26 18:52:09,197 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 9
+2023-08-26 18:52:10,780 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 10
+2023-08-26 18:52:12,368 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 11
+2023-08-26 18:52:13,953 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 12
+2023-08-26 18:52:15,346 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 36.0
+2023-08-26 18:52:15,535 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:52:17,124 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:52:18,720 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:52:20,305 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:52:21,885 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 5
+2023-08-26 18:52:23,492 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 6
+2023-08-26 18:52:25,062 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 7
+2023-08-26 18:52:26,546 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 243.0 per minute, ConnRate = 0.0 per minute
+2023-08-26 18:52:26,651 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 8
+2023-08-26 18:52:28,238 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 9
+2023-08-26 18:52:29,829 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 10
+2023-08-26 18:52:31,412 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 11
+2023-08-26 18:52:33,000 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 12
+2023-08-26 18:52:34,582 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 13
+2023-08-26 18:52:35,345 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 39.0
+2023-08-26 18:52:36,171 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:52:37,751 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:52:39,343 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:52:41,184 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:52:42,722 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 5
+2023-08-26 18:52:44,307 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 6
+2023-08-26 18:52:45,894 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 7
+2023-08-26 18:52:47,475 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 8
+2023-08-26 18:52:49,069 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 9
+2023-08-26 18:52:50,653 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 10
+2023-08-26 18:52:52,249 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 11
+2023-08-26 18:52:53,840 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 12
+2023-08-26 18:52:55,346 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 36.0
+2023-08-26 18:52:55,421 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 1
+2023-08-26 18:52:57,006 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 2
+2023-08-26 18:52:58,592 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 3
+2023-08-26 18:53:00,180 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 4
+2023-08-26 18:53:01,767 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 5
+2023-08-26 18:53:03,352 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 6
+2023-08-26 18:53:04,942 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 7
+2023-08-26 18:53:06,469 [org.springframework.jms.JmsListenerEndpointContainer#3-1] WARN  c.m.l.M.p.StatisticsProcessor - Spike in activity detected for QMGR: PutGetRate = 243.0 per minute, ConnRate = 0.0 per minute
+2023-08-26 18:53:06,525 [org.springframework.jms.JmsListenerEndpointContainer#2-1] INFO  c.m.l.M.issue_makers.QMGRCounter - "<QMGR - UnknownObject>" incremented to: 8
+2023-08-26 18:53:15,346 [scheduling-1] INFO  c.m.l.M.issue_makers.QMGRCounter - ErrorSpike issue for the queue manager, object: <QMGR - UnknownObject>. Rate of error is: 24.0
