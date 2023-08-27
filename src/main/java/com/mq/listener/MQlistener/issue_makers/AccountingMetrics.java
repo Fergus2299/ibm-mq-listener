@@ -1,6 +1,8 @@
 package com.mq.listener.MQlistener.issue_makers;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -64,6 +66,7 @@ public class AccountingMetrics {
     
     @Scheduled(fixedRate = WINDOW_DURATION_MILLIS)
     public void evaluateAndResetCounts() {
+    	
 //    	System.out.println("Doing scheduled function");
 //        System.out.println("Connections: " + connectionCounts);
 //        System.out.println("putGetCounts: " + putGetCounts);
@@ -75,45 +78,75 @@ public class AccountingMetrics {
             int userPutGetCount = putGetCounts.getOrDefault(userId, 0);
             System.out.println("User: " + userId + ", Connections: " + userConnectionCount + ", Put/Get Count: " + userPutGetCount);
             // checking if they've breached the connection threshold per minute
-            
-            if (userConnectionCount > CONNECTION_THRESHOLD && !issueObjectMap.containsKey(userId)) {
-//                System.out.println("Warning: User " + userId + " has breached the connection threshold with " + userConnectionCount + " connections!");
+            double userRatio = userConnectionCount / (double) userPutGetCount;
+            boolean shouldLogIssue = false;
+            String errorMessage = "";
+            ConnectionPatternIssue error;
+            // if app connects too much issue gets first priority, then we check for the ratio of conns
+            if (userConnectionCount > CONNECTION_THRESHOLD) {
             	String windowDurationInSeconds = String.valueOf(WINDOW_DURATION_MILLIS / 1000);
-            	ConnectionPatternIssue error = new ConnectionPatternIssue(
-            			userConnectionCount,
-            			"Too many MQCONNs in time interval. Breached limit of " 
-            					+ CONNECTION_THRESHOLD 
-            					+ " in the window of: " 
-            					+ windowDurationInSeconds
-            					+ ".",
-            			userPutGetCount, 
-            			userId);
-            	issueObjectMap.putIfAbsent(userId, error);
-            } // TODO: add window data here
-            
-            // checking if they've got inefficient connection patterns
-            // e.g., if an app is connecting more than 20 times per min and puts/gets less than 50 times
-            // this could be seen as inefficient
-            if (userConnectionCount > RATIO_CONNECTION_THRESHOLD) {
-                double userRatio = userConnectionCount/ (double) userPutGetCount ;
-                System.out.println(userId + "UserRatio: " + userRatio);
-                if (userRatio >= RATIO_THRESHOLD && !issueObjectMap.containsKey(userId)) {
-//                    System.out.println("Warning: User " + userId + " has breached the ratio threshold with a ratio of " + userRatio + "!");
-                	String windowDurationInSeconds = String.valueOf(WINDOW_DURATION_MILLIS / 1000);
-                	ConnectionPatternIssue error = new ConnectionPatternIssue(
-                			userConnectionCount,
-                			"Ratio of MQCONNS to GETS/PUTS is above " 
-	                			+ RATIO_THRESHOLD 
-	                			+ " too high " 
-	                			+ " in the configured interval of "
-	                			+ windowDurationInSeconds
-	                			+ ".",
-                			userPutGetCount, 
-                			userId);
-                	issueObjectMap.putIfAbsent(userId, error);
-                }
+                error = issueObjectMap.getOrDefault(userId, new ConnectionPatternIssue(
+                        userConnectionCount,
+                        "Too many MQCONNs in time interval. Breached limit of " 
+                                + CONNECTION_THRESHOLD
+                                + " in the window of: " 
+                                + windowDurationInSeconds
+                                + ".",
+                        userPutGetCount,
+                        userId
+                    ));
+                LocalTime endTimeFormatted = LocalTime.now();
+                LocalTime startTimeFormatted = endTimeFormatted.minusSeconds(WINDOW_DURATION_MILLIS / 1000);
+                Map.Entry<LocalTime, LocalTime> logTime = new AbstractMap.SimpleEntry<>(startTimeFormatted, endTimeFormatted);
+
+                Map<String, String> issueDetails = new HashMap<>();
+                issueDetails.put("conns", String.valueOf(userConnectionCount));
+                issueDetails.put("putGetCount", String.valueOf(userPutGetCount));
+                issueDetails.put("userRatio", String.valueOf(userRatio));
+                
+                error.addWindowData(issueDetails, logTime);
+                
+                issueObjectMap.put(userId, error);
+                
+                
+                
+            } else if (userConnectionCount > RATIO_CONNECTION_THRESHOLD && userRatio >= RATIO_THRESHOLD) {
+                String windowDurationInSeconds = String.valueOf(WINDOW_DURATION_MILLIS / 1000);
+                
+                error = issueObjectMap.getOrDefault(userId, new ConnectionPatternIssue(
+                        userConnectionCount,
+                        "Ratio of MQCONNS to GETS/PUTS is above " 
+                                + RATIO_THRESHOLD
+                                + " too high " 
+                                + " in the configured interval of "
+                                + windowDurationInSeconds
+                                + ".",
+                        userPutGetCount,
+                        userId
+                    ));
+                LocalTime endTimeFormatted = LocalTime.now();
+                LocalTime startTimeFormatted = endTimeFormatted.minusSeconds(WINDOW_DURATION_MILLIS / 1000);
+                Map.Entry<LocalTime, LocalTime> logTime = new AbstractMap.SimpleEntry<>(startTimeFormatted, endTimeFormatted);
+
+                Map<String, String> issueDetails = new HashMap<>();
+                issueDetails.put("conns", String.valueOf(userConnectionCount));
+                issueDetails.put("putGetCount", String.valueOf(userPutGetCount));
+                issueDetails.put("userRatio", String.valueOf(userRatio));
+                
+                error.addWindowData(issueDetails, logTime);
+
+                issueObjectMap.put(userId, error);
             }
+
+                
+
+
+            
+            
         }
+        
+        
+        
         // Reset the counts for the next window
         connectionCounts.clear();
         putGetCounts.clear();
