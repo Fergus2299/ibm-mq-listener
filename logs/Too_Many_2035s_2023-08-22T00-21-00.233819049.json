@@ -1,9 +1,0 @@
-{
-  "issueCode": "Too_Many_2035s",
-  "startTimeStamp": "2023-08-22T00:21:00.233819049",
-  "endTimestamp": "2023-08-22T00:22:00.232255019",
-  "generalDesc": "",
-  "technicalDetails": "{appName=\\Python\\Python311\\python.exe, Rate=357.0, connName=20.117.73.51, LogTime=2023-08-22T00:21:00.234679734, count=119, channelName=DEV.APP.SVRCONN, CSPUserId=jimmy, userId=mquser}, {appName=\\Python\\Python311\\python.exe, Rate=30.0, connName=20.117.73.51, LogTime=2023-08-22T00:21:20.232426686, count=10, channelName=DEV.APP.SVRCONN, CSPUserId=jimmy, userId=mquser}, {appName=\\Python\\Python311\\python.exe, Rate=27.0, connName=20.117.73.51, LogTime=2023-08-22T00:21:40.232391196, count=9, channelName=DEV.APP.SVRCONN, CSPUserId=jimmy, userId=mquser}",
-  "mqobjectType": "QMGR",
-  "mqobjectName": "_"
-}

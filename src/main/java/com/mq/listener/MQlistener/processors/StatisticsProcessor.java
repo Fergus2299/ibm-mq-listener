@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -24,6 +25,8 @@ import com.ibm.mq.headers.pcf.MQCFGR;
 import com.ibm.mq.headers.pcf.MQCFH;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.headers.pcf.PCFParameter;
+import com.mq.listener.MQlistener.logging.BaseLogger;
+import com.mq.listener.MQlistener.logging.QMLogger;
 import com.mq.listener.MQlistener.models.Issue.ActivitySpike;
 import com.mq.listener.MQlistener.models.Issue.ErrorSpike;
 import com.mq.listener.MQlistener.models.Issue.Issue;
@@ -35,13 +38,9 @@ import com.mq.listener.MQlistener.utils.IssueAggregatorService;
 public class StatisticsProcessor {
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH.mm.ss");
 	// how much will it go above in the timeframe before making an issue, let's say this is in per minute
-	private static final double QUEUE_SPIKE_OF_ACTIVITY_THRESHOLD = 100; 
-	private static final double QM_SPIKE_OF_ACTIVITY_THRESHOLD = 100; 
+	private static final double QUEUE_SPIKE_OF_ACTIVITY_THRESHOLD = 100;
+	private static final double QM_SPIKE_OF_ACTIVITY_THRESHOLD = 100;
 	private static final double QM_MAX_CONNS = 50;
-
-//    @Autowired
-//    private static IssueAggregatorService aggregatorService;
-	
     private static final Logger log = LoggerFactory.getLogger(StatisticsProcessor.class);
 
     // observedQueues stores queues from past messages, STATQ messages only include any one given queue if there's been some
@@ -65,6 +64,8 @@ public class StatisticsProcessor {
     private static Map<String, ActivitySpike> issueObjectMap = new HashMap<>();
     @Autowired
     private IssueAggregatorService issueAggregatorService;
+	@Autowired
+	private BaseLogger logger;
     
     public void processStatisticsMessage(PCFMessage pcfMsg) throws Exception {
     	if (pcfMsg == null) {
@@ -95,6 +96,8 @@ public class StatisticsProcessor {
     
     public void processStatMQIMessage(PCFMessage pcfMsg) throws Exception {
     	
+    	// getting queue manager name
+    	String QMName = pcfMsg.getStringParameterValue(MQConstants.MQCA_Q_MGR_NAME).trim();
     	
     	// MQIAMO_OPENS is https://www.ibm.com/docs/en/ibm-mq/9.3?topic=reference-notes#q037510___q037510_1
         String startDate = pcfMsg.getStringParameterValue(MQConstants.MQCAMO_START_DATE).trim();
@@ -236,6 +239,9 @@ public class StatisticsProcessor {
         QMTimeSeriesStats.put(timeKey, statsForQM);
         printTimeSeriesStatsQueueManager();
         checkQueueManagerActivity(timeKey, statsForQM, combinedTime);
+        // logging to csv file the queue manager activity
+        // TODO: better way to handle the difference between queue manager and queue logging
+        logger.logToCsv(QMName,Optional.empty(), startTimeFormatted, endTimeFormatted, statsForQM);
         
     }
     
@@ -284,13 +290,6 @@ public class StatisticsProcessor {
             Map.Entry<LocalTime, LocalTime> timeKey = new AbstractMap.SimpleEntry<>(startTimeFormatted, endTimeFormatted);
             checkQueueActivity(timeKey, combinedTime);
             
-//            // add to accumulator
-//            try {
-//                IssueAggregatorService.sendIssues("ActivitySpikeIssues", issueObjectMap);
-//            } catch (Exception e) {
-//                log.error("Failed to send activity spikes to aggregator: " + e.getMessage());
-//            }
-            
             try {
             	issueAggregatorService.sendIssues("ActivitySpikeIssues", issueObjectMap);
             } catch (Exception e) {
@@ -303,7 +302,18 @@ public class StatisticsProcessor {
 	        timeSeriesStats.put(timeKey, new HashMap<>(queueStatsMap));
 	        ensureMaxEntries();
 	        printTimeSeriesStatsQueues();
+	        
+	        // this loop logs the stats for each queue
+	        for (Map.Entry<String, Map<String, Integer>> queue : queueStatsMap.entrySet()) {
+	        	String queueName = queue.getKey();
+	        	Map<String, Integer> queueStats = queue.getValue();
+	        	logger.logToCsv("QM1", Optional.of(queueName), startTimeFormatted, endTimeFormatted, queueStats);
+	        }
+	        
             queueStatsMap.clear();
+            
+            // TODO: logging the time series data to the log files
+            
         } catch (RuntimeException e) {
             System.out.println("Error occurred while parsing statistics PCFMessage: " + e.getMessage());
             e.printStackTrace();
@@ -467,6 +477,9 @@ public class StatisticsProcessor {
             statsForQueue.put("GETS", quantGet);
             statsForQueue.put("GETS_FAILED", quantGetFails);
             queueStatsMap.put(QName, statsForQueue);
+            
+            // log queue to files
+                      
         }
     }
     
