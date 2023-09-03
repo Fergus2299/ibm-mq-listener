@@ -38,8 +38,11 @@ public class StatisticsListener {
     
     private static final Logger log = LoggerFactory.getLogger(StatisticsListener.class);
 
-
+    private final StatisticsProcessor statisticsProcessor;
     
+    public StatisticsListener(StatisticsProcessor statisticsProcessor) {
+        this.statisticsProcessor = statisticsProcessor;
+    }
 
     @JmsListener(destination = "SYSTEM.ADMIN.STATISTICS.QUEUE")
     public void listen(Message receivedMessage) throws JMSException {
@@ -48,7 +51,7 @@ public class StatisticsListener {
                 MQMessage mqMsg = MQListener.convertToMQMessage((BytesMessage) receivedMessage);
                 PCFMessage pcfMsg = new PCFMessage(mqMsg);
                 // TODO: assuming StatQ message is the only stats message being produced by MQ
-                StatisticsProcessor.processStatisticsMessage(pcfMsg);
+                statisticsProcessor.processStatisticsMessage(pcfMsg);
             } catch (Exception e) {
                 MQListener.logProcessingError(e, "PCF");
             }
@@ -57,6 +60,4 @@ public class StatisticsListener {
         }
     }
 
-
-    
 }

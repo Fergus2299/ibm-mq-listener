@@ -2,6 +2,7 @@ package com.mq.listener.MQlistener.issue_makers;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -22,6 +23,7 @@ import com.mq.listener.MQlistener.utils.IssueAggregatorService;
 // strategy means granular permissions and easier auditing.
 @Component
 public class AccountingMetrics {
+	DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
 	// hardcoded threshold of number of conns per minute
     private static final int CONNECTION_THRESHOLD = 100; 
@@ -40,10 +42,8 @@ public class AccountingMetrics {
     private static Map<String, ConnectionPatternIssue> issueObjectMap = new HashMap<>();    // these maps hold temporarily the amount of connects and put/gets per user 
     private static Map<String, Integer> connectionCounts = new HashMap<>();
     private static Map<String, Integer> putGetCounts = new HashMap<>();
-    
-    // we wire the aggregator service so that it's there for adding errors
     @Autowired
-    private IssueAggregatorService aggregatorService;
+    private IssueAggregatorService issueAggregatorService;
     
     // TODO: synchronized allows for no one of these to be running at one time and therefore is more thread safe
     
@@ -97,14 +97,19 @@ public class AccountingMetrics {
                     ));
                 LocalTime endTimeFormatted = LocalTime.now();
                 LocalTime startTimeFormatted = endTimeFormatted.minusSeconds(WINDOW_DURATION_MILLIS / 1000);
-                Map.Entry<LocalTime, LocalTime> logTime = new AbstractMap.SimpleEntry<>(startTimeFormatted, endTimeFormatted);
+                
+                // changed to string version
+//                Map.Entry<LocalTime, LocalTime> logTime = new AbstractMap.SimpleEntry<>(startTimeFormatted, endTimeFormatted);
+                String combinedTime = startTimeFormatted.format(timeFormatter) + " - " + endTimeFormatted.format(timeFormatter);
 
+                
+                
                 Map<String, String> issueDetails = new HashMap<>();
                 issueDetails.put("conns", String.valueOf(userConnectionCount));
                 issueDetails.put("putGetCount", String.valueOf(userPutGetCount));
                 issueDetails.put("userRatio", String.valueOf(userRatio));
                 
-                error.addWindowData(issueDetails, logTime);
+                error.addWindowData(issueDetails, combinedTime);
                 
                 issueObjectMap.put(userId, error);
                 
@@ -126,23 +131,19 @@ public class AccountingMetrics {
                     ));
                 LocalTime endTimeFormatted = LocalTime.now();
                 LocalTime startTimeFormatted = endTimeFormatted.minusSeconds(WINDOW_DURATION_MILLIS / 1000);
-                Map.Entry<LocalTime, LocalTime> logTime = new AbstractMap.SimpleEntry<>(startTimeFormatted, endTimeFormatted);
+//                Map.Entry<LocalTime, LocalTime> logTime = new AbstractMap.SimpleEntry<>(startTimeFormatted, endTimeFormatted);
+                String combinedTime = startTimeFormatted.format(timeFormatter) + " - " + endTimeFormatted.format(timeFormatter);
 
                 Map<String, String> issueDetails = new HashMap<>();
                 issueDetails.put("conns", String.valueOf(userConnectionCount));
                 issueDetails.put("putGetCount", String.valueOf(userPutGetCount));
                 issueDetails.put("userRatio", String.valueOf(userRatio));
                 
-                error.addWindowData(issueDetails, logTime);
+                error.addWindowData(issueDetails, combinedTime);
 
                 issueObjectMap.put(userId, error);
             }
 
-                
-
-
-            
-            
         }
         
         
@@ -155,7 +156,7 @@ public class AccountingMetrics {
         
         // send new version of issues to the aggregator
         try {
-        	IssueAggregatorService.sendIssues("ApplicationConfigurationIssues", issueObjectMap);
+        	issueAggregatorService.sendIssues("ApplicationConfigurationIssues", issueObjectMap);
         } catch (Exception e) {
             System.err.println("Failed to send issues to aggregator: " + e.getMessage());
         }

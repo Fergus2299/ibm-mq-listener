@@ -7,7 +7,7 @@ import java.util.HashMap;
 import TimeFormatter.TimeFormatter;
 
 public class QueueServiceHighIssue extends Issue {
-	
+		
 	// constructor function
 	public QueueServiceHighIssue(String QName, Integer timeSinceReset, Integer highQDepth, Integer enQCount, Integer deQCount) {
         this.issueCode = "Queue_Service_High";
@@ -17,15 +17,17 @@ public class QueueServiceHighIssue extends Issue {
         		+ QName
         		+ " produced a service high event at:  "
         		+ this.startTimeStamp;
+        
+        // issue active when service high event created
         this.technicalDetails = new HashMap<>();
+        this.technicalDetails.put("isActiveIssue", "1"); 
         this.MQObjectType = "<QUEUE>";
         this.MQObjectName = QName;
     }
 	
-	
-	
-	
-	
-
-    
+	public void okEventReceived() {
+		// ensure that 
+        this.generalDesc += "; Queue interval is now ok as of: " + TimeFormatter.formatNow() + ".";
+        this.technicalDetails.put("isActiveEvent", "0");
+    }
 }

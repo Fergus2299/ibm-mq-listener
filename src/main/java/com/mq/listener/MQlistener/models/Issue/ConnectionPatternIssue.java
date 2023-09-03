@@ -11,49 +11,46 @@ import TimeFormatter.TimeFormatter;
 
 public class ConnectionPatternIssue extends Issue {
 	    public ConnectionPatternIssue(int connectionCount,String generalDescription, double putGetCount, String userId) {
-	        this.issueCode = "Missconfigured_Connection_Pattern";
+	        this.issueCode = "Misconfigured_Connection_Pattern";
 	        this.startTimeStamp = TimeFormatter.formatNow();
 	        this.generalDesc = generalDescription;
 	        this.technicalDetails = new HashMap<>();
 	        this.MQObjectName = userId;
 	    }
 	    // TODO: add addWindowData function
-	    public void addWindowData(Map<String, String> detailsHashMap,  Map.Entry<LocalTime, LocalTime> timeKey) {
+	    public void addWindowData(Map<String, String> detailsHashMap,  String timeKey) {
 	    	ArrayList<String> archivedconns;
-	    	ArrayList<String> archivedputGetCount;
+	    	ArrayList<String> archivedRequestCount;
 	    	ArrayList<String> archiveduserRatio;
-	    	ArrayList<Map.Entry<LocalTime, LocalTime>> archivedlogTimes;
+	    	ArrayList<String> archivedlogTimes;
 	    	
-	    try {
-	    	archivedconns = (ArrayList<String>) technicalDetails.getOrDefault("archivedconns", new ArrayList<String>());
-	    	archivedputGetCount = (ArrayList<String>) technicalDetails.getOrDefault("archivedputGetCount", new ArrayList<String>());
-	    	archiveduserRatio = (ArrayList<String>) technicalDetails.getOrDefault("archiveduserRatio", new ArrayList<String>());
-	    	archivedlogTimes = (ArrayList<Map.Entry<LocalTime, LocalTime>>) technicalDetails.getOrDefault("archivedlogTimes", new ArrayList<Map.Entry<LocalTime, LocalTime>>());
-	    } catch (ClassCastException e) {
-	    	archivedconns = new ArrayList<String>();
-	    	archivedputGetCount = new ArrayList<String>();
-	    	archiveduserRatio = new ArrayList<String>();
-	    	archivedlogTimes = new ArrayList<Map.Entry<LocalTime, LocalTime>>();
-    	    System.out.println("Error: The stored value for 'archievedRate' or 'archievedTimestamps' was not of the expected type. Initializing with an empty list.");
-    	}
-	    
-    	Map<String, Object> newHashmap = new HashMap<>();
-    	archivedconns.add(detailsHashMap.get("conns"));
-        newHashmap.put("archivedconns", archivedconns);
-        
-        archivedputGetCount.add(detailsHashMap.get("putGetCount"));
-        newHashmap.put("archivedputGetCount", archivedputGetCount);
-        
-        archiveduserRatio.add(detailsHashMap.get("userRatio"));
-        newHashmap.put("archiveduserRatio", archiveduserRatio);
-        
-        archivedlogTimes.add(timeKey);
-        newHashmap.put("archivedlogTimes", archivedlogTimes);
-        
-        technicalDetails.putAll(newHashmap);
-
-	    	
-
-	    }
+		    try {
+		    	archivedconns = (ArrayList<String>) technicalDetails.getOrDefault("archivedconns", new ArrayList<String>());
+		    	archivedRequestCount = (ArrayList<String>) technicalDetails.getOrDefault("archivedRequestCount", new ArrayList<String>());
+		    	archiveduserRatio = (ArrayList<String>) technicalDetails.getOrDefault("archiveduserRatio", new ArrayList<String>());
+		    	archivedlogTimes = (ArrayList<String>) technicalDetails.getOrDefault("archivedlogTimes", new ArrayList<String>());
+		    } catch (ClassCastException e) {
+		    	archivedconns = new ArrayList<String>();
+		    	archivedRequestCount = new ArrayList<String>();
+		    	archiveduserRatio = new ArrayList<String>();
+		    	archivedlogTimes = new ArrayList<String>();
+	    	    System.out.println("Error: The stored value for 'archivedRequestCount' or 'archievedTimestamps' was not of the expected type. Initializing with an empty list.");
+	    	}
+		    
+	    	Map<String, Object> newHashmap = new HashMap<>();
+	    	archivedconns.add(detailsHashMap.get("conns"));
+	        newHashmap.put("archivedconns", archivedconns);
+	        
+	        archivedRequestCount.add(detailsHashMap.get("putGetCount"));
+	        newHashmap.put("archivedRequestCount", archivedRequestCount);
+	        
+	        archiveduserRatio.add(detailsHashMap.get("userRatio"));
+	        newHashmap.put("archiveduserRatio", archiveduserRatio);
+	        
+	        archivedlogTimes.add(timeKey);
+	        newHashmap.put("archivedlogTimes", archivedlogTimes);
+	        
+	        technicalDetails.putAll(newHashmap);
+        }
 
 }

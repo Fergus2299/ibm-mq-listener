@@ -22,20 +22,20 @@ public class ActivitySpike extends Issue{
         this.MQObjectName = MQObjectName;
     }
     // puts window data into the map
-    public void addWindowData(Map<String, String> detailsHashMap, Map.Entry<LocalTime, LocalTime> timeKey) {
+    public void addWindowData(Map<String, String> detailsHashMap, String combinedTime) {
     	ArrayList<String> archivedRequestRates;
     	ArrayList<String> archivedConnRates;
-    	ArrayList<Map.Entry<LocalTime, LocalTime>> archivedTimestamps;
+    	ArrayList<String> archivedTimestamps;
     	// just for queue manager
     	try {
     	    archivedRequestRates = (ArrayList<String>) technicalDetails.getOrDefault("archivedRequestRates", new ArrayList<String>());
     	    archivedConnRates = (ArrayList<String>) technicalDetails.getOrDefault("archivedConnRates", new ArrayList<String>());
-    	    archivedTimestamps = (ArrayList<Map.Entry<LocalTime, LocalTime>>) technicalDetails.getOrDefault("archievedTimestamps", new ArrayList<Map.Entry<LocalTime, LocalTime>>());
+    	    archivedTimestamps = (ArrayList<String>) technicalDetails.getOrDefault("archivedTimestamps", new ArrayList<String>());
     	} catch (ClassCastException e) {
     		archivedConnRates = new ArrayList<String>();
     		archivedRequestRates = new ArrayList<String>();
-    	    archivedTimestamps = new ArrayList<Map.Entry<LocalTime, LocalTime>>();
-    	    System.out.println("Error: The stored value for 'archievedRate' or 'archievedTimestamps' was not of the expected type. Initializing with an empty list.");
+    	    archivedTimestamps = new ArrayList<String>();
+    	    System.out.println("Error: The stored value for 'archivedRequestRates' or 'archivedTimestamps' was not of the expected type. Initializing with an empty list.");
     	}
     	
     	// the new data
@@ -49,8 +49,8 @@ public class ActivitySpike extends Issue{
             newHashmap.put("archivedConnRates", archivedConnRates); 
 
     	}
-        archivedTimestamps.add(timeKey);
-        newHashmap.put("archievedTimestamps", archivedTimestamps); 
+        archivedTimestamps.add(combinedTime);
+        newHashmap.put("archivedTimestamps", archivedTimestamps); 
         
         technicalDetails.putAll(newHashmap);
     }

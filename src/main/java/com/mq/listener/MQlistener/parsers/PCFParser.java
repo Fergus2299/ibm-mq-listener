@@ -308,7 +308,15 @@ public class PCFParser {
 		int command = cfh.getCommand();
 		String commandString = MQConstants.lookup(command, "MQCMD_.*");
 		return commandString;
-    }  
+    }
+    public static String extractReasonCode(PCFMessage pcfMsg) {
+    	// gettig the command to tell what kind
+    	MQCFH cfh = pcfMsg.getHeader();
+		int reasonCode = cfh.getReason();
+		String reasonCodeString = MQConstants.lookup(reasonCode, "MQRC_.*");
+		return reasonCodeString;
+    }
+    
     
     
 

@@ -38,9 +38,9 @@ public class QMGRCounter {
     private static Map<String, ErrorDetails> tempCounts = new HashMap<>();
     // this will delete issues as they are closed
     Set<String> objectsWithIssues = new HashSet<>();
-    
+    @Autowired
+    private IssueAggregatorService issueAggregatorService;
 
-    
     public static void countType1AuthError(String userId, String appName, String channelName, String connName, String CSPUserId) {
 //    	startTimestamps.putIfAbsent("<QMGR - Auth>", System.currentTimeMillis());
     	ErrorDetails currentDetails = tempCounts.getOrDefault(
@@ -107,9 +107,13 @@ public class QMGRCounter {
             		issue = issueObjectMap.getOrDefault(mqObject, new ErrorSpike("Too_Many_2085s","<QMGR>","<QMGR>"));
             		
             	} else {
-            		issue = issueObjectMap.getOrDefault(mqObject, new ErrorSpike("Too_Many_2035s","<Q>",mqObject));
+            		issue = issueObjectMap.getOrDefault(mqObject, new ErrorSpike("Too_Many_2035s","<QUEUE>",mqObject));
             	}
-
+            	
+            	
+            	// TODO: get rid of count
+            	
+            	
                 // add new archieved info
                 issue.addWindowData(errorInfo, rate);
                 // we re-put into active issues
@@ -121,7 +125,7 @@ public class QMGRCounter {
         }
         // sending to the accumulator
         try {
-        	IssueAggregatorService.sendIssues("ErrorSpikeIssues", issueObjectMap);
+            issueAggregatorService.sendIssues("ErrorSpikeIssues", issueObjectMap);
         } catch (Exception e) {
             System.err.println("Failed to send issues to aggregator: " + e.getMessage());
         }

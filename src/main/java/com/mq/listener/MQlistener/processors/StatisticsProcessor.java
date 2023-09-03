@@ -35,9 +35,9 @@ import com.mq.listener.MQlistener.utils.IssueAggregatorService;
 public class StatisticsProcessor {
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH.mm.ss");
 	// how much will it go above in the timeframe before making an issue, let's say this is in per minute
-	private static final double QUEUE_SPIKE_OF_ACTIVITY_THRESHOLD = 10; 
+	private static final double QUEUE_SPIKE_OF_ACTIVITY_THRESHOLD = 100; 
 	private static final double QM_SPIKE_OF_ACTIVITY_THRESHOLD = 100; 
-	private static final double QM_MAX_CONNS = 50; 
+	private static final double QM_MAX_CONNS = 50;
 
 //    @Autowired
 //    private static IssueAggregatorService aggregatorService;
@@ -63,16 +63,17 @@ public class StatisticsProcessor {
 
     
     private static Map<String, ActivitySpike> issueObjectMap = new HashMap<>();
+    @Autowired
+    private IssueAggregatorService issueAggregatorService;
     
-    
-    public static void processStatisticsMessage(PCFMessage pcfMsg) throws Exception {
+    public void processStatisticsMessage(PCFMessage pcfMsg) throws Exception {
     	if (pcfMsg == null) {
             log.error("Provided PCFMessage is null.");
             return;
         }
 
 		String commandString = PCFParser.extractCommandString(pcfMsg);
-		System.out.println("Recieved Stats message, command: " + commandString);
+//		System.out.println("Recieved Stats message, command: " + commandString);
 		
 		switch (commandString) {
 			case "MQCMD_STATISTICS_Q":
@@ -92,7 +93,9 @@ public class StatisticsProcessor {
     }
     
     
-    public static void processStatMQIMessage(PCFMessage pcfMsg) throws Exception {
+    public void processStatMQIMessage(PCFMessage pcfMsg) throws Exception {
+    	
+    	
     	// MQIAMO_OPENS is https://www.ibm.com/docs/en/ibm-mq/9.3?topic=reference-notes#q037510___q037510_1
         String startDate = pcfMsg.getStringParameterValue(MQConstants.MQCAMO_START_DATE).trim();
         String startTime = pcfMsg.getStringParameterValue(MQConstants.MQCAMO_START_TIME).trim();
@@ -111,24 +114,14 @@ public class StatisticsProcessor {
 
      // For MQIAMO_CONNS
         try {
-            int[] connsArray = pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_CONNS);
-            if (connsArray != null) {
-                conns = Arrays.stream(connsArray).sum();
-            } else {
-                conns = 0;
-            }
+            conns = pcfMsg.getIntParameterValue(MQConstants.MQIAMO_CONNS);
         } catch (Exception e) {
             conns = 0;
         }
 
-        // For MQIAMO_CONNS_FAILED
+     // For MQIAMO_CONNS_FAILED
         try {
-            int[] connsFailedArray = pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_CONNS_FAILED);
-            if (connsFailedArray != null) {
-                connsFailed = Arrays.stream(connsFailedArray).sum();
-            } else {
-                connsFailed = 0;
-            }
+            connsFailed = pcfMsg.getIntParameterValue(MQConstants.MQIAMO_CONNS_FAILED);
         } catch (Exception e) {
             connsFailed = 0;
         }
@@ -170,14 +163,9 @@ public class StatisticsProcessor {
             puts = 0;
         }
 
-        // For MQIAMO_PUTS_FAILED
+     // For MQIAMO_PUTS_FAILED
         try {
-            int[] putsFailedArray = pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_PUTS_FAILED);
-            if (putsFailedArray != null) {
-                putsFailed = Arrays.stream(putsFailedArray).sum();
-            } else {
-                putsFailed = 0;
-            }
+            putsFailed = pcfMsg.getIntParameterValue(MQConstants.MQIAMO_PUTS_FAILED);
         } catch (Exception e) {
             putsFailed = 0;
         }
@@ -218,14 +206,9 @@ public class StatisticsProcessor {
             gets = 0;
         }
 
-        // For MQIAMO_GETS_FAILED
+     // For MQIAMO_GETS_FAILED
         try {
-            int[] getsFailedArray = pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_GETS_FAILED);
-            if (getsFailedArray != null) {
-                getsFailed = Arrays.stream(getsFailedArray).sum();
-            } else {
-                getsFailed = 0;
-            }
+            getsFailed = pcfMsg.getIntParameterValue(MQConstants.MQIAMO_GETS_FAILED);
         } catch (Exception e) {
             getsFailed = 0;
         }
@@ -247,13 +230,16 @@ public class StatisticsProcessor {
         LocalTime startTimeFormatted = LocalTime.parse(startTime, formatter);
         LocalTime endTimeFormatted = LocalTime.parse(endTime, formatter);
         Map.Entry<LocalTime, LocalTime> timeKey = new AbstractMap.SimpleEntry<>(startTimeFormatted, endTimeFormatted);
+        String combinedTime = startTimeFormatted.format(DateTimeFormatter.ofPattern("HH:mm:ss")) 
+        		+ " - " 
+        		+ endTimeFormatted.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         QMTimeSeriesStats.put(timeKey, statsForQM);
         printTimeSeriesStatsQueueManager();
-        checkQueueManagerActivity(timeKey, statsForQM);
+        checkQueueManagerActivity(timeKey, statsForQM, combinedTime);
         
     }
     
-    public static void processStatQMessage(PCFMessage pcfMsg) throws Exception {
+    public void processStatQMessage(PCFMessage pcfMsg) throws Exception {
     	// this is the type fthat we're dealing with: https://www.ibm.com/docs/en/ibm-mq/9.3?topic=reference-queue-statistics-message-data
 
         try {
@@ -290,17 +276,25 @@ public class StatisticsProcessor {
             LocalTime startTimeFormatted = LocalTime.parse(startTime, formatter);
             String endTime = pcfMsg.getStringParameterValue(MQConstants.MQCAMO_END_TIME).trim();
             LocalTime endTimeFormatted = LocalTime.parse(endTime, formatter);
-            
+            String combinedTime = startTimeFormatted.format(DateTimeFormatter.ofPattern("HH:mm:ss")) 
+            		+ " - " 
+            		+ endTimeFormatted.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
             // check whether there is a spike of activity for any of the queues
             
             Map.Entry<LocalTime, LocalTime> timeKey = new AbstractMap.SimpleEntry<>(startTimeFormatted, endTimeFormatted);
-            checkQueueActivity(timeKey);
+            checkQueueActivity(timeKey, combinedTime);
             
-            // add to accumulator
+//            // add to accumulator
+//            try {
+//                IssueAggregatorService.sendIssues("ActivitySpikeIssues", issueObjectMap);
+//            } catch (Exception e) {
+//                log.error("Failed to send activity spikes to aggregator: " + e.getMessage());
+//            }
+            
             try {
-                IssueAggregatorService.sendIssues("ActivitySpikeIssues", issueObjectMap);
+            	issueAggregatorService.sendIssues("ActivitySpikeIssues", issueObjectMap);
             } catch (Exception e) {
-                log.error("Failed to send activity spikes to aggregator: " + e.getMessage());
+                System.err.println("Failed to send activity spikes to aggregator: " + e.getMessage());
             }
                
             // now that all the data for this period is in queueStatsMap, we add it
@@ -317,7 +311,7 @@ public class StatisticsProcessor {
         }
     }
     
-    private static void printTimeSeriesStatsQueues() {
+    private void printTimeSeriesStatsQueues() {
         System.out.println("Time series stats for <QUEUES>:");
         timeSeriesStats.forEach((time, stats) -> {
             System.out.println("Time: " + time);
@@ -333,7 +327,7 @@ public class StatisticsProcessor {
             });
         });
     }
-    private static void printTimeSeriesStatsQueueManager() {
+    private void printTimeSeriesStatsQueueManager() {
         System.out.println("Time series stats for <QMGR>:");
         QMTimeSeriesStats.forEach((time, stats) -> {
             System.out.println("Time: " + time);
@@ -343,13 +337,14 @@ public class StatisticsProcessor {
         });
     }
     
-    private static void checkQueueActivity(Map.Entry<LocalTime, LocalTime> timeKey) {
+    private void checkQueueActivity(Map.Entry<LocalTime, LocalTime> timeKey, String combinedTime) {
     	// so find rate per minute of put/gets and handle the logic
         long intervalInSeconds = java.time.Duration.between(timeKey.getKey(), timeKey.getValue()).getSeconds();
         if (intervalInSeconds <= 0) {
             log.warn("Invalid time interval.");
             return;
         }
+        // for each queue entry
         for (Map.Entry<String, Map<String, Integer>> queueEntry : queueStatsMap.entrySet()) {
             String queueName = queueEntry.getKey();
             Map<String, Integer> stats = queueEntry.getValue();
@@ -364,7 +359,7 @@ public class StatisticsProcessor {
 	                ActivitySpike issue = issueObjectMap.getOrDefault(queueName, new ActivitySpike("<QUEUE>", queueName));
 	            	Map<String, String> detailsHashMap = new HashMap<>();
 	            	detailsHashMap.put("requestRate", Double.toString(requestRatePerMinute));
-	            	issue.addWindowData(detailsHashMap, timeKey);
+	            	issue.addWindowData(detailsHashMap, combinedTime);
 	                issueObjectMap.put(queueName, issue);
 	                log.info("New issue detected and added for queue: {}", queueName);
                 
@@ -372,7 +367,7 @@ public class StatisticsProcessor {
             }
        }
     }
-    private static void checkQueueManagerActivity( Map.Entry<LocalTime, LocalTime> timeKey, Map<String, Integer> stats) {
+    private void checkQueueManagerActivity( Map.Entry<LocalTime, LocalTime> timeKey, Map<String, Integer> stats, String combinedTime) {
     	// so find rate per minute of put/gets and handle the logic
         long intervalInSeconds = java.time.Duration.between(timeKey.getKey(), timeKey.getValue()).getSeconds();
         if (intervalInSeconds <= 0) {
@@ -393,7 +388,7 @@ public class StatisticsProcessor {
         	Map<String, String> detailsHashMap = new HashMap<>();
         	detailsHashMap.put("requestRate", Double.toString(requestRatePerMinute));
         	detailsHashMap.put("connRate", Double.toString(connsRatePerMinute));
-        	issue.addWindowData(detailsHashMap, timeKey);
+        	issue.addWindowData(detailsHashMap, combinedTime);
         	
             issueObjectMap.put("<QMGR>", issue);
             log.info("New issue detected and added for queue: \"<QMGR>\"");
@@ -408,7 +403,7 @@ public class StatisticsProcessor {
     When the size of timeSeriesStats gets to 30, this deletes the oldest entry, 
     to ensure not too much memory usage.
     */
-    private static void ensureMaxEntries() {
+    private void ensureMaxEntries() {
         while (timeSeriesStats.size() > 30) {
             // Creating an iterator for the keys of timeSeriesStats
             Iterator<Map.Entry<LocalTime, LocalTime>> i = timeSeriesStats.keySet().iterator();
@@ -420,7 +415,7 @@ public class StatisticsProcessor {
     }
     
     
-    private static void processQueue(Enumeration<?> nestedParameters) {
+    private void processQueue(Enumeration<?> nestedParameters) {
     	// defining variables which we want to add to statsForQueue
         String QName = null;
         Integer quantPut = 0;

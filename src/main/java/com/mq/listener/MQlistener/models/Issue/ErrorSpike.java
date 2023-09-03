@@ -1,6 +1,8 @@
 package com.mq.listener.MQlistener.models.Issue;
 
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +13,8 @@ import com.mq.listener.MQlistener.models.Errors.ErrorDetails;
 import TimeFormatter.TimeFormatter;
 
 public class ErrorSpike extends Issue {
+	DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+	
     public ErrorSpike(String issueCode, String MQObjectType, String MQObjectName) {
         this.issueCode = issueCode;
         this.startTimeStamp = TimeFormatter.formatNow();
@@ -22,28 +26,29 @@ public class ErrorSpike extends Issue {
     
     // puts window data into the map
     public void addWindowData(ErrorDetails details, Double rate) {
-
-    	
-    	ArrayList<String> archivedRates;
+    	ArrayList<String> archivedRequestRates;
     	ArrayList<String> archivedTimestamps;
     	try {
-    	    archivedRates = (ArrayList<String>) technicalDetails.getOrDefault("archievedRate", new ArrayList<String>());
-    	    archivedTimestamps = (ArrayList<String>) technicalDetails.getOrDefault("archievedTimestamps", new ArrayList<String>());
+    	    archivedRequestRates = (ArrayList<String>) technicalDetails.getOrDefault("archivedRequestRates", new ArrayList<String>());
+    	    archivedTimestamps = (ArrayList<String>) technicalDetails.getOrDefault("archivedTimestamps", new ArrayList<String>());
     	} catch (ClassCastException e) {
-    	    archivedRates = new ArrayList<String>();
+    	    archivedRequestRates = new ArrayList<String>();
     	    archivedTimestamps = new ArrayList<String>();
-    	    System.out.println("Error: The stored value for 'archievedRate' or 'archievedTimestamps' was not of the expected type. Initializing with an empty list.");
+    	    System.out.println("Error: The stored value for 'archivedRequestRates' or 'archivedTimestamps' was not of the expected type. Initializing with an empty list.");
     	}
 
-        archivedRates.add(rate.toString());  // Convert the Double to String
-        archivedTimestamps.add(TimeFormatter.formatNow());  // Store the current timestamp
+        archivedRequestRates.add(rate.toString());
+        String currentTimeString = LocalTime.now().format(timeFormatter);
+        archivedTimestamps.add(currentTimeString);
 
-        technicalDetails.put("archievedRate", archivedRates);
-        technicalDetails.put("archievedTimestamps", archivedTimestamps);
+        technicalDetails.put("archivedRequestRates", archivedRequestRates);
+        technicalDetails.put("archivedTimestamps", archivedTimestamps);
         
         Map<String, Object> detailsHashMap = details.toHashMap();
-        detailsHashMap.put("archievedRate", archivedRates); 
-        detailsHashMap.put("archievedTimestamps", archivedTimestamps); 
+        detailsHashMap.remove("count");
+        
+        detailsHashMap.put("archivedRequestRates", archivedRequestRates); 
+        detailsHashMap.put("archivedTimestamps", archivedTimestamps); 
         technicalDetails.putAll(detailsHashMap);
     }
 }
