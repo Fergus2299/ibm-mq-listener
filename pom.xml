@@ -27,11 +27,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.nuviosoftware</groupId>
-			<artifactId>order-service</artifactId>
-			<version>1.0.0</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.ibm.mq/mq-jms-spring-boot-starter -->
 		<dependency>
 		    <groupId>com.ibm.mq</groupId>
