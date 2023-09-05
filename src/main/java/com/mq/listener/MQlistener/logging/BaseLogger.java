@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class BaseLogger {
-
+	// TODO: ensure that user opening the log files while the app is running will not break the app
     protected static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     protected static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
     protected static final String BASE_PATH = "logs/";
@@ -32,7 +32,6 @@ public class BaseLogger {
         String currentDateString = currentDate.format(DATE_FORMATTER);
         String directoryPath;
         String logFilePath;
-        
         
         // checking if file exists, if not it's created
         if (optQName.isPresent()) {
@@ -89,9 +88,6 @@ public class BaseLogger {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        
-        
-        
+        }        
     }
 }

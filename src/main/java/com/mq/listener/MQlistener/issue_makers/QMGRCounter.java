@@ -17,15 +17,14 @@ import com.mq.listener.MQlistener.models.Errors.AuthErrorDetails;
 import com.mq.listener.MQlistener.models.Errors.ErrorDetails;
 import com.mq.listener.MQlistener.models.Errors.UnknownObjectErrorDetails;
 import com.mq.listener.MQlistener.models.Issue.ErrorSpike;
-import com.mq.listener.MQlistener.processors.QMGRProcessor;
 import com.mq.listener.MQlistener.utils.ConsoleLogger;
-import com.mq.listener.MQlistener.utils.IssueAggregatorService;
-import com.mq.listener.MQlistener.utils.JsonUtil;
+import com.mq.listener.MQlistener.utils.IssueSender;
 
 @Component
 public class QMGRCounter {
     private static final Logger log = LoggerFactory.getLogger(QMGRCounter.class);
-
+    @Autowired
+    private IssueSender sender;
 	
     private static final double ERRORS_PER_MINUTE_THRESHOLD = 10; // Threshold for errors per minute
     private static final long WINDOW_DURATION_MILLIS = 20 * 1000; // 10 seconds window
@@ -38,11 +37,9 @@ public class QMGRCounter {
     private static Map<String, ErrorDetails> tempCounts = new HashMap<>();
     // this will delete issues as they are closed
     Set<String> objectsWithIssues = new HashSet<>();
-    @Autowired
-    private IssueAggregatorService issueAggregatorService;
+
 
     public static void countType1AuthError(String userId, String appName, String channelName, String connName, String CSPUserId) {
-//    	startTimestamps.putIfAbsent("<QMGR - Auth>", System.currentTimeMillis());
     	ErrorDetails currentDetails = tempCounts.getOrDefault(
     			"<QMGR - Auth>", 
     			new Auth1ErrorDetails(0, userId, appName,channelName,connName,CSPUserId));
@@ -53,7 +50,6 @@ public class QMGRCounter {
     
     // Count 2035 - 2 errors for the given queue and error code
     public static void countType2AuthError(String userId, String appName, String queueName) {
-//        startTimestamps.putIfAbsent(queueName, System.currentTimeMillis());
         ErrorDetails currentDetails = tempCounts.getOrDefault(queueName, new AuthErrorDetails(0, userId, appName));
         currentDetails.incrementCount();
         log.info(queueName + " incremented to: " + currentDetails.getCount());
@@ -61,7 +57,6 @@ public class QMGRCounter {
     }
     
     public static void countUnknownObjectError(String appName, String connName, String channelName, String queueName) {
-//    	startTimestamps.putIfAbsent("<QMGR - UnknownObject>", System.currentTimeMillis());
     	ErrorDetails currentDetails = tempCounts.getOrDefault(
     			"<QMGR - UnknownObject>", 
     			new UnknownObjectErrorDetails(0, appName, connName,channelName,queueName));
@@ -73,7 +68,7 @@ public class QMGRCounter {
 
     // Evaluate error rates and reset counts at a fixed rate
     @Scheduled(fixedRate = WINDOW_DURATION_MILLIS)
-    public void evaluateAndResetCounts() {
+    public void evaluateAndResetCounts() throws Exception {
         double rate;
         // TODO: ensure that the time interval is being evaluated correctly
         // Iterate over all queues with active issues and those in tempCounts
@@ -109,13 +104,12 @@ public class QMGRCounter {
             	} else {
             		issue = issueObjectMap.getOrDefault(mqObject, new ErrorSpike("Too_Many_2035s","<QUEUE>",mqObject));
             	}
-            	
-            	
-            	// TODO: get rid of count
-            	
-            	
+
                 // add new archieved info
                 issue.addWindowData(errorInfo, rate);
+                
+                sender.sendIssue(issue);
+                
                 // we re-put into active issues
                 issueObjectMap.put(mqObject, issue);
             }
@@ -123,12 +117,12 @@ public class QMGRCounter {
                 objectsWithIssues.add(mqObject);
             } 
         }
-        // sending to the accumulator
-        try {
-            issueAggregatorService.sendIssues("ErrorSpikeIssues", issueObjectMap);
-        } catch (Exception e) {
-            System.err.println("Failed to send issues to aggregator: " + e.getMessage());
-        }
+//        // sending to the accumulator
+//        try {
+//            issueAggregatorService.sendIssues("ErrorSpikeIssues", issueObjectMap);
+//        } catch (Exception e) {
+//            System.err.println("Failed to send issues to aggregator: " + e.getMessage());
+//        }
         
 
         ConsoleLogger.printQueueCurrentIssues(issueObjectMap, "Error Rates");

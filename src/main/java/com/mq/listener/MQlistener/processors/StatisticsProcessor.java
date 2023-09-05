@@ -32,7 +32,7 @@ import com.mq.listener.MQlistener.models.Issue.ErrorSpike;
 import com.mq.listener.MQlistener.models.Issue.Issue;
 import com.mq.listener.MQlistener.parsers.PCFParser;
 import com.mq.listener.MQlistener.utils.ConsoleLogger;
-import com.mq.listener.MQlistener.utils.IssueAggregatorService;
+import com.mq.listener.MQlistener.utils.IssueSender;
 
 @Component
 public class StatisticsProcessor {
@@ -63,7 +63,7 @@ public class StatisticsProcessor {
     
     private static Map<String, ActivitySpike> issueObjectMap = new HashMap<>();
     @Autowired
-    private IssueAggregatorService issueAggregatorService;
+    private IssueSender sender;
 	@Autowired
 	private BaseLogger logger;
     
@@ -290,12 +290,6 @@ public class StatisticsProcessor {
             Map.Entry<LocalTime, LocalTime> timeKey = new AbstractMap.SimpleEntry<>(startTimeFormatted, endTimeFormatted);
             checkQueueActivity(timeKey, combinedTime);
             
-            try {
-            	issueAggregatorService.sendIssues("ActivitySpikeIssues", issueObjectMap);
-            } catch (Exception e) {
-                System.err.println("Failed to send activity spikes to aggregator: " + e.getMessage());
-            }
-               
             // now that all the data for this period is in queueStatsMap, we add it
             // to the timeSeriesStats, queueStatsMap is cleared each period because it's a static variable
             // and we're only interested in current data being in it
@@ -307,6 +301,7 @@ public class StatisticsProcessor {
 	        for (Map.Entry<String, Map<String, Integer>> queue : queueStatsMap.entrySet()) {
 	        	String queueName = queue.getKey();
 	        	Map<String, Integer> queueStats = queue.getValue();
+	        	// TODO: actually get the queue manager, via system vars
 	        	logger.logToCsv("QM1", Optional.of(queueName), startTimeFormatted, endTimeFormatted, queueStats);
 	        }
 	        
@@ -347,7 +342,7 @@ public class StatisticsProcessor {
         });
     }
     
-    private void checkQueueActivity(Map.Entry<LocalTime, LocalTime> timeKey, String combinedTime) {
+    private void checkQueueActivity(Map.Entry<LocalTime, LocalTime> timeKey, String combinedTime) throws Exception {
     	// so find rate per minute of put/gets and handle the logic
         long intervalInSeconds = java.time.Duration.between(timeKey.getKey(), timeKey.getValue()).getSeconds();
         if (intervalInSeconds <= 0) {
@@ -365,19 +360,21 @@ public class StatisticsProcessor {
             		+ stats.getOrDefault("GETS_FAILED", 0);
             double requestRatePerMinute = (60.0 * requests) / intervalInSeconds;
             if (requestRatePerMinute > QUEUE_SPIKE_OF_ACTIVITY_THRESHOLD) {
-	                log.warn("Spike in PUT activity detected for queue {}: Rate = {} per minute", queueName, requestRatePerMinute);
-	                ActivitySpike issue = issueObjectMap.getOrDefault(queueName, new ActivitySpike("<QUEUE>", queueName));
-	            	Map<String, String> detailsHashMap = new HashMap<>();
-	            	detailsHashMap.put("requestRate", Double.toString(requestRatePerMinute));
-	            	issue.addWindowData(detailsHashMap, combinedTime);
-	                issueObjectMap.put(queueName, issue);
-	                log.info("New issue detected and added for queue: {}", queueName);
-                
-                // TODO: else we can add window data
+            	// creation of the issue
+                log.warn("Spike in PUT activity detected for queue {}: Rate = {} per minute", queueName, requestRatePerMinute);
+                ActivitySpike issue = issueObjectMap.getOrDefault(queueName, new ActivitySpike("<QUEUE>", queueName));
+            	Map<String, String> detailsHashMap = new HashMap<>();
+            	detailsHashMap.put("requestRate", Double.toString(requestRatePerMinute));
+            	issue.addWindowData(detailsHashMap, combinedTime);
+            	
+            	// now that the issue is created/ updated, send it to frontend
+                sender.sendIssue(issue);
+                // update issue map
+                issueObjectMap.put(queueName, issue);
             }
        }
     }
-    private void checkQueueManagerActivity( Map.Entry<LocalTime, LocalTime> timeKey, Map<String, Integer> stats, String combinedTime) {
+    private void checkQueueManagerActivity( Map.Entry<LocalTime, LocalTime> timeKey, Map<String, Integer> stats, String combinedTime) throws Exception {
     	// so find rate per minute of put/gets and handle the logic
         long intervalInSeconds = java.time.Duration.between(timeKey.getKey(), timeKey.getValue()).getSeconds();
         if (intervalInSeconds <= 0) {
@@ -394,19 +391,20 @@ public class StatisticsProcessor {
         if (requestRatePerMinute > QM_SPIKE_OF_ACTIVITY_THRESHOLD || connsRatePerMinute > QM_MAX_CONNS) {
             log.warn("Spike in activity detected for QMGR: PutGetRate = {} per minute, ConnRate = {} per minute", 
             		requestRatePerMinute, connsRatePerMinute);
+            
+            // TODO: <QMGR> cannot be the object name
         	ActivitySpike issue = issueObjectMap.getOrDefault("<QMGR>", new ActivitySpike("<QMGR>", "<QMGR>"));
         	Map<String, String> detailsHashMap = new HashMap<>();
         	detailsHashMap.put("requestRate", Double.toString(requestRatePerMinute));
         	detailsHashMap.put("connRate", Double.toString(connsRatePerMinute));
         	issue.addWindowData(detailsHashMap, combinedTime);
         	
+        	// now that the issue is created/ updated, send it to frontend
+            sender.sendIssue(issue);
+            // update issue map
             issueObjectMap.put("<QMGR>", issue);
             log.info("New issue detected and added for queue: \"<QMGR>\"");
-            
-            // TODO: else we can add window data
-            
         }
-      
     }
     
     /**

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import com.mq.listener.MQlistener.models.AccountingData;
 import com.mq.listener.MQlistener.models.Issue.ConnectionPatternIssue;
 import com.mq.listener.MQlistener.utils.ConsoleLogger;
-import com.mq.listener.MQlistener.utils.IssueAggregatorService;
+import com.mq.listener.MQlistener.utils.IssueSender;
 
 // we assume one user = one connecting app
 // this isn't uniformed accross use cases of IBM MQ but is common because this 
@@ -24,7 +24,9 @@ import com.mq.listener.MQlistener.utils.IssueAggregatorService;
 @Component
 public class AccountingMetrics {
 	DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-	
+    @Autowired
+    private IssueSender sender;
+    
 	// hardcoded threshold of number of conns per minute
     private static final int CONNECTION_THRESHOLD = 100; 
     
@@ -42,8 +44,6 @@ public class AccountingMetrics {
     private static Map<String, ConnectionPatternIssue> issueObjectMap = new HashMap<>();    // these maps hold temporarily the amount of connects and put/gets per user 
     private static Map<String, Integer> connectionCounts = new HashMap<>();
     private static Map<String, Integer> putGetCounts = new HashMap<>();
-    @Autowired
-    private IssueAggregatorService issueAggregatorService;
     
     // TODO: synchronized allows for no one of these to be running at one time and therefore is more thread safe
     
@@ -65,7 +65,7 @@ public class AccountingMetrics {
     }
     
     @Scheduled(fixedRate = WINDOW_DURATION_MILLIS)
-    public void evaluateAndResetCounts() {
+    public void evaluateAndResetCounts() throws Exception {
     	
 //    	System.out.println("Doing scheduled function");
 //        System.out.println("Connections: " + connectionCounts);
@@ -81,11 +81,11 @@ public class AccountingMetrics {
             double userRatio = userConnectionCount / (double) userPutGetCount;
             boolean shouldLogIssue = false;
             String errorMessage = "";
-            ConnectionPatternIssue error;
+            ConnectionPatternIssue issue;
             // if app connects too much issue gets first priority, then we check for the ratio of conns
             if (userConnectionCount > CONNECTION_THRESHOLD) {
             	String windowDurationInSeconds = String.valueOf(WINDOW_DURATION_MILLIS / 1000);
-                error = issueObjectMap.getOrDefault(userId, new ConnectionPatternIssue(
+                issue = issueObjectMap.getOrDefault(userId, new ConnectionPatternIssue(
                         userConnectionCount,
                         "Too many MQCONNs in time interval. Breached limit of " 
                                 + CONNECTION_THRESHOLD
@@ -98,27 +98,20 @@ public class AccountingMetrics {
                 LocalTime endTimeFormatted = LocalTime.now();
                 LocalTime startTimeFormatted = endTimeFormatted.minusSeconds(WINDOW_DURATION_MILLIS / 1000);
                 
-                // changed to string version
-//                Map.Entry<LocalTime, LocalTime> logTime = new AbstractMap.SimpleEntry<>(startTimeFormatted, endTimeFormatted);
                 String combinedTime = startTimeFormatted.format(timeFormatter) + " - " + endTimeFormatted.format(timeFormatter);
-
-                
-                
                 Map<String, String> issueDetails = new HashMap<>();
                 issueDetails.put("conns", String.valueOf(userConnectionCount));
                 issueDetails.put("putGetCount", String.valueOf(userPutGetCount));
                 issueDetails.put("userRatio", String.valueOf(userRatio));
                 
-                error.addWindowData(issueDetails, combinedTime);
+                issue.addWindowData(issueDetails, combinedTime);
                 
-                issueObjectMap.put(userId, error);
-                
-                
+                issueObjectMap.put(userId, issue);
                 
             } else if (userConnectionCount > RATIO_CONNECTION_THRESHOLD && userRatio >= RATIO_THRESHOLD) {
                 String windowDurationInSeconds = String.valueOf(WINDOW_DURATION_MILLIS / 1000);
                 
-                error = issueObjectMap.getOrDefault(userId, new ConnectionPatternIssue(
+                issue = issueObjectMap.getOrDefault(userId, new ConnectionPatternIssue(
                         userConnectionCount,
                         "Ratio of MQCONNS to GETS/PUTS is above " 
                                 + RATIO_THRESHOLD
@@ -131,7 +124,6 @@ public class AccountingMetrics {
                     ));
                 LocalTime endTimeFormatted = LocalTime.now();
                 LocalTime startTimeFormatted = endTimeFormatted.minusSeconds(WINDOW_DURATION_MILLIS / 1000);
-//                Map.Entry<LocalTime, LocalTime> logTime = new AbstractMap.SimpleEntry<>(startTimeFormatted, endTimeFormatted);
                 String combinedTime = startTimeFormatted.format(timeFormatter) + " - " + endTimeFormatted.format(timeFormatter);
 
                 Map<String, String> issueDetails = new HashMap<>();
@@ -139,26 +131,16 @@ public class AccountingMetrics {
                 issueDetails.put("putGetCount", String.valueOf(userPutGetCount));
                 issueDetails.put("userRatio", String.valueOf(userRatio));
                 
-                error.addWindowData(issueDetails, combinedTime);
-
-                issueObjectMap.put(userId, error);
+                issue.addWindowData(issueDetails, combinedTime);
+                
+                // sending created or updated issue to frontend
+                sender.sendIssue(issue);
+                issueObjectMap.put(userId, issue);
             }
 
         }
-        
-        
-        
         // Reset the counts for the next window
         connectionCounts.clear();
         putGetCounts.clear();
-        // print the current issues
-//        ConsoleLogger.printQueueCurrentIssues(issueObjectMap, "Apps");
-        
-        // send new version of issues to the aggregator
-        try {
-        	issueAggregatorService.sendIssues("ApplicationConfigurationIssues", issueObjectMap);
-        } catch (Exception e) {
-            System.err.println("Failed to send issues to aggregator: " + e.getMessage());
-        }
     }
 }
