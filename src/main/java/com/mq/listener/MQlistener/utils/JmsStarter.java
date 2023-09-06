@@ -5,25 +5,47 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.jms.config.JmsListenerEndpointRegistry;
+import org.springframework.jms.listener.AbstractMessageListenerContainer;
+import org.springframework.jms.listener.MessageListenerContainer;
 import org.springframework.stereotype.Component;
 
 
 /**
- * JmsStarter is a component responsible for manually starting JMS listeners during 
- * the application's startup sequence. This is crucial when we want to delay the 
- * initialization of these listeners to after certain operations, like clearing MQ queues.
- * To utilize this behavior, ensure that 'spring.jms.listener.auto-startup' is set to 'false'
- * in the application properties.
+ * JmsStarter manually starts JMS listeners during 
+ * the application's startup sequence. It waits until after queues
+ * have been cleared.
  */
 @Component
-@Order(2)
+@Order(3)
 public class JmsStarter implements ApplicationRunner {
 
     @Autowired
     private JmsListenerEndpointRegistry jmsListenerEndpointRegistry;
-
+	@Autowired
+	private SendLoginStatus sendLoginStatus;
+	
     @Override
     public void run(ApplicationArguments args) {
         jmsListenerEndpointRegistry.start();
+        
+        // this section counts which of the 
+        int count = 0;
+        for (MessageListenerContainer container : jmsListenerEndpointRegistry.getListenerContainers()) {
+            if (container instanceof AbstractMessageListenerContainer) {
+                AbstractMessageListenerContainer abstractContainer = (AbstractMessageListenerContainer) container;
+                if (abstractContainer.isRunning()) {
+                    System.out.println("Listener for " + abstractContainer.getDestinationName() + " is running.");
+                    count ++;
+                }
+            }
+        }
+        if (count >= 4) {
+            sendLoginStatus.sendStatus(true, "Login successful: listeners started successfully.");
+
+        } else {
+            String errorMessage = "Login unsuccessful: Failed to start all listeners.";
+            System.out.println(errorMessage.toString());
+            sendLoginStatus.sendStatus(false, errorMessage.toString());
+        }
     }
 }

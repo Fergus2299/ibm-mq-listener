@@ -9,6 +9,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -25,11 +26,13 @@ public class QMGRCounter {
     private static final Logger log = LoggerFactory.getLogger(QMGRCounter.class);
     @Autowired
     private IssueSender sender;
-	
-    private static final double ERRORS_PER_MINUTE_THRESHOLD = 10; // Threshold for errors per minute
+    
+    // using value injection to get the threshold for errors per minute
+    @Value("${config.errors.threshold}")
+    private double threshold;
+//    private static final double ERRORS_PER_MINUTE_THRESHOLD = 10; // Threshold for errors per minute
     private static final long WINDOW_DURATION_MILLIS = 20 * 1000; // 10 seconds window
     private static final long MILLIS_IN_MINUTE = 60 * 1000; // 60 seconds * 1000 milliseconds/second
-    
     
     // Active issues for each queue
     private static Map<String, ErrorSpike> issueObjectMap = new HashMap<>();
@@ -65,7 +68,7 @@ public class QMGRCounter {
     	tempCounts.put("<QMGR - UnknownObject>", currentDetails);
     	}
     
-
+    // TODO: potentially have a start time for the timestamp
     // Evaluate error rates and reset counts at a fixed rate
     @Scheduled(fixedRate = WINDOW_DURATION_MILLIS)
     public void evaluateAndResetCounts() throws Exception {
@@ -89,7 +92,7 @@ public class QMGRCounter {
 //            long durationMillis = currentTimeMillis - startTimestamps.getOrDefault(queue, currentTimeMillis);
             rate = ((double) count / WINDOW_DURATION_MILLIS) * MILLIS_IN_MINUTE;
             // Check the rate and handle the issues accordingly
-            if (rate > ERRORS_PER_MINUTE_THRESHOLD) {
+            if (rate > threshold) {
             	// get or create issue for this queue or whole queue manager
             	ErrorSpike issue;
             	log.info("ErrorSpike issue for the queue manager, object: " + mqObject + ". Rate of error is: " + rate);

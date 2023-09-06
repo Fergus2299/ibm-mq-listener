@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -23,10 +26,16 @@ import com.ibm.mq.headers.pcf.PCFMessageAgent;
 
 
 
+/**
+ * ClearQueues connects to the target MQ and clears all the relevant 
+ * event queues which this application will listen to. 
+ */
+
 // TODO: credit the source of this class
 @Component
-@Order(1)
+@Order(2)
 public class ClearQueues implements ApplicationRunner{
+
 	
 	// the lists being used
 	// TODO: make user able to chose which issues are analysed
@@ -52,7 +61,25 @@ public class ClearQueues implements ApplicationRunner{
 
     @Value("${ibm.mq.password}")
     private String password;
-
+    
+    private String address;
+    private Integer port;
+    
+    
+    // extracting address and port from conn name
+    public void extractConnName() {
+    	Pattern pattern = Pattern.compile("^(.+)\\((\\d+)\\)$");
+    	Matcher matcher = pattern.matcher(connName);
+        if (matcher.find()) {
+            address = matcher.group(1);
+            port = Integer.parseInt(matcher.group(2));
+            System.out.println("Address: " + address);
+            System.out.println("Port: " + port);
+        } else {
+        	
+        }
+    }
+    
    private Hashtable<String,Object> mqht;
    
    public ClearQueues()
@@ -61,52 +88,54 @@ public class ClearQueues implements ApplicationRunner{
    }
    
    private void init() throws IllegalArgumentException {
-	   // temporarily using this
+	   extractConnName();
+	   
 	   mqht.put(CMQC.CHANNEL_PROPERTY, channel);
-	   mqht.put(CMQC.HOST_NAME_PROPERTY, "13.87.80.195");
-	   mqht.put(CMQC.PORT_PROPERTY, 1414);
+	   mqht.put(CMQC.HOST_NAME_PROPERTY, address);
+	   mqht.put(CMQC.PORT_PROPERTY, port);
 	   mqht.put(CMQC.USER_ID_PROPERTY, user);
 	   mqht.put(CMQC.PASSWORD_PROPERTY, password); 
    }
 	   
-   private void doPCF(PCFMessageAgent agent, String queueName) {
-         PCFMessage   request   = null;
-         PCFMessage[] responses = null;
-    
-         try
-         {
-            // https://www.ibm.com/docs/en/ibm-mq/latest?topic=formats-clear-queue
-        	// sending the request
-            request = new PCFMessage(CMQCFC.MQCMD_CLEAR_Q);
-            request.addParameter(CMQC.MQCA_Q_NAME, queueName);
-            responses = agent.send(request);
-            System.out.println("responses.length="+responses.length);
-            
-            // checking response
-            for (int i = 0; i < responses.length; i++)
-            {
-               if ((responses[i]).getCompCode() == CMQC.MQCC_OK)
-                  System.out.println("Successfully cleared queue '"+queueName+"' of messages.");
-               else
-                  System.out.println("Error: Failed to clear queue '"+queueName+"' of messages.");
-            }
-         }
-         catch (IOException e)
-         {
+   private Boolean doPCF(PCFMessageAgent agent, String queueName) {
+	   PCFMessage   request   = null;
+	   PCFMessage[] responses = null;
+		   try {
+	        // https://www.ibm.com/docs/en/ibm-mq/latest?topic=formats-clear-queue
+	    	// sending the request
+	        request = new PCFMessage(CMQCFC.MQCMD_CLEAR_Q);
+	        request.addParameter(CMQC.MQCA_Q_NAME, queueName);
+	        responses = agent.send(request);
+	        System.out.println("responses.length="+responses.length);
+	        
+		        // checking response
+		        for (int i = 0; i < responses.length; i++){
+		           if ((responses[i]).getCompCode() == CMQC.MQCC_OK) {
+		        	   System.out.println("Successfully cleared queue '"+queueName+"' of messages.");
+		        	   return true;
+		           }
+		           else {
+		        	   System.out.println("Error: Failed to clear queue '"+queueName+"' of messages.");
+		           }
+		        }
+		   }
+         catch (IOException e) {
             System.out.println("IOException:" +e.getLocalizedMessage());
          }
-         catch (MQDataException e)
-         {
-            if ( (e.completionCode == CMQC.MQCC_FAILED) && (e.reasonCode == CMQCFC.MQRCCF_OBJECT_OPEN) )
+         catch (MQDataException e) {
+            if ( (e.completionCode == CMQC.MQCC_FAILED) && (e.reasonCode == CMQCFC.MQRCCF_OBJECT_OPEN) ) {
                System.out.println("Error: Failed to clear queue '"+queueName+"' of messages. An application has the queue open.");
-            else
+            }
+            else {
                System.out.println("CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]");
+            }
          }
-         
+		 return false;
      }
      
      @Override
      public void run(ApplicationArguments args) {
+    	 Integer queuesCleared = 0;
          init();
          MQQueueManager qMgr = null;
          PCFMessageAgent agent = null;
@@ -117,10 +146,12 @@ public class ClearQueues implements ApplicationRunner{
 
              agent = new PCFMessageAgent(qMgr);
              System.out.println("successfully created agent");
-
-             // iterating through each queue we're looking at and clearing
+             
+             // as we clear queues we count them and ensure that all have been cleared
              for (String queue : QUEUES) {
-                 doPCF(agent, queue);
+                 if(doPCF(agent, queue)) {
+                	 queuesCleared ++;
+                 }
              }
          } catch (MQException e) {
              System.out.println("CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]");
@@ -137,17 +168,24 @@ public class ClearQueues implements ApplicationRunner{
                catch (MQDataException e) {
                   System.out.println("CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]");
                }
-       
                try {
                   if (qMgr != null)
                   {
                      qMgr.disconnect();
                      System.out.println("disconnected from "+ qMgrName);
+                     // checking if all 4 queues cleared
+                     System.out.println("successfully cleared " + queuesCleared + " queues");
+                     if (queuesCleared >= 4) {
+                    	 // TODO: send login success
+                    	 return;
+                     }
                   }
                }
                catch (MQException e) {
                   System.out.println("CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]");
                }
             }
+         
+      // TODO: send login failed
      }
 }

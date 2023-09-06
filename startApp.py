@@ -28,7 +28,7 @@ def start_spring_boot_app():
     
     
     
-def run_with_properties(queue_manager, channel, conn_name, user, password, listener_auto_startup):
+def run_with_properties(queue_manager, channel, conn_name, user, password):
     """
     Accepts properties as arguments, sets them as environment variables, 
     and starts the Spring Boot application.
@@ -39,7 +39,6 @@ def run_with_properties(queue_manager, channel, conn_name, user, password, liste
         ibm_mq_connName=conn_name,
         ibm_mq_user=user,
         ibm_mq_password=password,
-        spring_jms_listener_auto_startup=listener_auto_startup
     )
     start_spring_boot_app()    
     
@@ -51,5 +50,4 @@ if __name__ == "__main__":
         conn_name="13.87.80.195(1414)",
         user="admin",
         password="passw0rd",
-        listener_auto_startup="false"
     )

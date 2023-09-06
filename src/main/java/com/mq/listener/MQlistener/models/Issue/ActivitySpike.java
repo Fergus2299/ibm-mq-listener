@@ -10,13 +10,14 @@ import com.mq.listener.MQlistener.models.Errors.ErrorDetails;
 import TimeFormatter.TimeFormatter;
 
 public class ActivitySpike extends Issue{
-    public ActivitySpike(String MQObjectType, 
+    public ActivitySpike(
+    		String generalDesc,
+    		String MQObjectType, 
     		String MQObjectName
-    		
     		) {
         this.issueCode = "Too_Much_Activity";
         this.startTimeStamp = TimeFormatter.formatNow();
-        this.generalDesc = "";
+        this.generalDesc = generalDesc;
         this.technicalDetails = new HashMap<>();
         this.MQObjectType = MQObjectType;
         this.MQObjectName = MQObjectName;

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Queue;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -26,17 +27,25 @@ public class AccountingMetrics {
 	DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
     @Autowired
     private IssueSender sender;
-    
+        
 	// hardcoded threshold of number of conns per minute
-    private static final int CONNECTION_THRESHOLD = 100; 
+    
+    // TODO: do these need to be static???
+    @Value("${config.apps.connections.threshold}")
+    private int connThreshold;
     
 	// if the user is below this level of conns then their connection pattern is ignored
     // --- because we only penalise connection patterns which are frequent and therefore taking up 
     // a lot of resources
-    private static final int RATIO_CONNECTION_THRESHOLD = 5;
+    
+    // COR = shortening of connections operations ratio
+    @Value("${config.apps.connectionOperations.connections}")
+    private int CORConnectionsThreshold;
+    
+    @Value("${config.apps.connectionOperations.threshold}")
+    private double CORThreshold;
     // the ratio of conns to put/gets where, if below this and connecting often then the app is ine-
     // fficient
-    private static final double RATIO_THRESHOLD = 0.80;
     // time window length 
     private static final long WINDOW_DURATION_MILLIS = 10 * 1000;
    
@@ -71,7 +80,7 @@ public class AccountingMetrics {
 //        System.out.println("Connections: " + connectionCounts);
 //        System.out.println("putGetCounts: " + putGetCounts);
     	
-    	
+    	System.out.println("connThreshold: " + connThreshold + ", CORConnectionsThreshold: " + CORConnectionsThreshold + ", CORThreshold: " + CORThreshold);
     	// iterating through each user
         for (String userId : connectionCounts.keySet()) {
             int userConnectionCount = connectionCounts.getOrDefault(userId, 0);
@@ -83,12 +92,12 @@ public class AccountingMetrics {
             String errorMessage = "";
             ConnectionPatternIssue issue;
             // if app connects too much issue gets first priority, then we check for the ratio of conns
-            if (userConnectionCount > CONNECTION_THRESHOLD) {
+            if (userConnectionCount > connThreshold) {
             	String windowDurationInSeconds = String.valueOf(WINDOW_DURATION_MILLIS / 1000);
                 issue = issueObjectMap.getOrDefault(userId, new ConnectionPatternIssue(
                         userConnectionCount,
                         "Too many MQCONNs in time interval. Breached limit of " 
-                                + CONNECTION_THRESHOLD
+                                + connThreshold
                                 + " in the window of: " 
                                 + windowDurationInSeconds
                                 + ".",
@@ -105,16 +114,17 @@ public class AccountingMetrics {
                 issueDetails.put("userRatio", String.valueOf(userRatio));
                 
                 issue.addWindowData(issueDetails, combinedTime);
-                
+                System.out.println("sending app issue");
+                sender.sendIssue(issue);
                 issueObjectMap.put(userId, issue);
                 
-            } else if (userConnectionCount > RATIO_CONNECTION_THRESHOLD && userRatio >= RATIO_THRESHOLD) {
+            } else if (userConnectionCount > CORConnectionsThreshold && userRatio >= CORThreshold) {
                 String windowDurationInSeconds = String.valueOf(WINDOW_DURATION_MILLIS / 1000);
                 
                 issue = issueObjectMap.getOrDefault(userId, new ConnectionPatternIssue(
                         userConnectionCount,
                         "Ratio of MQCONNS to GETS/PUTS is above " 
-                                + RATIO_THRESHOLD
+                                + CORThreshold
                                 + " too high " 
                                 + " in the configured interval of "
                                 + windowDurationInSeconds
@@ -132,11 +142,12 @@ public class AccountingMetrics {
                 issueDetails.put("userRatio", String.valueOf(userRatio));
                 
                 issue.addWindowData(issueDetails, combinedTime);
-                
+                System.out.println("sending app issue");
                 // sending created or updated issue to frontend
                 sender.sendIssue(issue);
                 issueObjectMap.put(userId, issue);
             }
+            System.out.println("User: " + userId + ", Connections: " + userConnectionCount + ", userRatio: " + userRatio);
 
         }
         // Reset the counts for the next window
