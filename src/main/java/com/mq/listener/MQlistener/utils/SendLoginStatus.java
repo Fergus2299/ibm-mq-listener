@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class SendLoginStatus {
 	// TODO: change to web client
-	private final String POST_URL = "https://your-api-endpoint.com/login-status";
+	private final String POST_URL = "https://127.0.0.1:5000/javaloginfeedback";
 	
     public void sendStatus(Boolean success, String message) {
         RestTemplate restTemplate = new RestTemplate();
