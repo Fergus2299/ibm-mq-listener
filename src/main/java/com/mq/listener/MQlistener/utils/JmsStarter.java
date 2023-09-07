@@ -40,10 +40,10 @@ public class JmsStarter implements ApplicationRunner {
             }
         }
         if (count >= 4) {
-            sendLoginStatus.sendStatus(true, "Login successful: listeners started successfully.");
+            sendLoginStatus.sendStatus(true, "Login successful");
 
         } else {
-            String errorMessage = "Login unsuccessful: Failed to start all listeners.";
+            String errorMessage = "Login unsuccessful: NOTE TO SELF: make better message later on";
             System.out.println(errorMessage.toString());
             sendLoginStatus.sendStatus(false, errorMessage.toString());
         }

@@ -1,11 +1,16 @@
 package com.mq.listener.MQlistener.utils;
 
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Collections;
+import java.util.Map;
 
 @Service
 public class SendLoginStatus {
@@ -14,7 +19,11 @@ public class SendLoginStatus {
 	
     public void sendStatus(Boolean success, String message) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<String> request = new HttpEntity<>(message);
+        Map<String, String> jsonPayload = Collections.singletonMap("message", message);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Map<String, String>> request = new HttpEntity<>(jsonPayload, headers);
 
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(POST_URL, request, String.class);
