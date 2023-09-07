@@ -33,6 +33,5 @@ public class SendLoginStatus {
             // Handle other exceptions that may occur
             System.err.println("An unexpected error occurred: " + e.getMessage());
         }
-    }
-        
+    } 
 }
