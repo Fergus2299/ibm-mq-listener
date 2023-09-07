@@ -17,6 +17,9 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -32,17 +35,33 @@ import com.mq.listener.MQlistener.models.Issue.ErrorSpike;
 import com.mq.listener.MQlistener.models.Issue.Issue;
 import com.mq.listener.MQlistener.parsers.PCFParser;
 import com.mq.listener.MQlistener.utils.ConsoleLogger;
-import com.mq.listener.MQlistener.utils.IssueAggregatorService;
+import com.mq.listener.MQlistener.utils.IssueSender;
 
 @Component
+@ConfigurationProperties(prefix = "config.queue.operations")
 public class StatisticsProcessor {
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH.mm.ss");
-	// how much will it go above in the timeframe before making an issue, let's say this is in per minute
-	private static final double QUEUE_SPIKE_OF_ACTIVITY_THRESHOLD = 100;
-	private static final double QM_SPIKE_OF_ACTIVITY_THRESHOLD = 100;
-	private static final double QM_MAX_CONNS = 50;
     private static final Logger log = LoggerFactory.getLogger(StatisticsProcessor.class);
+    
+    // value injection from config file
+    @Value("${config.queueManager.connections.max}")
+    private int queueManagerMaxConnections;
+    @Value("${config.queueManager.operations.max}")
+    private int queueManagerMaxOperations;
+    @Value("${config.queue.operations.max}")
+    private int defaultQueueMaxOperations;
+    // constructing a map from specific queues
+    private Map<String, Integer> specificQueues = new HashMap<>();
 
+    public Map<String, Integer> getSpecificQueues() {
+        return specificQueues;
+    }
+
+    public void setSpecificQueues(Map<String, Integer> specificQueues) {
+        this.specificQueues = specificQueues;
+    }
+    
+    
     // observedQueues stores queues from past messages, STATQ messages only include any one given queue if there's been some
     // operation on it (e.g. put, get,...). observedQueues allows us to interpolate 0's data where we don't recieve any data 
     // for any given queue
@@ -63,7 +82,7 @@ public class StatisticsProcessor {
     
     private static Map<String, ActivitySpike> issueObjectMap = new HashMap<>();
     @Autowired
-    private IssueAggregatorService issueAggregatorService;
+    private IssueSender sender;
 	@Autowired
 	private BaseLogger logger;
     
@@ -290,12 +309,6 @@ public class StatisticsProcessor {
             Map.Entry<LocalTime, LocalTime> timeKey = new AbstractMap.SimpleEntry<>(startTimeFormatted, endTimeFormatted);
             checkQueueActivity(timeKey, combinedTime);
             
-            try {
-            	issueAggregatorService.sendIssues("ActivitySpikeIssues", issueObjectMap);
-            } catch (Exception e) {
-                System.err.println("Failed to send activity spikes to aggregator: " + e.getMessage());
-            }
-               
             // now that all the data for this period is in queueStatsMap, we add it
             // to the timeSeriesStats, queueStatsMap is cleared each period because it's a static variable
             // and we're only interested in current data being in it
@@ -307,6 +320,7 @@ public class StatisticsProcessor {
 	        for (Map.Entry<String, Map<String, Integer>> queue : queueStatsMap.entrySet()) {
 	        	String queueName = queue.getKey();
 	        	Map<String, Integer> queueStats = queue.getValue();
+	        	// TODO: actually get the queue manager, via system vars
 	        	logger.logToCsv("QM1", Optional.of(queueName), startTimeFormatted, endTimeFormatted, queueStats);
 	        }
 	        
@@ -347,7 +361,7 @@ public class StatisticsProcessor {
         });
     }
     
-    private void checkQueueActivity(Map.Entry<LocalTime, LocalTime> timeKey, String combinedTime) {
+    private void checkQueueActivity(Map.Entry<LocalTime, LocalTime> timeKey, String combinedTime) throws Exception {
     	// so find rate per minute of put/gets and handle the logic
         long intervalInSeconds = java.time.Duration.between(timeKey.getKey(), timeKey.getValue()).getSeconds();
         if (intervalInSeconds <= 0) {
@@ -364,20 +378,36 @@ public class StatisticsProcessor {
             		+ stats.getOrDefault("GETS", 0)
             		+ stats.getOrDefault("GETS_FAILED", 0);
             double requestRatePerMinute = (60.0 * requests) / intervalInSeconds;
-            if (requestRatePerMinute > QUEUE_SPIKE_OF_ACTIVITY_THRESHOLD) {
-	                log.warn("Spike in PUT activity detected for queue {}: Rate = {} per minute", queueName, requestRatePerMinute);
-	                ActivitySpike issue = issueObjectMap.getOrDefault(queueName, new ActivitySpike("<QUEUE>", queueName));
-	            	Map<String, String> detailsHashMap = new HashMap<>();
-	            	detailsHashMap.put("requestRate", Double.toString(requestRatePerMinute));
-	            	issue.addWindowData(detailsHashMap, combinedTime);
-	                issueObjectMap.put(queueName, issue);
-	                log.info("New issue detected and added for queue: {}", queueName);
-                
-                // TODO: else we can add window data
+            // use either the default threshold or specialised threshold
+            if (requestRatePerMinute > getQueueMaxOperations(queueName)) {
+            	// creation of the issue
+                log.warn("Spike in PUT activity detected for queue {}: Rate = {} per minute", queueName, requestRatePerMinute);
+                String message = 
+                "Spike in MQ operations on: " 
+                + queueName 
+                + ", which has a configured threshold of no more than "
+                + getQueueMaxOperations(queueName)
+                + " operations";
+                ActivitySpike issue = issueObjectMap.getOrDefault(queueName, new ActivitySpike(
+                		message,
+                		"<QUEUE>", 
+                		queueName));
+            	Map<String, String> detailsHashMap = new HashMap<>();
+            	detailsHashMap.put("requestRate", Double.toString(requestRatePerMinute));
+            	issue.addWindowData(detailsHashMap, combinedTime);
+            	
+            	// now that the issue is created/ updated, send it to frontend
+                sender.sendIssue(issue);
+                // update issue map
+                issueObjectMap.put(queueName, issue);
             }
        }
     }
-    private void checkQueueManagerActivity( Map.Entry<LocalTime, LocalTime> timeKey, Map<String, Integer> stats, String combinedTime) {
+    private void checkQueueManagerActivity( Map.Entry<LocalTime, LocalTime> timeKey, Map<String, Integer> stats, String combinedTime) throws Exception {
+    	
+        // a flag to tell whether issue is present for queue in this window
+    	Boolean flag = false;
+    	String message = "";
     	// so find rate per minute of put/gets and handle the logic
         long intervalInSeconds = java.time.Duration.between(timeKey.getKey(), timeKey.getValue()).getSeconds();
         if (intervalInSeconds <= 0) {
@@ -391,22 +421,44 @@ public class StatisticsProcessor {
         int conns = stats.getOrDefault("CONNS", 0) + stats.getOrDefault("CONNS_FAILED", 0);
         double requestRatePerMinute = (60.0 * requests) / intervalInSeconds;
         double connsRatePerMinute = (60.0 * conns) / intervalInSeconds;
-        if (requestRatePerMinute > QM_SPIKE_OF_ACTIVITY_THRESHOLD || connsRatePerMinute > QM_MAX_CONNS) {
+        
+        
+        if (connsRatePerMinute > queueManagerMaxConnections) {
+            message = 
+            "Spike in connections to the queue manager " 
+            + ", which has a configured threshold of no more than "
+            + queueManagerMaxConnections
+            + " connections per window";
+            flag = true;
+        } else if (requestRatePerMinute > queueManagerMaxOperations) {
+            message = 
+            "Spike in MQ operations on queue manager " 
+            + ", which has a configured threshold of no more than "
+            + queueManagerMaxOperations
+            + " operations per window";
+            flag = true;
+        }
+        
+        if (flag) {
             log.warn("Spike in activity detected for QMGR: PutGetRate = {} per minute, ConnRate = {} per minute", 
             		requestRatePerMinute, connsRatePerMinute);
-        	ActivitySpike issue = issueObjectMap.getOrDefault("<QMGR>", new ActivitySpike("<QMGR>", "<QMGR>"));
+
+            // TODO: <QMGR> cannot be the object name
+        	ActivitySpike issue = issueObjectMap.getOrDefault("<QMGR>", new ActivitySpike(
+        		message,
+	        	"<QMGR>",
+	        	"<QMGR>"));
         	Map<String, String> detailsHashMap = new HashMap<>();
         	detailsHashMap.put("requestRate", Double.toString(requestRatePerMinute));
         	detailsHashMap.put("connRate", Double.toString(connsRatePerMinute));
         	issue.addWindowData(detailsHashMap, combinedTime);
         	
+        	// now that the issue is created/ updated, send it to frontend
+            sender.sendIssue(issue);
+            // update issue map
             issueObjectMap.put("<QMGR>", issue);
             log.info("New issue detected and added for queue: \"<QMGR>\"");
-            
-            // TODO: else we can add window data
-            
         }
-      
     }
     
     /**
@@ -479,8 +531,14 @@ public class StatisticsProcessor {
             queueStatsMap.put(QName, statsForQueue);
             
             // log queue to files
-                      
         }
+    }
+    
+    /* gets the personalised maximum operations rate for a queue
+     * or returns the default for this queue
+     * */
+    public int getQueueMaxOperations(String queueName) {
+        return specificQueues.getOrDefault(queueName, defaultQueueMaxOperations);
     }
     
     

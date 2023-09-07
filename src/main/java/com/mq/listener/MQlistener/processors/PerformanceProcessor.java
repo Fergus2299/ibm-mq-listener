@@ -14,57 +14,49 @@ import com.ibm.mq.headers.pcf.PCFMessage;
 import com.mq.listener.MQlistener.models.Issue.QueueServiceHighIssue;
 import com.mq.listener.MQlistener.parsers.PCFParser;
 import com.mq.listener.MQlistener.utils.ConsoleLogger;
-import com.mq.listener.MQlistener.utils.IssueAggregatorService;
+import com.mq.listener.MQlistener.utils.IssueSender;
 
 @Component
 public class PerformanceProcessor {
     private static final Logger log = LoggerFactory.getLogger(PerformanceProcessor.class);
     @Autowired
-    private IssueAggregatorService issueAggregatorService;
+    private IssueSender sender;
     
+    // stores queue service high event issue, if we get the service ok event then
+    // it updates the value in the map. If another service high event. Then the old issue is replaced
 	private static Map<String, QueueServiceHighIssue> issueObjectMap = new HashMap<>();
     public void processPerformanceMessage(PCFMessage pcfMsg) {
 		try {
-			System.out.println("processing performance message");
+			// check reason code
             String reasonCodeString = PCFParser.extractReasonCode(pcfMsg);
-            System.out.println("reasonCodeString: " + reasonCodeString);
             switch (reasonCodeString) {
-	    		// type 1: connection not auth
 	    		case "MQRC_Q_SERVICE_INTERVAL_HIGH":
 			    	// MQRC_Q_SERVICE_INTERVAL_HIGH) and MQCMD_PERFM_EVENT
 			    	// https://www.ibm.com/docs/en/ibm-mq/9.3?topic=descriptions-queue-service-interval-high
-			    	// these vals are always in this event message
+			    	// TODO: check error handling on getting these
 			        String Q = pcfMsg.getStringParameterValue(MQConstants.MQCA_BASE_OBJECT_NAME).trim();
-			        // Time, in seconds, since the statistics were last reset. For a service interval high event, this value is greater than the service interval.
 			        Integer timeSinceReset = pcfMsg.getIntParameterValue(MQConstants.MQIA_TIME_SINCE_RESET);
-			        // Maximum number of messages on the queue since the queue statistics were last reset.
 			        Integer highQDepth = pcfMsg.getIntParameterValue(MQConstants.MQIA_HIGH_Q_DEPTH);
-			        // Number of messages enqueued. This is the number of messages put on the queue since the queue statistics were last reset.
 			        Integer enQCount = pcfMsg.getIntParameterValue(MQConstants.MQIA_MSG_ENQ_COUNT);
-			        // Number of messages removed from the queue since the queue statistics were last reset.
 			        Integer deQCount = pcfMsg.getIntParameterValue(MQConstants.MQIA_MSG_DEQ_COUNT);
-			
-			    	QueueServiceHighIssue issue = new QueueServiceHighIssue(Q, timeSinceReset, highQDepth, enQCount, deQCount);
-			    	issueObjectMap.putIfAbsent(Q, issue);
-			        // sending to the accumulator
-			    	try {
-			        	issueAggregatorService.sendIssues("Performance Issues", issueObjectMap);
-			        } catch (Exception e) {
-			            System.err.println("Failed to send issues to aggregator: " + e.getMessage());
-			        }
 			        
-	                ConsoleLogger.printQueueCurrentIssues(issueObjectMap, Q);
+			        // create the issue
+			    	QueueServiceHighIssue issue = new QueueServiceHighIssue(Q, timeSinceReset, highQDepth, enQCount, deQCount);
+			    	// either replace an old one or put in this new one
+			    	issueObjectMap.put(Q, issue);
+			        // sending to frontend
+			    	sender.sendIssue(issue);
 	                break;
 	                
 	    		case "MQRC_Q_SERVICE_INTERVAL_OK":
 	            	// MQRC_Q_SERVICE_INTERVAL_OK) and MQCMD_PERFM_EVENT
-	    			System.out.println("recieved MQRC_Q_SERVICE_INTERVAL_OK performance message");
 	    			String QOk = pcfMsg.getStringParameterValue(MQConstants.MQCA_BASE_OBJECT_NAME).trim();
+	    			// if the queue is now ok, we send the new info to the frontend
 	                QueueServiceHighIssue okIssue = issueObjectMap.get(QOk);
 	                // we update the issue for that queue
 	                if (okIssue != null) {
 	                    okIssue.okEventReceived();
-	                    ConsoleLogger.printQueueCurrentIssues(issueObjectMap, QOk);
+	                    sender.sendIssue(okIssue);
 	                }
 	    			break;
 	            default:
