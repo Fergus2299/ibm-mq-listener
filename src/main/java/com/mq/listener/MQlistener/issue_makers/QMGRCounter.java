@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.mq.listener.MQlistener.config.QueueConfig;
+import com.mq.listener.MQlistener.config.QueueManagerConfig;
 import com.mq.listener.MQlistener.models.Errors.Auth1ErrorDetails;
 import com.mq.listener.MQlistener.models.Errors.AuthErrorDetails;
 import com.mq.listener.MQlistener.models.Errors.ErrorDetails;
@@ -24,12 +26,30 @@ import com.mq.listener.MQlistener.utils.IssueSender;
 @Component
 public class QMGRCounter {
     private static final Logger log = LoggerFactory.getLogger(QMGRCounter.class);
+    
+    private final QueueConfig queueConfig;
+    private final QueueManagerConfig queueManagerConfig;
+    int queueManagerThreshold;
+    int queueThreshold;
+    
     @Autowired
     private IssueSender sender;
     
+    @Autowired
+    public QMGRCounter(QueueConfig queueConfig, QueueManagerConfig queueManagerConfig) {
+        this.queueConfig = queueConfig;
+        this.queueManagerConfig = queueManagerConfig;
+        
+    }
+    
+    
+    
     // using value injection to get the threshold for errors per minute
-    @Value("${config.errors.threshold}")
-    private double threshold;
+//    @Value("${config.queue-manager.errors.max}")
+//    private double queueManagerThreshold;
+//    
+//    @Value("${config.queue.errors.max}")
+//    private double queueThreshold;
 //    private static final double ERRORS_PER_MINUTE_THRESHOLD = 10; // Threshold for errors per minute
     private static final long WINDOW_DURATION_MILLIS = 20 * 1000; // 10 seconds window
     private static final long MILLIS_IN_MINUTE = 60 * 1000; // 60 seconds * 1000 milliseconds/second
@@ -72,6 +92,10 @@ public class QMGRCounter {
     // Evaluate error rates and reset counts at a fixed rate
     @Scheduled(fixedRate = WINDOW_DURATION_MILLIS)
     public void evaluateAndResetCounts() throws Exception {
+    	// loading config information
+    	queueManagerThreshold = queueManagerConfig.getErrors().getMax();
+    	queueThreshold = queueConfig.getErrors().getMax();
+    	System.out.println("queueManagerThreshold: " + queueManagerThreshold + " queueThreshold: " + queueThreshold);
         double rate;
         // TODO: ensure that the time interval is being evaluated correctly
         // Iterate over all queues with active issues and those in tempCounts
@@ -92,7 +116,9 @@ public class QMGRCounter {
 //            long durationMillis = currentTimeMillis - startTimestamps.getOrDefault(queue, currentTimeMillis);
             rate = ((double) count / WINDOW_DURATION_MILLIS) * MILLIS_IN_MINUTE;
             // Check the rate and handle the issues accordingly
-            if (rate > threshold) {
+            
+            // TODO: for now using queue manager threshold for all - change this
+            if (rate > queueManagerThreshold) {
             	// get or create issue for this queue or whole queue manager
             	ErrorSpike issue;
             	log.info("ErrorSpike issue for the queue manager, object: " + mqObject + ". Rate of error is: " + rate);

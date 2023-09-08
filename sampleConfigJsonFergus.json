@@ -1,0 +1,7 @@
+{
+"apps":{"connThreshold": 200, "connOpRatioThreshold": 80,"minimumConns":5},
+"queue_manager":{"errorThreshold": 100,"maxMQConns":5000, "maxMQOps":200},
+"queues": {"errorThreshold": 10, "queueActivityThresholds":{"DEV.QUEUE.1":100, "DEV.QUEUE.2":500,"DEV.QUEUE.3":10000}}
+}
+
+

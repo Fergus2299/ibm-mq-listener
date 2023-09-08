@@ -49,5 +49,5 @@ if __name__ == "__main__":
         channel="DEV.ADMIN.SVRCONN",
         conn_name="13.87.80.195(1414)",
         user="admin",
-        password="password",
+        password="passw0rd",
     )

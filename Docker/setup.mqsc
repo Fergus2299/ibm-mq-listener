@@ -1,0 +1,16 @@
+* Enable performance events
+ALTER QMGR PERFMEV(ENABLED)
+
+* Set performance event properties for specific queues
+ALTER QLOCAL(DEV.QUEUE.1) QSVCINT(10000) QSVCIEV(HIGH)
+ALTER QLOCAL(DEV.QUEUE.2) QSVCINT(10000) QSVCIEV(HIGH)
+
+* Enable QMGR events
+ALTER QMGR EVTYPE(ALL) EVENT(ENABLED)
+
+* Enable and configure statistics
+ALTER QMGR STATMQI(ON)
+ALTER QMGR STATINT(900)
+
+* Enable accounting (Note: Detailed configuration for accounting depends on your specifics. Here's a generic enable command.)
+ALTER QMGR ACCTMQI(ON)

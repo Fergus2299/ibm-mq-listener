@@ -28,6 +28,8 @@ import com.ibm.mq.headers.pcf.MQCFGR;
 import com.ibm.mq.headers.pcf.MQCFH;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.headers.pcf.PCFParameter;
+import com.mq.listener.MQlistener.config.QueueConfig;
+import com.mq.listener.MQlistener.config.QueueManagerConfig;
 import com.mq.listener.MQlistener.logging.BaseLogger;
 import com.mq.listener.MQlistener.logging.QMLogger;
 import com.mq.listener.MQlistener.models.Issue.ActivitySpike;
@@ -43,23 +45,37 @@ public class StatisticsProcessor {
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH.mm.ss");
     private static final Logger log = LoggerFactory.getLogger(StatisticsProcessor.class);
     
+    private final QueueConfig queueConfig;
+    private final QueueManagerConfig queueManagerConfig;
+    int queueManagerMaxConnections;
+    int queueManagerMaxOperations;
+    
+    
+    @Autowired
+    public StatisticsProcessor(QueueConfig queueConfig, QueueManagerConfig queueManagerConfig) {
+        this.queueConfig = queueConfig;
+        this.queueManagerConfig = queueManagerConfig;
+        
+    }
+
+    
     // value injection from config file
-    @Value("${config.queueManager.connections.max}")
-    private int queueManagerMaxConnections;
-    @Value("${config.queueManager.operations.max}")
-    private int queueManagerMaxOperations;
-    @Value("${config.queue.operations.max}")
-    private int defaultQueueMaxOperations;
+//    @Value("${config.queue-manager.connections.max}")
+//    private int queueManagerMaxConnections;
+//    @Value("${config.queue-manager.operations.max}")
+//    private int queueManagerMaxOperations;
+//    @Value("${config.queue.operations.default}")
+//    private int defaultQueueMaxOperations;
     // constructing a map from specific queues
-    private Map<String, Integer> specificQueues = new HashMap<>();
-
-    public Map<String, Integer> getSpecificQueues() {
-        return specificQueues;
-    }
-
-    public void setSpecificQueues(Map<String, Integer> specificQueues) {
-        this.specificQueues = specificQueues;
-    }
+//    private Map<String, Integer> specificQueues = new HashMap<>();
+//
+//    public Map<String, Integer> getSpecificQueues() {
+//        return specificQueues;
+//    }
+//
+//    public void setSpecificQueues(Map<String, Integer> specificQueues) {
+//        this.specificQueues = specificQueues;
+//    }
     
     
     // observedQueues stores queues from past messages, STATQ messages only include any one given queue if there's been some
@@ -404,7 +420,10 @@ public class StatisticsProcessor {
        }
     }
     private void checkQueueManagerActivity( Map.Entry<LocalTime, LocalTime> timeKey, Map<String, Integer> stats, String combinedTime) throws Exception {
+    	queueManagerMaxConnections = queueManagerConfig.getConnections().getMax();
+    	queueManagerMaxOperations = queueManagerConfig.getOperations().getMax();
     	
+    	System.out.println("queueManagerMaxConnections: " + queueManagerMaxConnections + " queueManagerMaxOperations: " + queueManagerMaxOperations);
         // a flag to tell whether issue is present for queue in this window
     	Boolean flag = false;
     	String message = "";
@@ -538,8 +557,8 @@ public class StatisticsProcessor {
      * or returns the default for this queue
      * */
     public int getQueueMaxOperations(String queueName) {
-        return specificQueues.getOrDefault(queueName, defaultQueueMaxOperations);
+    	Map<String, Integer> operationsSpecificQueues = queueConfig.getOperationsSpecificQueues();
+    	System.out.println("operationsSpecificQueues: " + operationsSpecificQueues.toString());
+        return operationsSpecificQueues.getOrDefault(queueName, queueConfig.getOperationsDefault());
     }
-    
-    
 }
