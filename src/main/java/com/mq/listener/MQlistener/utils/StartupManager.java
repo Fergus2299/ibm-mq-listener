@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.concurrent.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,8 @@ import com.ibm.mq.headers.MQDataException;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.headers.pcf.PCFMessageAgent;
 // https://www.capitalware.com/rl_blog/?p=6603
+
+// DISPLAY QSTATUS(SYSTEM.ADMIN.ACCOUNTING.QUEUE) TYPE(HANDLE) ALL ---- checks if app has queue open
 @Component
 public class StartupManager implements ApplicationRunner {
     private static final List<String> QUEUES = Arrays.asList(
@@ -118,9 +121,10 @@ public class StartupManager implements ApplicationRunner {
  		        	   return true;
  		           }
  		           else {
+
  		        	  returnMessage = "Error: Failed to clear queue '"+queueName+"' of messages.";
  		        	  System.out.println(returnMessage);
- 		        	  return false;
+ 		        	  
  		           }
  		        }
  		   }
@@ -130,9 +134,12 @@ public class StartupManager implements ApplicationRunner {
 
           }
           catch (MQDataException e) {
+        	   // TODO: check this: for now (development) many versions of this app can be running 
+        	   // on different laptops. But this cannot happen in production because only one can take from queues.
              if ( (e.completionCode == CMQC.MQCC_FAILED) && (e.reasonCode == CMQCFC.MQRCCF_OBJECT_OPEN) ) {
             	 returnMessage = "Error: Failed to clear queue '"+queueName+"' of messages. An application has the queue open.";
                 System.out.println(returnMessage);
+                return true;
              }
              else {
             	 returnMessage = "CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]";
@@ -150,6 +157,7 @@ public class StartupManager implements ApplicationRunner {
  	   mqht.put(CMQC.PORT_PROPERTY, port);
  	   mqht.put(CMQC.USER_ID_PROPERTY, user);
  	   mqht.put(CMQC.PASSWORD_PROPERTY, password); 
+// 	   mqht.put(CMQC.CONNECT_OPTIONS_PROPERTY, CMQC.MQCNO_RECONNECT_Q_MGR);
     }
     // handles clearing all relevant queues
     public void clearAllEventQueues() {
@@ -157,68 +165,72 @@ public class StartupManager implements ApplicationRunner {
         initMQConnection();
         MQQueueManager qMgr = null;
         PCFMessageAgent agent = null;
-        
+        // assigning a different thread to establish connection
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<MQQueueManager> future = executor.submit(() -> new MQQueueManager(qMgrName, mqht));
         // connect to queue manger
         try {
         	System.out.println("qm: " + qMgrName + "trying to connect with: " + mqht.toString());
-        	
-            qMgr = new MQQueueManager(qMgrName, mqht);
+            qMgr = future.get(5, TimeUnit.SECONDS);
+        	qMgr = new MQQueueManager(qMgrName, mqht);
             System.out.println("successfully connected to " + qMgrName);
-//
-//            agent = new PCFMessageAgent(qMgr);
-//            System.out.println("successfully created agent");
-//            
-//            // as we clear queues we count them and ensure that all have been cleared
-//            for (String queue : QUEUES) {
-//                if(!clearQueue(agent, queue)) {
-//                	// all queues must be cleared or the app will not function as intended
-//                	clearQueueSuccess = false;
-//               	 	return;
-//                }
-//            }
+            agent = new PCFMessageAgent(qMgr);
+            System.out.println("successfully created agent");
+            // as we clear queues we count them and ensure that all have been cleared
+            for (String queue : QUEUES) {
+                if(!clearQueue(agent, queue)) {
+                	// all queues must be cleared or the app will not function as intended
+                	clearQueueSuccess = false;
+               	 	return;
+                }
+            }
             
-        } catch (MQException e) {
-        	System.out.println("error");
-        	returnMessage = "CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]";
-            System.out.println(returnMessage);
-//	     } catch (MQDataException e) {
-//	    	 System.out.println("error");
-//	    	 returnMessage = "CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]";
-//	    	  System.out.println(returnMessage);
+
+	     } catch (MQDataException e) {
+	    	 System.out.println("error");
+	    	 returnMessage = "CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]";
+	    	  System.out.println(returnMessage);
+        } catch (TimeoutException e) {
+            System.out.println("Connection timed out!");
+            returnMessage = "Connection to queue manager timed out.";
+            future.cancel(true);
         } catch (Exception e) {
         	System.out.println("error");
         	returnMessage = "Connection to queue manager failed";
         	System.out.println(returnMessage);
-        } finally {System.out.println(clearQueueSuccess);}
+        } finally {
+            executor.shutdownNow();
+        	System.out.println(clearQueueSuccess);
+        	System.out.println(listenersStartSuccess);
+        	}
+        
+        
         
         // now trying to disconnect
-//       try {
-//          if (agent != null) {
-//             agent.disconnect();
-//             System.out.println("disconnected from agent");
-//          }
-//       }
-//      catch (MQDataException e) {
-//    	  
-//    	  returnMessage = "CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]";
-//         System.out.println(returnMessage);
-//      }
-//      try {
-//         if (qMgr != null)
-//         {
-//            qMgr.disconnect();
-//            System.out.println("disconnected from "+ qMgrName);
-//            System.out.println("successfully cleared " + queuesCleared + " queues");
-//            clearQueueSuccess = true;
-//           	 return;
-//         }
-//      }
-//      catch (MQException e) {
-//    	 returnMessage = "CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]";
-//         System.out.println(returnMessage);
-//      }
-           
-        
+       try {
+          if (agent != null) {
+             agent.disconnect();
+             System.out.println("disconnected from agent");
+          }
+       } catch (MQDataException e) {
+    	  
+    	  returnMessage = "CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]";
+         System.out.println(returnMessage);
+      }
+      try {
+         if (qMgr != null)
+         {
+            qMgr.disconnect();
+            System.out.println("disconnected from "+ qMgrName);
+            System.out.println("successfully cleared " + queuesCleared + " queues");
+            clearQueueSuccess = true;
+           	 return;
+         }
+      }
+      catch (MQException e) {
+    	 returnMessage = "CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]";
+         System.out.println(returnMessage);
+      }
     }
     
     private void startJmsListeners() {
@@ -238,7 +250,8 @@ public class StartupManager implements ApplicationRunner {
                 }
             }
         }
-        if (count >= 4) {
+        if (count >= 1) {
+        	System.out.println("listenersStartSuccess");
         	listenersStartSuccess = true;
         } else {
         	returnMessage = "Listeners couldn't start";

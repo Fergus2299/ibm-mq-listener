@@ -23,7 +23,7 @@ public class SendLoginStatus {
     public void sendStatus(Boolean success, String message) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("message", message);
-
+        System.out.println("Json sent to Python server: " + jsonObject.toString());
         webClient.post()
                 .uri(POST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
