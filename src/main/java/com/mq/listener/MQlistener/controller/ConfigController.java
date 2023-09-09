@@ -30,6 +30,8 @@ public class ConfigController {
 
     @Autowired
     private QueueManagerConfig queueManagerConfig;
+    
+    
     @GetMapping("/configurations")
     public ConfigDataTransferObject getConfigurations() {
         System.out.println("Config requested by frontend");
@@ -76,33 +78,108 @@ public class ConfigController {
         try {
             System.out.println("Received Configuration:");
 
+            // Check and convert data, throwing an exception if something's wrong
+            validateAndConvertDTO(configDTO);
+
             System.out.println("Apps Config:");
-            System.out.println("  ConnThreshold: " + configDTO.getRetrievedThresholds().getApps().getConnThreshold());
-            System.out.println("  ConnOpRatioThreshold: " + configDTO.getRetrievedThresholds().getApps().getConnOpRatioThreshold());
-            System.out.println("  MinimumConns: " + configDTO.getRetrievedThresholds().getApps().getMinimumConns());
+//            System.out.println("  ConnThreshold: " + configDTO.getRetrievedThresholds().getApps().getConnThreshold());
+//            System.out.println("  ConnOpRatioThreshold: " + configDTO.getRetrievedThresholds().getApps().getConnOpRatioThreshold());
+//            System.out.println("  MinimumConns: " + configDTO.getRetrievedThresholds().getApps().getMinimumConns());
+            
+            appConfig.getConnections().setMax(configDTO.getRetrievedThresholds().getApps().getConnThreshold());
+            Map<String, Object> connectionOperationsRatio = new HashMap<>();
+            connectionOperationsRatio.put("max", configDTO.getRetrievedThresholds().getApps().getConnOpRatioThreshold());
+            connectionOperationsRatio.put("connections", configDTO.getRetrievedThresholds().getApps().getMinimumConns());
+            appConfig.setConnectionOperationsRatio(connectionOperationsRatio);
+            appConfig.print();
+            
 
             System.out.println("Queue Manager Config:");
-            System.out.println("  ErrorThreshold: " + configDTO.getRetrievedThresholds().getQueue_manager().getErrorThreshold());
-            System.out.println("  MaxMQConns: " + configDTO.getRetrievedThresholds().getQueue_manager().getMaxMQConns());
-            System.out.println("  MaxMQOps: " + configDTO.getRetrievedThresholds().getQueue_manager().getMaxMQOps());
+//            System.out.println("  ErrorThreshold: " + configDTO.getRetrievedThresholds().getQueue_manager().getErrorThreshold());
+//            System.out.println("  MaxMQConns: " + configDTO.getRetrievedThresholds().getQueue_manager().getMaxMQConns());
+//            System.out.println("  MaxMQOps: " + configDTO.getRetrievedThresholds().getQueue_manager().getMaxMQOps());
 
+            queueManagerConfig.getErrors().setMax(configDTO.getRetrievedThresholds().getQueue_manager().getErrorThreshold());
+            queueManagerConfig.getConnections().setMax(configDTO.getRetrievedThresholds().getQueue_manager().getMaxMQConns());
+            queueManagerConfig.getOperations().setMax(configDTO.getRetrievedThresholds().getQueue_manager().getMaxMQOps());
+            
+            queueManagerConfig.print();
+            
             System.out.println("Queues Config:");
-            System.out.println("  ErrorThreshold: " + configDTO.getRetrievedThresholds().getQueues().getErrorThreshold());
-
+//            System.out.println("  ErrorThreshold: " + configDTO.getRetrievedThresholds().getQueues().getErrorThreshold());
+            
             Map<String, ConfigDataTransferObject.QueueThresholdDTO> queueThresholds = configDTO.getRetrievedThresholds().getQueues().getQueueThresholds();
             for (String queueName : queueThresholds.keySet()) {
                 ConfigDataTransferObject.QueueThresholdDTO queueThresholdDTO = queueThresholds.get(queueName);
                 System.out.println("  " + queueName + " - Depth: " + queueThresholdDTO.getDepth() + ", Activity: " + queueThresholdDTO.getActivity());
             }
 
-            // Logic to actually update your configuration based on the received DTO goes here...
-
+            queueConfig.getErrors().setMax(configDTO.getRetrievedThresholds().getQueues().getErrorThreshold());
+            Map<String, Integer> queueThresholdsMap = new HashMap<>();
+            for (Map.Entry<String, ConfigDataTransferObject.QueueThresholdDTO> entry : configDTO.getRetrievedThresholds().getQueues().getQueueThresholds().entrySet()) {
+                queueThresholdsMap.put(entry.getKey(), entry.getValue().getActivity());
+            }
+            queueConfig.setOperationsSpecificQueues(queueThresholdsMap);
+            queueConfig.print();
             return new ResponseEntity<>("Configuration updated successfully!", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error updating configuration: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Error updating configuration: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
     
+    private void validateAndConvertDTO(ConfigDataTransferObject configDTO) throws Exception {
+        // Apps Config
+        Object connThreshold = configDTO.getRetrievedThresholds().getApps().getConnThreshold();
+        if (!(connThreshold instanceof Integer)) {
+            throw new Exception("Invalid ConnThreshold value for Apps. Expected an integer.");
+        }
+
+        Object connOpRatioThreshold = configDTO.getRetrievedThresholds().getApps().getConnOpRatioThreshold();
+        if (!(connOpRatioThreshold instanceof Float) && !(connOpRatioThreshold instanceof Double)) {
+            throw new Exception("Invalid ConnOpRatioThreshold value for Apps. Expected a float.");
+        }
+
+        Object minimumConns = configDTO.getRetrievedThresholds().getApps().getMinimumConns();
+        if (!(minimumConns instanceof Integer)) {
+            throw new Exception("Invalid MinimumConns value for Apps. Expected an integer.");
+        }
+
+        // Queue Manager Config
+        Object errorThresholdQM = configDTO.getRetrievedThresholds().getQueue_manager().getErrorThreshold();
+        if (!(errorThresholdQM instanceof Integer)) {
+            throw new Exception("Invalid ErrorThreshold value for Queue Manager. Expected an integer.");
+        }
+
+        Object maxMQConns = configDTO.getRetrievedThresholds().getQueue_manager().getMaxMQConns();
+        if (!(maxMQConns instanceof Integer)) {
+            throw new Exception("Invalid MaxMQConns value for Queue Manager. Expected an integer.");
+        }
+
+        Object maxMQOps = configDTO.getRetrievedThresholds().getQueue_manager().getMaxMQOps();
+        if (!(maxMQOps instanceof Integer)) {
+            throw new Exception("Invalid MaxMQOps value for Queue Manager. Expected an integer.");
+        }
+
+        // Queues Config
+        Object errorThresholdQ = configDTO.getRetrievedThresholds().getQueues().getErrorThreshold();
+        if (!(errorThresholdQ instanceof Integer)) {
+            throw new Exception("Invalid ErrorThreshold value for Queues. Expected an integer.");
+        }
+
+        // Here, I'm assuming that the QueueThresholds values also need to be checked
+        Map<String, ConfigDataTransferObject.QueueThresholdDTO> queueThresholds = configDTO.getRetrievedThresholds().getQueues().getQueueThresholds();
+        for (ConfigDataTransferObject.QueueThresholdDTO queueThresholdDTO : queueThresholds.values()) {
+            Object depth = queueThresholdDTO.getDepth();
+            if (!(depth instanceof Integer)) {
+                throw new Exception("Invalid Depth value for Queue. Expected an integer.");
+            }
+
+            Object activity = queueThresholdDTO.getActivity();
+            if (!(activity instanceof Integer)) {
+                throw new Exception("Invalid Activity value for Queue. Expected an integer.");
+            }
+        }
+    }
     
     public ResponseEntity<Object> handleAllExceptions(Exception ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

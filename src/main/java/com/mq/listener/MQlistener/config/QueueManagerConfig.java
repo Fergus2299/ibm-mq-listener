@@ -23,6 +23,10 @@ public class QueueManagerConfig {
 		public void setMax(int max) {
 			this.max = max;
 		}
+        @Override
+        public String toString() {
+            return "Connections [max=" + max + "]";
+        }
         
     }
 
@@ -36,6 +40,10 @@ public class QueueManagerConfig {
 		public void setMax(int max) {
 			this.max = max;
 		}
+        @Override
+        public String toString() {
+            return "Operations [max=" + max + "]";
+        }
         
     }
 
@@ -49,6 +57,10 @@ public class QueueManagerConfig {
 		public void setMax(int max) {
 			this.max = max;
 		}
+        @Override
+        public String toString() {
+            return "Errors [max=" + max + "]";
+        }
         
     }
 
@@ -75,5 +87,15 @@ public class QueueManagerConfig {
 	public void setErrors(Errors errors) {
 		this.errors = errors;
 	}
+	
+    @Override
+    public String toString() {
+        return "QueueManagerConfig [connections=" + connections + ", operations=" + operations + ", errors=" + errors + "]";
+    }
+    
+    public void print() {
+        System.out.println(this.toString());
+    }
+
     
 }

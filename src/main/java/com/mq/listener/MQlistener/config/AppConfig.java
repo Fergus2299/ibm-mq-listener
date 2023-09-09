@@ -38,5 +38,17 @@ public class AppConfig {
 		public void setMax(int max) {
 			this.max = max;
 		}
+        @Override
+        public String toString() {
+            return "Connections [max=" + max + "]";
+        }
+    }
+    
+    @Override
+    public String toString() {
+        return "AppConfig [connections=" + connections + ", connectionOperationsRatio=" + connectionOperationsRatio + "]";
+    }
+    public void print() {
+        System.out.println(this.toString());
     }
 }

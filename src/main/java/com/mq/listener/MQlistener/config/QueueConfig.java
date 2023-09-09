@@ -25,6 +25,10 @@ public class QueueConfig {
 		public void setMax(int max) {
 			this.max = max;
 		}
+        @Override
+        public String toString() {
+            return "Errors [max=" + max + "]";
+        }
         
     }
     
@@ -51,4 +55,18 @@ public class QueueConfig {
 	public void setOperationsSpecificQueues(Map<String, Integer> operationsSpecificQueues) {
 		this.operationsSpecificQueues = operationsSpecificQueues;
 	}
+	
+    @Override
+    public String toString() {
+        return "QueueConfig [errors=" + errors + ", operationsDefault=" + operationsDefault + ", operationsSpecificQueues=" + operationsSpecificQueues + "]";
+    }
+    
+    
+    public void print() {
+        System.out.println(this.toString());
+    }
+    
+    
+    
+    
 }
