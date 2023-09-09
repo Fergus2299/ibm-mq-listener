@@ -29,7 +29,6 @@ public class ConfigDataTransferObject {
 		public void setMinimumConns(int minimumConns) {
 			this.minimumConns = minimumConns;
 		}
-
     }
 
     public static class QueueManagerDTO {

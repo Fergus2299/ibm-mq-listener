@@ -5,11 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 
 import com.mq.listener.MQlistener.config.AppConfig;
 import com.mq.listener.MQlistener.config.ConfigDataTransferObject;
+import com.mq.listener.MQlistener.config.ConfigUpdateRequest;
 import com.mq.listener.MQlistener.config.QueueConfig;
 import com.mq.listener.MQlistener.config.QueueManagerConfig;
 
@@ -50,8 +53,33 @@ public class ConfigController {
         dataTransferObject.setQueues(queueDTO);
         
         return dataTransferObject;
-    
     }
+    
+    
+    @PostMapping("/updateAppConfig")
+    public String updateAppConfig(@RequestBody ConfigDataTransferObject configDTO) {
+        try {
+            System.out.println("Received Configuration:");
+            System.out.println("Apps Config:");
+            System.out.println("  ConnThreshold: " + configDTO.getApps().getConnThreshold());
+            System.out.println("  ConnOpRatioThreshold: " + configDTO.getApps().getConnOpRatioThreshold());
+            System.out.println("  MinimumConns: " + configDTO.getApps().getMinimumConns());
+            
+            System.out.println("Queue Manager Config:");
+            System.out.println("  ErrorThreshold: " + configDTO.getQueue_manager().getErrorThreshold());
+            System.out.println("  MaxMQConns: " + configDTO.getQueue_manager().getMaxMQConns());
+            System.out.println("  MaxMQOps: " + configDTO.getQueue_manager().getMaxMQOps());
+            
+            System.out.println("Queues Config:");
+            System.out.println("  ErrorThreshold: " + configDTO.getQueues().getErrorThreshold());
+            System.out.println("  QueueActivityThresholds: " + configDTO.getQueues().getQueueActivityThresholds());
+            
+            return "App configuration updated successfully!";
+        } catch (Exception e) {
+            return "Error updating app configuration: " + e.getMessage();
+        }
+    }
+    
     
     public ResponseEntity<Object> handleAllExceptions(Exception ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

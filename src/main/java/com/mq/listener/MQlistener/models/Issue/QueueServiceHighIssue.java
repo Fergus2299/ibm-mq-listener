@@ -21,6 +21,10 @@ public class QueueServiceHighIssue extends Issue {
         // issue active when service high event created
         this.technicalDetails = new HashMap<>();
         this.technicalDetails.put("isActiveIssue", "1"); 
+        this.technicalDetails.put("timeSinceReset", timeSinceReset.toString());
+        this.technicalDetails.put("highQDepth", highQDepth.toString());
+        this.technicalDetails.put("enQCount", enQCount.toString());
+        this.technicalDetails.put("deQCount", deQCount.toString());
         this.MQObjectType = "<QUEUE>";
         this.MQObjectName = QName;
     }

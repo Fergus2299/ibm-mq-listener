@@ -12,6 +12,9 @@ import java.util.Queue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
+//import org.springframework.security.authentication.AnonymousAuthenticationToken;
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.mq.listener.MQlistener.config.AppConfig;
@@ -89,6 +92,14 @@ public class AccountingMetrics {
     
     @Scheduled(fixedRate = WINDOW_DURATION_MILLIS)
     public void evaluateAndResetCounts() throws Exception {
+//    	System.out.println("getting username");
+//    	String currentUserName = "";
+//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//		System.out.println("auth : " + authentication);
+//		if (!(authentication instanceof AnonymousAuthenticationToken)) {
+//		    currentUserName = authentication.getName();
+//		}
+//		System.out.println("current user name: "+ currentUserName);
     	// loading config into function
     	// TODO: don't load ConnectionOperationsRatio twice
         appConnectionsMax = appConfig.getConnections().getMax();
