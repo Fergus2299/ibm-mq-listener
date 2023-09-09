@@ -50,6 +50,7 @@ public class StatisticsListener {
             try {
                 MQMessage mqMsg = MQListener.convertToMQMessage((BytesMessage) receivedMessage);
                 PCFMessage pcfMsg = new PCFMessage(mqMsg);
+                System.out.println("recieved stats Message!");
                 // TODO: assuming StatQ message is the only stats message being produced by MQ
                 statisticsProcessor.processStatisticsMessage(pcfMsg);
             } catch (Exception e) {

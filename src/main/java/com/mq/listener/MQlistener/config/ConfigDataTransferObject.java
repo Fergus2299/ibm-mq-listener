@@ -3,10 +3,32 @@ package com.mq.listener.MQlistener.config;
 import java.util.Map;
 
 public class ConfigDataTransferObject {
-    private AppDTO apps;
-    private QueueManagerDTO queue_manager;
-    private QueueDTO queues;
-    
+    private RetrievedThresholdsDTO retrievedThresholds;
+
+    public static class RetrievedThresholdsDTO {
+        private AppDTO apps;
+        private QueueManagerDTO queue_manager;
+        private QueueDTO queues;
+		public AppDTO getApps() {
+			return apps;
+		}
+		public void setApps(AppDTO apps) {
+			this.apps = apps;
+		}
+		public QueueManagerDTO getQueue_manager() {
+			return queue_manager;
+		}
+		public void setQueue_manager(QueueManagerDTO queue_manager) {
+			this.queue_manager = queue_manager;
+		}
+		public QueueDTO getQueues() {
+			return queues;
+		}
+		public void setQueues(QueueDTO queues) {
+			this.queues = queues;
+		}
+        
+    }
     public static class AppDTO {
         private int connThreshold;
         private float connOpRatioThreshold;
@@ -58,45 +80,52 @@ public class ConfigDataTransferObject {
 
     public static class QueueDTO {
         private int errorThreshold;
-        private Map<String, Integer> queueActivityThresholds;
+        private Map<String, QueueThresholdDTO> queueThresholds;        
+        
 		public int getErrorThreshold() {
 			return errorThreshold;
 		}
 		public void setErrorThreshold(int errorThreshold) {
 			this.errorThreshold = errorThreshold;
 		}
-		public Map<String, Integer> getQueueActivityThresholds() {
-			return queueActivityThresholds;
+		public Map<String, QueueThresholdDTO> getQueueThresholds() {
+			return queueThresholds;
 		}
-		public void setQueueActivityThresholds(Map<String, Integer> queueActivityThresholds) {
-			this.queueActivityThresholds = queueActivityThresholds;
+		public void setQueueThresholds(Map<String, QueueThresholdDTO> queueThresholds) {
+			this.queueThresholds = queueThresholds;
 		}
+
+
+    }
+    
+    public static class QueueThresholdDTO {
+        private int depth = 0; // As required, defaulting to 0
+        private int activity;
+		public int getDepth() {
+			return depth;
+		}
+		public void setDepth(int depth) {
+			this.depth = depth;
+		}
+		public int getActivity() {
+			return activity;
+		}
+		public void setActivity(int activity) {
+			this.activity = activity;
+		}
+
+
 
     }
 
-	public AppDTO getApps() {
-		return apps;
+	public RetrievedThresholdsDTO getRetrievedThresholds() {
+		return retrievedThresholds;
 	}
 
-	public void setApps(AppDTO apps) {
-		this.apps = apps;
+	public void setRetrievedThresholds(RetrievedThresholdsDTO retrievedThresholds) {
+		this.retrievedThresholds = retrievedThresholds;
 	}
 
-	public QueueManagerDTO getQueue_manager() {
-		return queue_manager;
-	}
 
-	public void setQueue_manager(QueueManagerDTO queue_manager) {
-		this.queue_manager = queue_manager;
-	}
-
-	public QueueDTO getQueues() {
-		return queues;
-	}
-
-	public void setQueues(QueueDTO queues) {
-		this.queues = queues;
-	}
-    
     
 }
