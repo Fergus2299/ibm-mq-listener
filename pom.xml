@@ -96,6 +96,12 @@
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-security</artifactId>
 		</dependency>-->
+		
+		<!--for parsing to yml-->
+		<dependency>
+		    <groupId>org.yaml</groupId>
+		    <artifactId>snakeyaml</artifactId>
+		    </dependency>
 
 
 	</dependencies>

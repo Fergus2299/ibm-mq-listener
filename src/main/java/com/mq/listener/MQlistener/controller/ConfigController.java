@@ -18,6 +18,7 @@ import com.mq.listener.MQlistener.config.ConfigDataTransferObject;
 import com.mq.listener.MQlistener.config.ConfigUpdateRequest;
 import com.mq.listener.MQlistener.config.QueueConfig;
 import com.mq.listener.MQlistener.config.QueueManagerConfig;
+import com.mq.listener.MQlistener.service.YmlUpdaterService;
 
 @RestController
 public class ConfigController {
@@ -30,6 +31,9 @@ public class ConfigController {
 
     @Autowired
     private QueueManagerConfig queueManagerConfig;
+    
+    @Autowired
+    private YmlUpdaterService ymlUpdaterService;
     
     
     @GetMapping("/configurations")
@@ -121,6 +125,11 @@ public class ConfigController {
             }
             queueConfig.setOperationsSpecificQueues(queueThresholdsMap);
             queueConfig.print();
+            
+            
+            // writing changes to yml
+            
+            ymlUpdaterService.updateConfig();
             return new ResponseEntity<>("Configuration updated successfully!", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error updating configuration: " + e.getMessage(), HttpStatus.BAD_REQUEST);
