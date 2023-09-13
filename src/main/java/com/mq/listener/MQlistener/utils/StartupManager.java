@@ -26,9 +26,8 @@ import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.headers.MQDataException;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.headers.pcf.PCFMessageAgent;
-import com.mq.listener.MQlistener.newConfig.Config;
-import com.mq.listener.MQlistener.newConfig.ConfigManager;
-// https://www.capitalware.com/rl_blog/?p=6603
+import com.mq.listener.MQlistener.config.Config;
+import com.mq.listener.MQlistener.config.ConfigManager;
 
 // DISPLAY QSTATUS(SYSTEM.ADMIN.ACCOUNTING.QUEUE) TYPE(HANDLE) ALL ---- checks if app has queue open
 @Component
@@ -73,6 +72,7 @@ public class StartupManager implements ApplicationRunner {
 	private SendLoginStatus sendLoginStatus;
 	
     // var for checking queues were cleared successfully
+	private Boolean loadConfig = false;
     private Boolean clearQueueSuccess = false;
     private Boolean listenersStartSuccess = false;
 //    the message which is sent to flask server
@@ -84,18 +84,19 @@ public class StartupManager implements ApplicationRunner {
         Config config = configLoader.getConfig();
         
         
-        if (config != null) { // Or any other verification you want for the config
+        if (config != null) {
+        	loadConfig = true;
             clearAllEventQueues();
             startJmsListeners();
         } else {
             // TODO: Handle missing configuration
-            System.out.println("Configuration is missing!");
+            returnMessage = "Configuration has failed to load.";
         }
         sendFinalStatus();
     }
     
     private void sendFinalStatus() {
-        if(clearQueueSuccess && listenersStartSuccess) {
+        if(clearQueueSuccess && listenersStartSuccess && loadConfig) {
             sendLoginStatus.sendStatus(true, "Login successful");
         } else {
             System.out.println(returnMessage);

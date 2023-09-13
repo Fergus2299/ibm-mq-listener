@@ -1,6 +1,5 @@
 package com.mq.listener.MQlistener.processors;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap;
@@ -19,26 +18,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.headers.pcf.MQCFGR;
-import com.ibm.mq.headers.pcf.MQCFH;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.headers.pcf.PCFParameter;
-import com.mq.listener.MQlistener.config.QueueConfig;
-import com.mq.listener.MQlistener.config.QueueManagerConfig;
+import com.mq.listener.MQlistener.config.ConfigManager;
+import com.mq.listener.MQlistener.config.Config.QMConfig;
 import com.mq.listener.MQlistener.logging.BaseLogger;
-import com.mq.listener.MQlistener.logging.QMLogger;
 import com.mq.listener.MQlistener.models.Issue.ActivitySpike;
-import com.mq.listener.MQlistener.models.Issue.ErrorSpike;
-import com.mq.listener.MQlistener.models.Issue.Issue;
-import com.mq.listener.MQlistener.newConfig.ConfigManager;
-import com.mq.listener.MQlistener.newConfig.Config.QMConfig;
 import com.mq.listener.MQlistener.parsers.PCFParser;
-import com.mq.listener.MQlistener.utils.ConsoleLogger;
 import com.mq.listener.MQlistener.utils.IssueSender;
 
 @Component

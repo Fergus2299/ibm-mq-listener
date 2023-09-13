@@ -1,38 +1,37 @@
 {
   "qms": {
-	  "<DEFAULT>": {
+    "<DEFAULT>": {
       "app": {
         "connections": {
-          "max": 8
+          "max": 400
         },
         "connectionOperationsRatio": {
-          "max": 0.95,
-          "connections": 4
+          "max": 0.44999998807907104,
+          "connections": 2
         }
       },
       "queueManager": {
         "connections": {
-          "max": 100
+          "max": 101
         },
         "operations": {
-          "max": 50
+          "max": 51
         },
         "errors": {
-          "max": 18
+          "max": 6
         }
       },
       "queue": {
         "errors": {
-          "max": 2
+          "max": 26
         },
-        "operationsDefault": 300,
+        "operationsDefault": 1000,
         "operationsSpecificQueues": {
-          "sampleQueue1": 20,
-          "sampleQueue2": 30
+          "sampleQueue1": 26,
+          "sampleQueue2": 46
         }
       }
     },
-	  
     "QM1": {
       "app": {
         "connections": {
@@ -58,7 +57,7 @@
         "errors": {
           "max": 3
         },
-        "operationsDefault": 300,
+        "operationsDefault": 1000,
         "operationsSpecificQueues": {
           "sampleQueue1": 20,
           "sampleQueue2": 30
@@ -68,34 +67,37 @@
     "QM2": {
       "app": {
         "connections": {
-          "max": 8
+          "max": 400
         },
         "connectionOperationsRatio": {
-          "max": 0.95,
+          "max": 0.44999998807907104,
           "connections": 4
         }
       },
       "queueManager": {
         "connections": {
-          "max": 358
+          "max": 101
         },
         "operations": {
-          "max": 500
+          "max": 51
         },
         "errors": {
-          "max": 18
+          "max": 6
         }
       },
       "queue": {
         "errors": {
-          "max": 2
+          "max": 26
         },
-        "operationsDefault": 300,
+        "operationsDefault": 1000,
         "operationsSpecificQueues": {
           "sampleQueue1": 20,
-          "sampleQueue2": 30
+          "sampleQueue2": 30,
+          "DEV.QUEUE.1": 26,
+          "DEV.QUEUE.2": 46
         }
       }
-    }
+    },
+    "jimmy":{"hello":4}
   }
 }

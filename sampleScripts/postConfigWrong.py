@@ -8,12 +8,12 @@ POST_URL = 'https://localhost:8080/updateConfig'
 payload = {
     "retrievedThresholds": {
         "apps": {
-            "connThreshold": "hello",  # This will cause a type mismatch error
+            "connThreshold": -0.5,  # This will cause a type mismatch error
             "connOpRatioThreshold": 0.8,
             "minimumConns": 2
         },
         "queue_manager": {
-            "errorThreshold": 5,
+            "errorThreshold": -5,
             "maxMQConns": 100,
             "maxMQOps": 50
         },

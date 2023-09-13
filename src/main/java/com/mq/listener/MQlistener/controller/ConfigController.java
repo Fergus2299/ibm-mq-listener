@@ -5,53 +5,68 @@ import java.util.Map;
 
 //import com.mq.listener.MQlistener.config.AppConfigUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.HttpStatus;
 
-import com.mq.listener.MQlistener.config.AppConfig;
 import com.mq.listener.MQlistener.config.ConfigDataTransferObject;
-import com.mq.listener.MQlistener.config.QueueConfig;
-import com.mq.listener.MQlistener.config.QueueManagerConfig;
-import com.mq.listener.MQlistener.service.YmlUpdaterService;
+import com.mq.listener.MQlistener.config.ConfigManager;
+import com.mq.listener.MQlistener.config.Config.QMConfig;
+import com.mq.listener.MQlistener.config.Config.QMConfig.AppConfig;
+import com.mq.listener.MQlistener.config.Config.QMConfig.QueueConfig;
+import com.mq.listener.MQlistener.config.Config.QMConfig.QueueManagerConfig;
+
+import org.springframework.http.HttpStatus;
 
 @RestController
 public class ConfigController {
 
-    @Autowired
-    private AppConfig appConfig;
 
     @Autowired
-    private QueueConfig queueConfig;
-
-    @Autowired
-    private QueueManagerConfig queueManagerConfig;
+    private ConfigManager configManager;
     
-    @Autowired
-    private YmlUpdaterService ymlUpdaterService;
+	// injecting qMgrName property
+	@Value("${ibm.mq.queueManager}")
+	private String qMgrName;
+	
+
     
     
     @GetMapping("/configurations")
     public ConfigDataTransferObject getConfigurations() {
         System.out.println("Config requested by frontend");
         
+    	QMConfig queueManagerConfig = 
+    	configManager
+    	.getConfig()
+    	.getQms()
+    	.getOrDefault(
+    			qMgrName, 
+    			configManager.getConfig().getQms().get("<DEFAULT>"));
+    	
+    	// loading all subcategories of config
+    	AppConfig appConfig = queueManagerConfig.getApp();
+    	QueueManagerConfig QMConfig = queueManagerConfig.getQueueManager();
+    	QueueConfig queueConfig = queueManagerConfig.getQueue();
+    	
+        
         ConfigDataTransferObject dataTransferObject = new ConfigDataTransferObject();
         ConfigDataTransferObject.RetrievedThresholdsDTO retrievedThresholdsDTO = new ConfigDataTransferObject.RetrievedThresholdsDTO();
         
         ConfigDataTransferObject.AppDTO appDTO = new ConfigDataTransferObject.AppDTO();
         appDTO.setConnThreshold(appConfig.getConnections().getMax());
-        Number ratioNum = (Number) appConfig.getConnectionOperationsRatio().get("max");
+        Number ratioNum = (Number) appConfig.getConnectionOperationsRatio().getMax();
         appDTO.setConnOpRatioThreshold(ratioNum.floatValue());
-        appDTO.setMinimumConns((Integer) appConfig.getConnectionOperationsRatio().get("connections"));
+        appDTO.setMinimumConns((Integer) appConfig.getConnectionOperationsRatio().getConnections());
 
         ConfigDataTransferObject.QueueManagerDTO queueManagerDTO = new ConfigDataTransferObject.QueueManagerDTO();
-        queueManagerDTO.setErrorThreshold(queueManagerConfig.getErrors().getMax());
-        queueManagerDTO.setMaxMQConns(queueManagerConfig.getConnections().getMax());
-        queueManagerDTO.setMaxMQOps(queueManagerConfig.getOperations().getMax());
+        queueManagerDTO.setErrorThreshold(QMConfig.getErrors().getMax());
+        queueManagerDTO.setMaxMQConns(QMConfig.getConnections().getMax());
+        queueManagerDTO.setMaxMQOps(QMConfig.getOperations().getMax());
 
         ConfigDataTransferObject.QueueDTO queueDTO = new ConfigDataTransferObject.QueueDTO();
         queueDTO.setErrorThreshold(queueConfig.getErrors().getMax());
@@ -75,116 +90,76 @@ public class ConfigController {
         return dataTransferObject;
     }
     
-    
+    // TODO: ensure that update is atomic - ie everything is rolled back if something fails
     @PostMapping("/updateConfig")
     public ResponseEntity<String> updateConfig(@RequestBody ConfigDataTransferObject configDTO) {
         try {
-            System.out.println("Received Configuration:");
-
-            // Check and convert data, throwing an exception if something's wrong
+            System.out.println("Checking posted configuration...");
             validateAndConvertDTO(configDTO);
-
-            System.out.println("Apps Config:");
-//            System.out.println("  ConnThreshold: " + configDTO.getRetrievedThresholds().getApps().getConnThreshold());
-//            System.out.println("  ConnOpRatioThreshold: " + configDTO.getRetrievedThresholds().getApps().getConnOpRatioThreshold());
-//            System.out.println("  MinimumConns: " + configDTO.getRetrievedThresholds().getApps().getMinimumConns());
-            
-            appConfig.getConnections().setMax(configDTO.getRetrievedThresholds().getApps().getConnThreshold());
-            Map<String, Object> connectionOperationsRatio = new HashMap<>();
-            connectionOperationsRatio.put("max", configDTO.getRetrievedThresholds().getApps().getConnOpRatioThreshold());
-            connectionOperationsRatio.put("connections", configDTO.getRetrievedThresholds().getApps().getMinimumConns());
-            appConfig.setConnectionOperationsRatio(connectionOperationsRatio);
-            appConfig.print();
-            
-
-            System.out.println("Queue Manager Config:");
-//            System.out.println("  ErrorThreshold: " + configDTO.getRetrievedThresholds().getQueue_manager().getErrorThreshold());
-//            System.out.println("  MaxMQConns: " + configDTO.getRetrievedThresholds().getQueue_manager().getMaxMQConns());
-//            System.out.println("  MaxMQOps: " + configDTO.getRetrievedThresholds().getQueue_manager().getMaxMQOps());
-
-            queueManagerConfig.getErrors().setMax(configDTO.getRetrievedThresholds().getQueue_manager().getErrorThreshold());
-            queueManagerConfig.getConnections().setMax(configDTO.getRetrievedThresholds().getQueue_manager().getMaxMQConns());
-            queueManagerConfig.getOperations().setMax(configDTO.getRetrievedThresholds().getQueue_manager().getMaxMQOps());
-            
-            queueManagerConfig.print();
-            
-            System.out.println("Queues Config:");
-//            System.out.println("  ErrorThreshold: " + configDTO.getRetrievedThresholds().getQueues().getErrorThreshold());
-            
-            Map<String, ConfigDataTransferObject.QueueThresholdDTO> queueThresholds = configDTO.getRetrievedThresholds().getQueues().getQueueThresholds();
-            for (String queueName : queueThresholds.keySet()) {
-                ConfigDataTransferObject.QueueThresholdDTO queueThresholdDTO = queueThresholds.get(queueName);
-                System.out.println("  " + queueName + " - Depth: " + queueThresholdDTO.getDepth() + ", Activity: " + queueThresholdDTO.getActivity());
+            try {
+                configManager.updateConfigurations(configDTO);
+                return new ResponseEntity<>("Configuration updated successfully!", HttpStatus.OK);
+            } catch (Exception e) {
+                // Log exception
+                return new ResponseEntity<>("An error occurred.", HttpStatus.INTERNAL_SERVER_ERROR);
             }
-
-            queueConfig.getErrors().setMax(configDTO.getRetrievedThresholds().getQueues().getErrorThreshold());
-            Map<String, Integer> queueThresholdsMap = new HashMap<>();
-            for (Map.Entry<String, ConfigDataTransferObject.QueueThresholdDTO> entry : configDTO.getRetrievedThresholds().getQueues().getQueueThresholds().entrySet()) {
-                queueThresholdsMap.put(entry.getKey(), entry.getValue().getActivity());
-            }
-            queueConfig.setOperationsSpecificQueues(queueThresholdsMap);
-            queueConfig.print();
             
-            
-            // writing changes to yml
-            
-            ymlUpdaterService.updateConfig();
-            return new ResponseEntity<>("Configuration updated successfully!", HttpStatus.OK);
         } catch (Exception e) {
+        	System.out.println(e.getMessage());
             return new ResponseEntity<>("Error updating configuration: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
     
     private void validateAndConvertDTO(ConfigDataTransferObject configDTO) throws Exception {
         // Apps Config
-        Object connThreshold = configDTO.getRetrievedThresholds().getApps().getConnThreshold();
-        if (!(connThreshold instanceof Integer)) {
-            throw new Exception("Invalid ConnThreshold value for Apps. Expected an integer.");
+        Integer connThreshold = configDTO.getRetrievedThresholds().getApps().getConnThreshold();
+        if (connThreshold == null || connThreshold <= 0) {
+            throw new Exception("Invalid or missing ConnThreshold value for Apps. Expected a positive integer.");
         }
 
-        Object connOpRatioThreshold = configDTO.getRetrievedThresholds().getApps().getConnOpRatioThreshold();
-        if (!(connOpRatioThreshold instanceof Float) && !(connOpRatioThreshold instanceof Double)) {
-            throw new Exception("Invalid ConnOpRatioThreshold value for Apps. Expected a float.");
+        Float connOpRatioThreshold = configDTO.getRetrievedThresholds().getApps().getConnOpRatioThreshold();
+        if (connOpRatioThreshold == null || connOpRatioThreshold <= 0) {
+            throw new Exception("Invalid or missing ConnOpRatioThreshold value for Apps. Expected a positive float.");
         }
 
-        Object minimumConns = configDTO.getRetrievedThresholds().getApps().getMinimumConns();
-        if (!(minimumConns instanceof Integer)) {
-            throw new Exception("Invalid MinimumConns value for Apps. Expected an integer.");
+        Integer minimumConns = configDTO.getRetrievedThresholds().getApps().getMinimumConns();
+        if (minimumConns == null || minimumConns <= 0) {
+            throw new Exception("Invalid or missing MinimumConns value for Apps. Expected a positive integer.");
         }
 
         // Queue Manager Config
-        Object errorThresholdQM = configDTO.getRetrievedThresholds().getQueue_manager().getErrorThreshold();
-        if (!(errorThresholdQM instanceof Integer)) {
-            throw new Exception("Invalid ErrorThreshold value for Queue Manager. Expected an integer.");
+        Integer errorThresholdQM = configDTO.getRetrievedThresholds().getQueue_manager().getErrorThreshold();
+        if (errorThresholdQM == null || errorThresholdQM <= 0) {
+            throw new Exception("Invalid or missing ErrorThreshold value for Queue Manager. Expected a positive integer.");
         }
 
-        Object maxMQConns = configDTO.getRetrievedThresholds().getQueue_manager().getMaxMQConns();
-        if (!(maxMQConns instanceof Integer)) {
-            throw new Exception("Invalid MaxMQConns value for Queue Manager. Expected an integer.");
+        Integer maxMQConns = configDTO.getRetrievedThresholds().getQueue_manager().getMaxMQConns();
+        if (maxMQConns == null || maxMQConns <= 0) {
+            throw new Exception("Invalid or missing MaxMQConns value for Queue Manager. Expected a positive integer.");
         }
 
-        Object maxMQOps = configDTO.getRetrievedThresholds().getQueue_manager().getMaxMQOps();
-        if (!(maxMQOps instanceof Integer)) {
-            throw new Exception("Invalid MaxMQOps value for Queue Manager. Expected an integer.");
+        Integer maxMQOps = configDTO.getRetrievedThresholds().getQueue_manager().getMaxMQOps();
+        if (maxMQOps == null || maxMQOps <= 0) {
+            throw new Exception("Invalid or missing MaxMQOps value for Queue Manager. Expected a positive integer.");
         }
 
         // Queues Config
-        Object errorThresholdQ = configDTO.getRetrievedThresholds().getQueues().getErrorThreshold();
-        if (!(errorThresholdQ instanceof Integer)) {
-            throw new Exception("Invalid ErrorThreshold value for Queues. Expected an integer.");
+        Integer errorThresholdQ = configDTO.getRetrievedThresholds().getQueues().getErrorThreshold();
+        if (errorThresholdQ == null || errorThresholdQ <= 0) {
+            throw new Exception("Invalid or missing ErrorThreshold value for Queues. Expected a positive integer.");
         }
 
-        // Here, I'm assuming that the QueueThresholds values also need to be checked
+        // Checking QueueThresholds values
         Map<String, ConfigDataTransferObject.QueueThresholdDTO> queueThresholds = configDTO.getRetrievedThresholds().getQueues().getQueueThresholds();
         for (ConfigDataTransferObject.QueueThresholdDTO queueThresholdDTO : queueThresholds.values()) {
-            Object depth = queueThresholdDTO.getDepth();
-            if (!(depth instanceof Integer)) {
-                throw new Exception("Invalid Depth value for Queue. Expected an integer.");
+            Integer depth = queueThresholdDTO.getDepth();
+            if (depth == null || depth <= 0) {
+                throw new Exception("Invalid or missing Depth value for Queue. Expected a positive integer.");
             }
 
-            Object activity = queueThresholdDTO.getActivity();
-            if (!(activity instanceof Integer)) {
-                throw new Exception("Invalid Activity value for Queue. Expected an integer.");
+            Integer activity = queueThresholdDTO.getActivity();
+            if (activity == null || activity <= 0) {
+                throw new Exception("Invalid or missing Activity value for Queue. Expected a positive integer.");
             }
         }
     }

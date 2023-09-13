@@ -17,11 +17,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 //import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.mq.listener.MQlistener.config.AppConfig;
+import com.mq.listener.MQlistener.config.ConfigManager;
+import com.mq.listener.MQlistener.config.Config.QMConfig;
 import com.mq.listener.MQlistener.models.AccountingData;
 import com.mq.listener.MQlistener.models.Issue.ConnectionPatternIssue;
-import com.mq.listener.MQlistener.newConfig.ConfigManager;
-import com.mq.listener.MQlistener.newConfig.Config.QMConfig;
 import com.mq.listener.MQlistener.utils.ConsoleLogger;
 import com.mq.listener.MQlistener.utils.IssueSender;
 

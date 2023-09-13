@@ -9,6 +9,7 @@ public class ConfigDataTransferObject {
         private AppDTO apps;
         private QueueManagerDTO queue_manager;
         private QueueDTO queues;
+        
 		public AppDTO getApps() {
 			return apps;
 		}
