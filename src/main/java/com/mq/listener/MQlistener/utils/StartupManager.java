@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.jms.config.JmsListenerEndpointRegistry;
 import org.springframework.jms.listener.AbstractMessageListenerContainer;
 import org.springframework.jms.listener.MessageListenerContainer;
@@ -25,10 +26,13 @@ import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.headers.MQDataException;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.headers.pcf.PCFMessageAgent;
+import com.mq.listener.MQlistener.newConfig.Config;
+import com.mq.listener.MQlistener.newConfig.ConfigManager;
 // https://www.capitalware.com/rl_blog/?p=6603
 
 // DISPLAY QSTATUS(SYSTEM.ADMIN.ACCOUNTING.QUEUE) TYPE(HANDLE) ALL ---- checks if app has queue open
 @Component
+@DependsOn("configManager")
 public class StartupManager implements ApplicationRunner {
     private static final List<String> QUEUES = Arrays.asList(
             "SYSTEM.ADMIN.ACCOUNTING.QUEUE", 
@@ -58,6 +62,9 @@ public class StartupManager implements ApplicationRunner {
     private String address;
     private Integer port;
     
+    @Autowired
+    private ConfigManager configLoader;
+    
 
     @Autowired
     private JmsListenerEndpointRegistry jmsListenerEndpointRegistry;
@@ -74,8 +81,16 @@ public class StartupManager implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
     	System.out.println("Start up");
-    	clearAllEventQueues();
-        startJmsListeners();
+        Config config = configLoader.getConfig();
+        
+        
+        if (config != null) { // Or any other verification you want for the config
+            clearAllEventQueues();
+            startJmsListeners();
+        } else {
+            // TODO: Handle missing configuration
+            System.out.println("Configuration is missing!");
+        }
         sendFinalStatus();
     }
     

@@ -20,6 +20,8 @@ import org.springframework.stereotype.Component;
 import com.mq.listener.MQlistener.config.AppConfig;
 import com.mq.listener.MQlistener.models.AccountingData;
 import com.mq.listener.MQlistener.models.Issue.ConnectionPatternIssue;
+import com.mq.listener.MQlistener.newConfig.ConfigManager;
+import com.mq.listener.MQlistener.newConfig.Config.QMConfig;
 import com.mq.listener.MQlistener.utils.ConsoleLogger;
 import com.mq.listener.MQlistener.utils.IssueSender;
 
@@ -31,7 +33,7 @@ public class AccountingMetrics {
 	DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
 	// Config:
-    private final AppConfig appConfig;
+	private final ConfigManager configManager;
     int appConnectionsMax;
     float appConnectionOperationsConnections;
     float appConnectionOperationsMax;
@@ -39,14 +41,16 @@ public class AccountingMetrics {
     @Autowired
     private IssueSender sender;
     @Autowired
-    public AccountingMetrics(AppConfig appConfig) {
-        this.appConfig = appConfig;
+    public AccountingMetrics(ConfigManager configManager) {
+    	this.configManager = configManager;
     }
     
-    public void printMaxConnections() {
-        int maxConnections = appConfig.getConnections().getMax();
-        System.out.println("Max connections: " + maxConnections);
-    }
+	// injecting qMgrName property
+	@Value("${ibm.mq.queueManager}")
+	private String qMgrName;
+    
+    
+
     
 
     
@@ -92,21 +96,41 @@ public class AccountingMetrics {
     
     @Scheduled(fixedRate = WINDOW_DURATION_MILLIS)
     public void evaluateAndResetCounts() throws Exception {
-//    	System.out.println("getting username");
-//    	String currentUserName = "";
-//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//		System.out.println("auth : " + authentication);
-//		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-//		    currentUserName = authentication.getName();
-//		}
-//		System.out.println("current user name: "+ currentUserName);
-    	// loading config into function
-    	// TODO: don't load ConnectionOperationsRatio twice
-        appConnectionsMax = appConfig.getConnections().getMax();
-        appConnectionOperationsConnections = (Integer) appConfig.getConnectionOperationsRatio().get("connections");
-        // handling all number entries
-        Number number = (Number) appConfig.getConnectionOperationsRatio().get("max");
+    	
+    	// load specific queue manger settings
+    	// load specific queue manger settings
+    	QMConfig queueManagerConfig = 
+    	configManager
+    	.getConfig()
+    	.getQms()
+    	.getOrDefault(
+    			qMgrName, 
+    			configManager.getConfig().getQms().get("<DEFAULT>"));
+    	
+    	// getting max MQCONNs per application
+        appConnectionsMax = 
+        queueManagerConfig
+        .getApp()
+        .getConnections()
+        .getMax();
+        
+        // getting max conns to consider MQCONN:MQOPERATIONS ratio
+        appConnectionOperationsConnections = 
+        queueManagerConfig
+        .getApp()
+        .getConnectionOperationsRatio()
+        .getConnections();
+        
+        
+        // getting MQCONN:MQOPERATIONS ratio threshold for issue to be created
+        Number number = 
+        (Number) queueManagerConfig
+        .getApp()
+        .getConnectionOperationsRatio()
+        .getMax();
         float appConnectionOperationsMax = number.floatValue();
+        
+        
     	System.out.println(
     "connThreshold: " 
     + appConnectionsMax 

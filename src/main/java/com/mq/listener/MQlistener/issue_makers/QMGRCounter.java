@@ -20,6 +20,8 @@ import com.mq.listener.MQlistener.models.Errors.AuthErrorDetails;
 import com.mq.listener.MQlistener.models.Errors.ErrorDetails;
 import com.mq.listener.MQlistener.models.Errors.UnknownObjectErrorDetails;
 import com.mq.listener.MQlistener.models.Issue.ErrorSpike;
+import com.mq.listener.MQlistener.newConfig.Config.QMConfig;
+import com.mq.listener.MQlistener.newConfig.ConfigManager;
 import com.mq.listener.MQlistener.utils.ConsoleLogger;
 import com.mq.listener.MQlistener.utils.IssueSender;
 
@@ -27,8 +29,8 @@ import com.mq.listener.MQlistener.utils.IssueSender;
 public class QMGRCounter {
     private static final Logger log = LoggerFactory.getLogger(QMGRCounter.class);
     
-    private final QueueConfig queueConfig;
-    private final QueueManagerConfig queueManagerConfig;
+
+    private final ConfigManager configManager;
     int queueManagerThreshold;
     int queueThreshold;
     
@@ -36,11 +38,13 @@ public class QMGRCounter {
     private IssueSender sender;
     
     @Autowired
-    public QMGRCounter(QueueConfig queueConfig, QueueManagerConfig queueManagerConfig) {
-        this.queueConfig = queueConfig;
-        this.queueManagerConfig = queueManagerConfig;
-        
+    public QMGRCounter(ConfigManager configManager) {
+        this.configManager = configManager;
+
     }
+	// injecting qMgrName property
+	@Value("${ibm.mq.queueManager}")
+	private String qMgrName;
     
     
     
@@ -93,8 +97,32 @@ public class QMGRCounter {
     @Scheduled(fixedRate = WINDOW_DURATION_MILLIS)
     public void evaluateAndResetCounts() throws Exception {
     	// loading config information
-    	queueManagerThreshold = queueManagerConfig.getErrors().getMax();
-    	queueThreshold = queueConfig.getErrors().getMax();
+    	
+    	// load specific queue manger settings
+    	QMConfig queueManagerConfig = 
+    	configManager
+    	.getConfig()
+    	.getQms()
+    	.getOrDefault(
+    			qMgrName, 
+    			configManager.getConfig().getQms().get("<DEFAULT>"));
+    	
+    	// get error threshold for queue manager
+    	queueManagerThreshold = 
+    	queueManagerConfig
+    	.getQueueManager()
+    	.getErrors()
+    	.getMax();
+    	
+    	// get error threshold which applies to all queues
+    	queueThreshold = 
+    	queueManagerConfig
+    	.getQueue()
+    	.getErrors()
+    	.getMax();
+    	
+    	
+    	
     	System.out.println("queueManagerThreshold: " + queueManagerThreshold + " queueThreshold: " + queueThreshold);
         double rate;
         // TODO: ensure that the time interval is being evaluated correctly

@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 
 import com.mq.listener.MQlistener.config.AppConfig;
 import com.mq.listener.MQlistener.config.ConfigDataTransferObject;
-import com.mq.listener.MQlistener.config.ConfigUpdateRequest;
 import com.mq.listener.MQlistener.config.QueueConfig;
 import com.mq.listener.MQlistener.config.QueueManagerConfig;
 import com.mq.listener.MQlistener.service.YmlUpdaterService;

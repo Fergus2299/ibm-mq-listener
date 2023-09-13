@@ -1,0 +1,101 @@
+{
+  "qms": {
+	  "<DEFAULT>": {
+      "app": {
+        "connections": {
+          "max": 8
+        },
+        "connectionOperationsRatio": {
+          "max": 0.95,
+          "connections": 4
+        }
+      },
+      "queueManager": {
+        "connections": {
+          "max": 100
+        },
+        "operations": {
+          "max": 50
+        },
+        "errors": {
+          "max": 18
+        }
+      },
+      "queue": {
+        "errors": {
+          "max": 2
+        },
+        "operationsDefault": 300,
+        "operationsSpecificQueues": {
+          "sampleQueue1": 20,
+          "sampleQueue2": 30
+        }
+      }
+    },
+	  
+    "QM1": {
+      "app": {
+        "connections": {
+          "max": 10
+        },
+        "connectionOperationsRatio": {
+          "max": 0.8,
+          "connections": 2
+        }
+      },
+      "queueManager": {
+        "connections": {
+          "max": 100
+        },
+        "operations": {
+          "max": 50
+        },
+        "errors": {
+          "max": 27
+        }
+      },
+      "queue": {
+        "errors": {
+          "max": 3
+        },
+        "operationsDefault": 300,
+        "operationsSpecificQueues": {
+          "sampleQueue1": 20,
+          "sampleQueue2": 30
+        }
+      }
+    },
+    "QM2": {
+      "app": {
+        "connections": {
+          "max": 8
+        },
+        "connectionOperationsRatio": {
+          "max": 0.95,
+          "connections": 4
+        }
+      },
+      "queueManager": {
+        "connections": {
+          "max": 358
+        },
+        "operations": {
+          "max": 500
+        },
+        "errors": {
+          "max": 18
+        }
+      },
+      "queue": {
+        "errors": {
+          "max": 2
+        },
+        "operationsDefault": 300,
+        "operationsSpecificQueues": {
+          "sampleQueue1": 20,
+          "sampleQueue2": 30
+        }
+      }
+    }
+  }
+}

@@ -35,6 +35,8 @@ import com.mq.listener.MQlistener.logging.QMLogger;
 import com.mq.listener.MQlistener.models.Issue.ActivitySpike;
 import com.mq.listener.MQlistener.models.Issue.ErrorSpike;
 import com.mq.listener.MQlistener.models.Issue.Issue;
+import com.mq.listener.MQlistener.newConfig.ConfigManager;
+import com.mq.listener.MQlistener.newConfig.Config.QMConfig;
 import com.mq.listener.MQlistener.parsers.PCFParser;
 import com.mq.listener.MQlistener.utils.ConsoleLogger;
 import com.mq.listener.MQlistener.utils.IssueSender;
@@ -45,18 +47,20 @@ public class StatisticsProcessor {
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH.mm.ss");
     private static final Logger log = LoggerFactory.getLogger(StatisticsProcessor.class);
     
-    private final QueueConfig queueConfig;
-    private final QueueManagerConfig queueManagerConfig;
+    private final ConfigManager configManager;
     int queueManagerMaxConnections;
     int queueManagerMaxOperations;
     
     
     @Autowired
-    public StatisticsProcessor(QueueConfig queueConfig, QueueManagerConfig queueManagerConfig) {
-        this.queueConfig = queueConfig;
-        this.queueManagerConfig = queueManagerConfig;
-        
+    public StatisticsProcessor(ConfigManager configManager) {
+        this.configManager = configManager;
+
     }
+	// injecting qMgrName property
+	@Value("${ibm.mq.queueManager}")
+	private String qMgrName;
+    
 
     
     // value injection from config file
@@ -396,8 +400,6 @@ public class StatisticsProcessor {
             double requestRatePerMinute = (60.0 * requests) / intervalInSeconds;
             // use either the default threshold or specialised threshold
             if (requestRatePerMinute > getQueueMaxOperations(queueName)) {
-            	// creation of the issue
-                log.warn("Spike in PUT activity detected for queue {}: Rate = {} per minute", queueName, requestRatePerMinute);
                 String message = 
                 "Spike in MQ operations on: " 
                 + queueName 
@@ -420,10 +422,32 @@ public class StatisticsProcessor {
        }
     }
     private void checkQueueManagerActivity( Map.Entry<LocalTime, LocalTime> timeKey, Map<String, Integer> stats, String combinedTime) throws Exception {
-    	queueManagerMaxConnections = queueManagerConfig.getConnections().getMax();
-    	queueManagerMaxOperations = queueManagerConfig.getOperations().getMax();
     	
-    	System.out.println("queueManagerMaxConnections: " + queueManagerMaxConnections + " queueManagerMaxOperations: " + queueManagerMaxOperations);
+    	// load specific queue manger settings
+    	QMConfig queueManagerConfig = 
+    	configManager
+    	.getConfig()
+    	.getQms()
+    	.getOrDefault(
+    			qMgrName, 
+    			configManager.getConfig().getQms().get("<DEFAULT>"));
+    	
+    	queueManagerMaxConnections = 
+    	queueManagerConfig
+    	.getQueueManager()
+    	.getConnections()
+    	.getMax();
+    	queueManagerMaxOperations = 
+    	queueManagerConfig
+    	.getQueueManager()
+		.getOperations()
+		.getMax();
+
+    	System.out.println(
+    	"queueManagerMaxConnections: " 
+    	+ queueManagerMaxConnections
+    	+ " queueManagerMaxOperations: " 
+    	+ queueManagerMaxOperations);
         // a flag to tell whether issue is present for queue in this window
     	Boolean flag = false;
     	String message = "";
@@ -557,8 +581,25 @@ public class StatisticsProcessor {
      * or returns the default for this queue
      * */
     public int getQueueMaxOperations(String queueName) {
-    	Map<String, Integer> operationsSpecificQueues = queueConfig.getOperationsSpecificQueues();
-    	System.out.println("operationsSpecificQueues: " + operationsSpecificQueues.toString());
-        return operationsSpecificQueues.getOrDefault(queueName, queueConfig.getOperationsDefault());
+    	// load specific queue manger settings
+    	QMConfig queueManagerConfig = 
+    	configManager
+    	.getConfig()
+    	.getQms()
+    	.getOrDefault(
+    			qMgrName, 
+    			configManager.getConfig().getQms().get("<DEFAULT>"));
+    	
+    	Map<String, Integer> operationsSpecificQueues = 
+    	queueManagerConfig
+    	.getQueue()
+    	.getOperationsSpecificQueues();
+    	
+    	Integer operationsDefault = 
+    	    	queueManagerConfig
+    	    	.getQueue()
+    	    	.getOperationsDefault();
+    	System.out.println("Trying to find" + queueName + ", from operationsSpecificQueues: " + operationsSpecificQueues.toString());
+        return operationsSpecificQueues.getOrDefault(queueName, operationsDefault);
     }
 }
