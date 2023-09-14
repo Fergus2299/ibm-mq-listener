@@ -3,8 +3,11 @@ package com.mq.listener.MQlistener.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.net.ssl.SSLException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,17 +18,32 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mq.listener.MQlistener.models.Issue.Issue;
 
 
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.tcp.TcpClient;
+
 // TODO: work out error handling for this 'Exception'
 @Service
 public class IssueSender {
     private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     
     // TODO: work out definitively how to send and receive information
-    private static final String ENDPOINT_URL = "https://127.0.0.1:5000/issues";
+    private static final String POST_URL = "https://127.0.0.1:5000/issues";
     private final WebClient webClient;
     @Autowired
-    public IssueSender(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl(ENDPOINT_URL).build();
+    public IssueSender(WebClient.Builder webClientBuilder) throws SSLException {
+        SslContext sslContext = SslContextBuilder
+                .forClient()
+                .trustManager(InsecureTrustManagerFactory.INSTANCE)
+                .build();
+
+        TcpClient tcpClient = TcpClient.create().secure(t -> t.sslContext(sslContext));
+        this.webClient = webClientBuilder
+            .clientConnector(new ReactorClientHttpConnector(HttpClient.from(tcpClient)))
+            .baseUrl(POST_URL)
+            .build();
     }
 
 	public void sendIssue(Issue issue) throws Exception {
@@ -40,11 +58,13 @@ public class IssueSender {
         System.out.println("Response from server: " + serverResponse);
     }
 	
+	
+	
 	// sends new issue to frontend
     private String postIssues(List<Issue> issueList) {
         try {
             return webClient.post()
-                    .uri(ENDPOINT_URL)
+                    .uri(POST_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(BodyInserters.fromValue(issueList))
                     .retrieve()
