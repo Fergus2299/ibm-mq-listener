@@ -151,10 +151,7 @@ public class ConfigController {
         // Checking QueueThresholds values
         Map<String, ConfigDataTransferObject.QueueThresholdDTO> queueThresholds = configDTO.getRetrievedThresholds().getQueues().getQueueThresholds();
         for (ConfigDataTransferObject.QueueThresholdDTO queueThresholdDTO : queueThresholds.values()) {
-            Integer depth = queueThresholdDTO.getDepth();
-            if (depth == null || depth <= 0) {
-                throw new Exception("Invalid or missing Depth value for Queue. Expected a positive integer.");
-            }
+
 
             Integer activity = queueThresholdDTO.getActivity();
             if (activity == null || activity <= 0) {
