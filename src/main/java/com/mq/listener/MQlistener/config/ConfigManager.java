@@ -11,13 +11,16 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 @Component
 public class ConfigManager {
-
+    private static final Logger logger = LoggerFactory.getLogger(ConfigManager.class);
     private Config config;
     
 	// injecting qMgrName property
@@ -30,7 +33,7 @@ public class ConfigManager {
         
         String projectRootPath = new File("").getAbsolutePath();
         File file =  new File(projectRootPath, "src/main/resources/config.json");
-        System.out.println("Reading config from: " + file.getAbsolutePath());
+        logger.info("Reading config from: {}", file.getAbsolutePath());
         try {
             if (file.exists()) {
                 // Read using File when running in a development environment
@@ -42,8 +45,9 @@ public class ConfigManager {
                 }
             }
         } catch (JsonMappingException e) {
-            System.out.println("Configuration JSON is not in the expected format" + e);
+        	logger.info("Configuration JSON is not in the expected format" + e);
         } catch (IOException e) {
+        	logger.error("Failed to load configuration", e);
             throw new RuntimeException("Failed to load configuration", e);
         }
     }

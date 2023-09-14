@@ -61,13 +61,22 @@
 		</dependency>
 
 
-		
-		<!--don't need slf4j because it's included in this -->
+		<dependency>
+		    <groupId>ch.qos.logback</groupId>
+		    <artifactId>logback-core</artifactId>
+		</dependency>
 		<dependency>
 		    <groupId>ch.qos.logback</groupId>
 		    <artifactId>logback-classic</artifactId>
 		</dependency>
-
+		
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>2.0.9</version>
+		</dependency>
+				
 		<dependency>
 		    <groupId>io.netty</groupId>
 		    <artifactId>netty-tcnative-boringssl-static</artifactId>

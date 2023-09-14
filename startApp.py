@@ -45,9 +45,9 @@ def run_with_properties(queue_manager, channel, conn_name, user, password):
     
 if __name__ == "__main__":
         run_with_properties(
-        queue_manager="QM2",
+        queue_manager="QM1",
         channel="DEV.ADMIN.SVRCONN",
-        conn_name="13.87.80.195(1415)",
+        conn_name="13.87.80.195(1414)",
         user="admin",
         password="passw0rd",
     )

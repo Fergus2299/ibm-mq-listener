@@ -388,7 +388,6 @@ public class StatisticsProcessor {
        }
     }
     private void checkQueueManagerActivity( Map.Entry<LocalTime, LocalTime> timeKey, Map<String, Integer> stats, String combinedTime) throws Exception {
-    	
     	// load specific queue manger settings
     	QMConfig queueManagerConfig = 
     	configManager
@@ -450,7 +449,7 @@ public class StatisticsProcessor {
         }
         
         if (flag) {
-            log.warn("Spike in activity detected for QMGR: PutGetRate = {} per minute, ConnRate = {} per minute", 
+            log.warn("Spike in activity detected for " + qMgrName + ": PutGetRate = {} per minute, ConnRate = {} per minute", 
             		requestRatePerMinute, connsRatePerMinute);
 
             // TODO: <QMGR> cannot be the object name

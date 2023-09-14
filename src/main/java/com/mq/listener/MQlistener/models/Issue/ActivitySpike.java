@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mq.listener.MQlistener.utils.Utilities;
 
-public class ActivitySpike extends Issue{
+public class ActivitySpike extends Issue {
+	
 	@Autowired
 	Utilities utilities;
+	
     public ActivitySpike(
     		String generalDesc,
     		String MQObjectType, 
