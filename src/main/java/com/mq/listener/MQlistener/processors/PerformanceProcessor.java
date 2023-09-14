@@ -9,11 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ibm.mq.constants.MQConstants;
-import com.ibm.mq.headers.pcf.MQCFH;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.mq.listener.MQlistener.models.Issue.QueueServiceHighIssue;
 import com.mq.listener.MQlistener.parsers.PCFParser;
-import com.mq.listener.MQlistener.utils.ConsoleLogger;
 import com.mq.listener.MQlistener.utils.IssueSender;
 
 @Component

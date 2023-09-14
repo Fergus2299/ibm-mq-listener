@@ -77,7 +77,7 @@ public class ConfigManager {
         return config;
     }
     // TODO: test the atomicity of this and file saving
-    public void updateConfigurations(ConfigDataTransferObject dto) throws Exception{
+    public void updateConfigurations(ConfigDataTransferObject dto) throws Exception {
         // Clone the original config
     	System.out.println("Old Config: " + config.toString());
         Config clonedConfig = deepClone(config);
@@ -98,7 +98,6 @@ public class ConfigManager {
             System.out.println("New Config: " + config.toString());
             // update JSON file with new data
             saveConfigToFile();
-            
         } catch (Exception e) {
             // In case of any exception, the original config remains unchanged
             e.printStackTrace();

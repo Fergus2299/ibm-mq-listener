@@ -1,22 +1,23 @@
 package com.mq.listener.MQlistener.models.Issue;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
-import TimeFormatter.TimeFormatter;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.mq.listener.MQlistener.utils.Utilities;
 
 public class QueueServiceHighIssue extends Issue {
-		
+	@Autowired
+	Utilities utilities;
 	// constructor function
 	public QueueServiceHighIssue(String QName, Integer timeSinceReset, Integer highQDepth, Integer enQCount, Integer deQCount) {
         this.issueCode = "Queue_Service_High";
-        this.startTimeStamp = TimeFormatter.formatNow();
+        this.startTimeStamp = utilities.formatNow();
         this.generalDesc = 
         		"Queue: "
         		+ QName
         		+ " produced a service high event at:  "
-        		+ this.startTimeStamp;
+        		+ utilities.prettyDateTime();
         
         // issue active when service high event created
         this.technicalDetails = new HashMap<>();
@@ -31,7 +32,7 @@ public class QueueServiceHighIssue extends Issue {
 	
 	public void okEventReceived() {
 		// ensure that 
-        this.generalDesc += "; Queue interval is now ok as of: " + TimeFormatter.formatNow() + ".";
+        this.generalDesc += "; Queue interval is now ok as of: " + utilities.prettyDateTime() + ".";
         this.technicalDetails.put("isActiveEvent", "0");
     }
 }

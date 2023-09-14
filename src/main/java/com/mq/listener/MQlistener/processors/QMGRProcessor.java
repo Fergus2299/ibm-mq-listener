@@ -7,7 +7,7 @@ import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.headers.pcf.MQCFH;
 import com.ibm.mq.headers.pcf.PCFException;
 import com.ibm.mq.headers.pcf.PCFMessage;
-import com.mq.listener.MQlistener.issue_makers.QMGRCounter;
+import com.mq.listener.MQlistener.metrics.ErrorMetrics;
 import com.mq.listener.MQlistener.parsers.PCFParser;
 
 public class QMGRProcessor {
@@ -16,6 +16,7 @@ public class QMGRProcessor {
     public static void processQMGRMessage(PCFMessage pcfMsg) {
 
     	try {
+    		// TODO: test all cases where you recieve a message which is not a handled case
 			MQCFH cfh = pcfMsg.getHeader();
 			// reason code tells us what kind of QMGR event we're dealing with
 	        int eventReason = cfh.getReason();
@@ -75,7 +76,7 @@ public class QMGRProcessor {
 	            if (pcfMsg.getStringParameterValue(MQConstants.MQCACF_CSP_USER_IDENTIFIER) != null) {
 	            	CSPUserId = pcfMsg.getStringParameterValue(MQConstants.MQCACF_CSP_USER_IDENTIFIER).trim();
 	            } else {CSPUserId = "";}
-	            QMGRCounter.countType1AuthError(userId, appName, channelName, connName, CSPUserId);
+	            ErrorMetrics.countType1AuthError(userId, appName, channelName, connName, CSPUserId);
     			break;
     		// type 2: open not auth
     		case "MQRQ_OPEN_NOT_AUTHORIZED":
@@ -88,7 +89,7 @@ public class QMGRProcessor {
 	            } else {QName = "";}
 	            
 	            if (QName != "") {
-	            	QMGRCounter.countType2AuthError(userId, appName, QName);
+	            	ErrorMetrics.countType2AuthError(userId, appName, QName);
 	            } else {
 	            	System.out.println("2035 type 2 had no queue associated with it!");
 	            }
@@ -132,7 +133,7 @@ public class QMGRProcessor {
         // there are cases where a user might try and put to a topic (not a queue)
         // for now our app is ignoring this case. - This could be a future development
         if (QName != "") {
-        	QMGRCounter.countUnknownObjectError(appName, connName, channelName, QName);
+        	ErrorMetrics.countUnknownObjectError(appName, connName, channelName, QName);
         } else {
         	log.error("2035 type 2 had no queue associated with it. Could not process PCF!");
         	PCFParser.parsePCFMessage(pcfMsg);

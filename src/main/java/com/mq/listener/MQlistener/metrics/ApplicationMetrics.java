@@ -1,34 +1,26 @@
-package com.mq.listener.MQlistener.issue_makers;
+package com.mq.listener.MQlistener.metrics;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.AbstractMap;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
-//import org.springframework.security.authentication.AnonymousAuthenticationToken;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.mq.listener.MQlistener.config.ConfigManager;
 import com.mq.listener.MQlistener.config.Config.QMConfig;
 import com.mq.listener.MQlistener.models.AccountingData;
 import com.mq.listener.MQlistener.models.Issue.ConnectionPatternIssue;
-import com.mq.listener.MQlistener.utils.ConsoleLogger;
 import com.mq.listener.MQlistener.utils.IssueSender;
 
 // we assume one user = one connecting app
 // this isn't uniformed accross use cases of IBM MQ but is common because this 
 // strategy means granular permissions and easier auditing.
 @Component
-public class AccountingMetrics {
+public class ApplicationMetrics {
 	DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
 	// Config:
@@ -40,7 +32,7 @@ public class AccountingMetrics {
     @Autowired
     private IssueSender sender;
     @Autowired
-    public AccountingMetrics(ConfigManager configManager) {
+    public ApplicationMetrics(ConfigManager configManager) {
     	this.configManager = configManager;
     }
     
@@ -144,8 +136,6 @@ public class AccountingMetrics {
             System.out.println("User: " + userId + ", Connections: " + userConnectionCount + ", Put/Get Count: " + userPutGetCount);
             // checking if they've breached the connection threshold per minute
             double userRatio = userConnectionCount / (double) userPutGetCount;
-            boolean shouldLogIssue = false;
-            String errorMessage = "";
             ConnectionPatternIssue issue;
             
             // if app connects too much issue gets first priority, then we check for the ratio of conns

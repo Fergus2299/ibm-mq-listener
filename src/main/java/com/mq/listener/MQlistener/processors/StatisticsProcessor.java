@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import com.ibm.mq.constants.MQConstants;
@@ -26,13 +25,12 @@ import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.headers.pcf.PCFParameter;
 import com.mq.listener.MQlistener.config.ConfigManager;
 import com.mq.listener.MQlistener.config.Config.QMConfig;
-import com.mq.listener.MQlistener.logging.BaseLogger;
+import com.mq.listener.MQlistener.logging.StatisticsLogger;
 import com.mq.listener.MQlistener.models.Issue.ActivitySpike;
 import com.mq.listener.MQlistener.parsers.PCFParser;
 import com.mq.listener.MQlistener.utils.IssueSender;
 
 @Component
-@ConfigurationProperties(prefix = "config.queue.operations")
 public class StatisticsProcessor {
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH.mm.ss");
     private static final Logger log = LoggerFactory.getLogger(StatisticsProcessor.class);
@@ -50,26 +48,6 @@ public class StatisticsProcessor {
 	// injecting qMgrName property
 	@Value("${ibm.mq.queueManager}")
 	private String qMgrName;
-    
-
-    
-    // value injection from config file
-//    @Value("${config.queue-manager.connections.max}")
-//    private int queueManagerMaxConnections;
-//    @Value("${config.queue-manager.operations.max}")
-//    private int queueManagerMaxOperations;
-//    @Value("${config.queue.operations.default}")
-//    private int defaultQueueMaxOperations;
-    // constructing a map from specific queues
-//    private Map<String, Integer> specificQueues = new HashMap<>();
-//
-//    public Map<String, Integer> getSpecificQueues() {
-//        return specificQueues;
-//    }
-//
-//    public void setSpecificQueues(Map<String, Integer> specificQueues) {
-//        this.specificQueues = specificQueues;
-//    }
     
     
     // observedQueues stores queues from past messages, STATQ messages only include any one given queue if there's been some
@@ -94,7 +72,7 @@ public class StatisticsProcessor {
     @Autowired
     private IssueSender sender;
 	@Autowired
-	private BaseLogger logger;
+	private StatisticsLogger logger;
     
     public void processStatisticsMessage(PCFMessage pcfMsg) throws Exception {
     	if (pcfMsg == null) {
@@ -129,9 +107,7 @@ public class StatisticsProcessor {
     	String QMName = pcfMsg.getStringParameterValue(MQConstants.MQCA_Q_MGR_NAME).trim();
     	
     	// MQIAMO_OPENS is https://www.ibm.com/docs/en/ibm-mq/9.3?topic=reference-notes#q037510___q037510_1
-        String startDate = pcfMsg.getStringParameterValue(MQConstants.MQCAMO_START_DATE).trim();
         String startTime = pcfMsg.getStringParameterValue(MQConstants.MQCAMO_START_TIME).trim();
-        String endDate = pcfMsg.getStringParameterValue(MQConstants.MQCAMO_END_DATE).trim();
         String endTime = pcfMsg.getStringParameterValue(MQConstants.MQCAMO_END_TIME).trim();
         int conns = 0, 
     		connsFailed = 0, 
@@ -465,7 +441,8 @@ public class StatisticsProcessor {
             flag = true;
         } else if (requestRatePerMinute > queueManagerMaxOperations) {
             message = 
-            "Spike in MQ operations on queue manager " 
+            "Spike in MQ operations on "
+            + qMgrName
             + ", which has a configured threshold of no more than "
             + queueManagerMaxOperations
             + " operations per window";
@@ -480,7 +457,7 @@ public class StatisticsProcessor {
         	ActivitySpike issue = issueObjectMap.getOrDefault("<QMGR>", new ActivitySpike(
         		message,
 	        	"<QMGR>",
-	        	"<QMGR>"));
+	        	qMgrName));
         	Map<String, String> detailsHashMap = new HashMap<>();
         	detailsHashMap.put("requestRate", Double.toString(requestRatePerMinute));
         	detailsHashMap.put("connRate", Double.toString(connsRatePerMinute));

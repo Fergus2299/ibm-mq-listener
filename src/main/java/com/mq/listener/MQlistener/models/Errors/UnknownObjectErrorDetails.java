@@ -1,6 +1,5 @@
 package com.mq.listener.MQlistener.models.Errors;
 
-import java.util.List;
 import java.util.Map;
 
 public class UnknownObjectErrorDetails extends ErrorDetails {

@@ -3,7 +3,7 @@ package com.mq.listener.MQlistener.processors;
 import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.headers.pcf.MQCFH;
-import com.mq.listener.MQlistener.issue_makers.AccountingMetrics;
+import com.mq.listener.MQlistener.metrics.ApplicationMetrics;
 import com.mq.listener.MQlistener.models.AccountingData;
 import com.mq.listener.MQlistener.parsers.PCFParser;
 
@@ -25,7 +25,7 @@ public class AccountingProcessor {
 //    	            System.out.println(data.toString());
 	            
 	            // passing on the message
-	            AccountingMetrics.addMessage(data);
+	            ApplicationMetrics.addMessage(data);
                 break;
             case 168: // MQCMD_ACCOUNTING_Q
 //                    fileName = "AccountingQ.json";

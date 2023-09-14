@@ -6,10 +6,6 @@ import com.mq.listener.MQlistener.config.ConfigDataTransferObject.*;
 
 
 public class Config {
-	
-	
-	
-	
 	// TODO: error handling for updateFromDTO methods, check for empty Dto's etc
     private Map<String, QMConfig> qms;
     private static Integer OPERATIONS_DEFAULT = 1000;
@@ -31,7 +27,7 @@ public class Config {
 				public int getMax() {
 					return max;
 				}
-
+				
 				public void setMax(int max) {
 					this.max = max;
 				}

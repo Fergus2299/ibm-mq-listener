@@ -1,10 +1,6 @@
 package com.mq.listener.MQlistener.models.Issue;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
-
-import TimeFormatter.TimeFormatter;
 
 
 public abstract class Issue {

@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.concurrent.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +33,9 @@ import com.mq.listener.MQlistener.config.ConfigManager;
 @Component
 @DependsOn("configManager")
 public class StartupManager implements ApplicationRunner {
+	
+	@Autowired
+	Utilities utilities;
     private static final List<String> QUEUES = Arrays.asList(
             "SYSTEM.ADMIN.ACCOUNTING.QUEUE", 
             "SYSTEM.ADMIN.PERFM.EVENT", 
@@ -78,6 +81,20 @@ public class StartupManager implements ApplicationRunner {
 //    the message which is sent to flask server
     private String returnMessage = "";
     
+    // extracting address and port from conn name
+    public void extractConnName() throws Exception {
+    	Pattern pattern = Pattern.compile("^(.+)\\((\\d+)\\)$");
+    	Matcher matcher = pattern.matcher(connName);
+        if (matcher.find()) {
+            address = matcher.group(1);
+            port = Integer.parseInt(matcher.group(2));
+            System.out.println("Address: " + address);
+            System.out.println("Port: " + port);
+        } else {
+        	throw new Exception("Incorrect IP Address or Application Config format.");
+        }
+    }
+    
     @Override
     public void run(ApplicationArguments args) {
     	System.out.println("Start up");
@@ -86,7 +103,13 @@ public class StartupManager implements ApplicationRunner {
         
         if (config != null) {
         	loadConfig = true;
-            clearAllEventQueues();
+        	try {
+        		clearAllEventQueues();
+        	} catch (Exception e) {
+        		// clearing event queues wasn't successful
+        		returnMessage = e.getMessage();
+        		}
+            
             startJmsListeners();
         } else {
             // TODO: Handle missing configuration
@@ -104,20 +127,7 @@ public class StartupManager implements ApplicationRunner {
         }
     }
     
-    // extracting address and port from conn name
-    public void extractConnName() {
-    	Pattern pattern = Pattern.compile("^(.+)\\((\\d+)\\)$");
-    	Matcher matcher = pattern.matcher(connName);
-        if (matcher.find()) {
-            address = matcher.group(1);
-            port = Integer.parseInt(matcher.group(2));
-            System.out.println("Address: " + address);
-            System.out.println("Port: " + port);
-        } else {
-        	//TODO: handle failure
-        	
-        }
-    }
+
     // once connected to a queue manager, this is run to clear a specific queue
     private Boolean clearQueue(PCFMessageAgent agent, String queueName) {
  	   PCFMessage   request   = null;
@@ -145,7 +155,7 @@ public class StartupManager implements ApplicationRunner {
  		        }
  		   }
           catch (IOException e) {
-             returnMessage = "IOException:" +e.getLocalizedMessage();
+             returnMessage = "IOException:" + e.getLocalizedMessage();
              System.out.println(returnMessage);
 
           }
@@ -166,7 +176,7 @@ public class StartupManager implements ApplicationRunner {
       }
    
     // initiates the MQ connection
-    private void initMQConnection() throws IllegalArgumentException {
+    private void initMQConnection() throws IllegalArgumentException, Exception {
  	   extractConnName();
  	   mqht.put(CMQC.CHANNEL_PROPERTY, channel);
  	   mqht.put(CMQC.HOST_NAME_PROPERTY, address);
@@ -176,7 +186,7 @@ public class StartupManager implements ApplicationRunner {
 // 	   mqht.put(CMQC.CONNECT_OPTIONS_PROPERTY, CMQC.MQCNO_RECONNECT_Q_MGR);
     }
     // handles clearing all relevant queues
-    public void clearAllEventQueues() {
+    public void clearAllEventQueues() throws Exception{
    	 Integer queuesCleared = 0;
         initMQConnection();
         MQQueueManager qMgr = null;

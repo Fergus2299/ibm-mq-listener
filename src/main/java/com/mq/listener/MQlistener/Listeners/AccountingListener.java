@@ -4,20 +4,14 @@ import jakarta.jms.BytesMessage;
 import jakarta.jms.Message;
 import jakarta.jms.JMSException;
 
-import java.util.Arrays;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
-import com.ibm.mq.headers.pcf.MQCFH;
 import com.ibm.mq.headers.pcf.PCFMessage;
-import com.mq.listener.MQlistener.models.AccountingData;
-import com.mq.listener.MQlistener.parsers.PCFParser;
 import com.mq.listener.MQlistener.processors.AccountingProcessor;
 import com.ibm.mq.MQMessage;
-import com.ibm.mq.constants.MQConstants;
 
 @Component
 public class AccountingListener {
@@ -30,6 +24,7 @@ public class AccountingListener {
             try {
                 MQMessage mqMsg = MQListener.convertToMQMessage((BytesMessage) receivedMessage);
                 PCFMessage pcfMsg = new PCFMessage(mqMsg);
+                
                 // send PCF message for processing
                 AccountingProcessor.processAccountingMessage(pcfMsg);
             } catch (Exception e) {

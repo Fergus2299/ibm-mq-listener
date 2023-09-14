@@ -1,22 +1,23 @@
 package com.mq.listener.MQlistener.models.Issue;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mq.listener.MQlistener.models.Errors.ErrorDetails;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import TimeFormatter.TimeFormatter;
+import com.mq.listener.MQlistener.utils.Utilities;
 
 public class ActivitySpike extends Issue{
+	@Autowired
+	Utilities utilities;
     public ActivitySpike(
     		String generalDesc,
     		String MQObjectType, 
     		String MQObjectName
     		) {
         this.issueCode = "Too_Much_Activity";
-        this.startTimeStamp = TimeFormatter.formatNow();
+        this.startTimeStamp = utilities.formatNow();
         this.generalDesc = generalDesc;
         this.technicalDetails = new HashMap<>();
         this.MQObjectType = MQObjectType;

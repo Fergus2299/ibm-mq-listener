@@ -8,11 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
-import com.ibm.mq.headers.pcf.MQCFH;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.mq.listener.MQlistener.processors.QMGRProcessor;
 import com.ibm.mq.MQMessage;
-import com.ibm.mq.constants.MQConstants;
 
 @Component
 public class QMGRListener {
