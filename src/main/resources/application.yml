@@ -11,3 +11,9 @@ server:
     key-store-password: password
     enabled: true
   port: 8080
+config:
+  queues: # these can be removed if you want to turn off a particular issue
+    - SYSTEM.ADMIN.ACCOUNTING.QUEUE # corresponds to application issues
+    - SYSTEM.ADMIN.PERFM.EVENT # corresponds to queue service high issues
+    - SYSTEM.ADMIN.QMGR.EVENT # corresponds to error rate spikes
+    - SYSTEM.ADMIN.STATISTICS.QUEUE # corresponds to activity rate spikes

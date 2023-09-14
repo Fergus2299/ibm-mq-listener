@@ -1,9 +1,12 @@
 package com.mq.listener.MQlistener.utils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.jms.config.JmsListenerEndpointRegistry;
 import org.springframework.jms.listener.AbstractMessageListenerContainer;
@@ -28,21 +32,16 @@ import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.headers.pcf.PCFMessageAgent;
 import com.mq.listener.MQlistener.config.Config;
 import com.mq.listener.MQlistener.config.ConfigManager;
+import com.mq.listener.MQlistener.config.QueueConfig;
 
 // DISPLAY QSTATUS(SYSTEM.ADMIN.ACCOUNTING.QUEUE) TYPE(HANDLE) ALL ---- checks if app has queue open
 @Component
 @DependsOn("configManager")
 public class StartupManager implements ApplicationRunner {
-	
+    
 	@Autowired
 	Utilities utilities;
-    private static final List<String> QUEUES = Arrays.asList(
-            "SYSTEM.ADMIN.ACCOUNTING.QUEUE", 
-            "SYSTEM.ADMIN.PERFM.EVENT", 
-            "SYSTEM.ADMIN.QMGR.EVENT", 
-            "SYSTEM.ADMIN.STATISTICS.QUEUE"
-        );
-    
+
     private Hashtable<String,Object> mqht = new Hashtable<String,Object>();
     
 	// getting from application properties
@@ -64,9 +63,19 @@ public class StartupManager implements ApplicationRunner {
     private String address;
     private Integer port;
     
+    // only queues that can be loaded from config
+    private static final Set<String> allowedQueues = new HashSet<>(Arrays.asList(
+            "SYSTEM.ADMIN.ACCOUNTING.QUEUE",
+            "SYSTEM.ADMIN.PERFM.EVENT",
+            "SYSTEM.ADMIN.QMGR.EVENT",
+            "SYSTEM.ADMIN.STATISTICS.QUEUE"
+    ));
+    
     @Autowired
     private ConfigManager configLoader;
     
+    @Autowired
+    private QueueConfig queueConfig;
 
     @Autowired
     private JmsListenerEndpointRegistry jmsListenerEndpointRegistry;
@@ -88,8 +97,6 @@ public class StartupManager implements ApplicationRunner {
         if (matcher.find()) {
             address = matcher.group(1);
             port = Integer.parseInt(matcher.group(2));
-            System.out.println("Address: " + address);
-            System.out.println("Port: " + port);
         } else {
         	throw new Exception("Incorrect IP Address or Application Config format.");
         }
@@ -97,20 +104,19 @@ public class StartupManager implements ApplicationRunner {
     
     @Override
     public void run(ApplicationArguments args) {
-    	System.out.println("Start up");
         Config config = configLoader.getConfig();
-        
+        System.out.println("" + queueConfig.toString());
         
         if (config != null) {
         	loadConfig = true;
         	try {
         		clearAllEventQueues();
+        		startJmsListeners();
         	} catch (Exception e) {
-        		// clearing event queues wasn't successful
+        		// clearing event queues wasn't successful, we try and ge
         		returnMessage = e.getMessage();
-        		}
+        	}
             
-            startJmsListeners();
         } else {
             // TODO: Handle missing configuration
             returnMessage = "Configuration has failed to load.";
@@ -129,7 +135,7 @@ public class StartupManager implements ApplicationRunner {
     
 
     // once connected to a queue manager, this is run to clear a specific queue
-    private Boolean clearQueue(PCFMessageAgent agent, String queueName) {
+    private Boolean clearQueue(PCFMessageAgent agent, String queueName) throws Exception {
  	   PCFMessage   request   = null;
  	   PCFMessage[] responses = null;
  		   try {
@@ -137,39 +143,30 @@ public class StartupManager implements ApplicationRunner {
  	    	// sending the request
  	        request = new PCFMessage(CMQCFC.MQCMD_CLEAR_Q);
  	        request.addParameter(CMQC.MQCA_Q_NAME, queueName);
- 	        responses = agent.send(request);
- 	        System.out.println("responses.length="+responses.length);
- 	        
+ 	        responses = agent.send(request); 	        
  		        // checking response
- 		        for (int i = 0; i < responses.length; i++){
+ 		        for (int i = 0; i < responses.length;) {
  		           if ((responses[i]).getCompCode() == CMQC.MQCC_OK) {
  		        	   System.out.println("Successfully cleared queue '"+queueName+"' of messages.");
  		        	   return true;
  		           }
  		           else {
-
- 		        	  returnMessage = "Error: Failed to clear queue '"+queueName+"' of messages.";
- 		        	  System.out.println(returnMessage);
+ 		        	  throw new Exception("Error: Failed to clear queue '"+queueName+"' of messages.");
  		        	  
  		           }
  		        }
  		   }
           catch (IOException e) {
-             returnMessage = "IOException:" + e.getLocalizedMessage();
-             System.out.println(returnMessage);
-
+        	  throw new Exception("IOException:" + e.getLocalizedMessage());
           }
           catch (MQDataException e) {
         	   // TODO: check this: for now (development) many versions of this app can be running 
         	   // on different laptops. But this cannot happen in production because only one can take from queues.
              if ( (e.completionCode == CMQC.MQCC_FAILED) && (e.reasonCode == CMQCFC.MQRCCF_OBJECT_OPEN) ) {
-            	 returnMessage = "Error: Failed to clear queue '"+queueName+"' of messages. An application has the queue open.";
-                System.out.println(returnMessage);
-                return true;
+            	 throw new Exception("Error: Failed to clear queue '"+queueName+"' of messages. An application has the queue open.");
              }
              else {
-            	 returnMessage = "CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]";
-                System.out.println(returnMessage);
+            	 throw new Exception("CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]");
              }
           }
  		 return false;
@@ -183,10 +180,9 @@ public class StartupManager implements ApplicationRunner {
  	   mqht.put(CMQC.PORT_PROPERTY, port);
  	   mqht.put(CMQC.USER_ID_PROPERTY, user);
  	   mqht.put(CMQC.PASSWORD_PROPERTY, password); 
-// 	   mqht.put(CMQC.CONNECT_OPTIONS_PROPERTY, CMQC.MQCNO_RECONNECT_Q_MGR);
     }
     // handles clearing all relevant queues
-    public void clearAllEventQueues() throws Exception{
+    public void clearAllEventQueues() throws Exception {
    	 Integer queuesCleared = 0;
         initMQConnection();
         MQQueueManager qMgr = null;
@@ -196,43 +192,37 @@ public class StartupManager implements ApplicationRunner {
         Future<MQQueueManager> future = executor.submit(() -> new MQQueueManager(qMgrName, mqht));
         // connect to queue manger
         try {
-        	System.out.println("qm: " + qMgrName + "trying to connect with: " + mqht.toString());
+        	System.out.println("Trying to connect with: " + qMgrName + " " + mqht.toString());
             qMgr = future.get(5, TimeUnit.SECONDS);
         	qMgr = new MQQueueManager(qMgrName, mqht);
             System.out.println("successfully connected to " + qMgrName);
             agent = new PCFMessageAgent(qMgr);
             System.out.println("successfully created agent");
-            // as we clear queues we count them and ensure that all have been cleared
-            for (String queue : QUEUES) {
-                if(!clearQueue(agent, queue)) {
+            // going through queues from config and clear them if they are in allowedQueues
+            for (String queue : queueConfig.getQueues()) {
+                if(!allowedQueues.contains(queue)|| !clearQueue(agent, queue)) {
                 	// all queues must be cleared or the app will not function as intended
                 	clearQueueSuccess = false;
-               	 	return;
+                	throw new Exception("Failed to clear: " + queue);
                 }
             }
-            
-
-	     } catch (MQDataException e) {
+	    } catch (MQDataException e) {
 	    	 System.out.println("error");
-	    	 returnMessage = "CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]";
-	    	  System.out.println(returnMessage);
+	    	 throw new Exception("CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]");
         } catch (TimeoutException e) {
             System.out.println("Connection timed out!");
-            returnMessage = "Connection to queue manager timed out.";
             future.cancel(true);
+            throw new Exception("Connection to queue manager timed out.");
         } catch (Exception e) {
-        	System.out.println("error");
-        	returnMessage = "Connection to queue manager failed";
-        	System.out.println(returnMessage);
+        	throw new Exception(e.getMessage());
         } finally {
             executor.shutdownNow();
         	System.out.println(clearQueueSuccess);
         	System.out.println(listenersStartSuccess);
-        	}
+        }
         
         
-        
-        // now trying to disconnect
+       // now trying to disconnect
        try {
           if (agent != null) {
              agent.disconnect();
@@ -240,8 +230,7 @@ public class StartupManager implements ApplicationRunner {
           }
        } catch (MQDataException e) {
     	  
-    	  returnMessage = "CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]";
-         System.out.println(returnMessage);
+    	   throw new Exception("CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]");
       }
       try {
          if (qMgr != null)
@@ -254,33 +243,44 @@ public class StartupManager implements ApplicationRunner {
          }
       }
       catch (MQException e) {
-    	 returnMessage = "CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]";
-         System.out.println(returnMessage);
+    	  throw new Exception("CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]");
       }
     }
     
-    private void startJmsListeners() {
+    private void startJmsListeners() throws Exception {
     	// if clear queues wasn't successful then login info is wrong
     	// don't start listeners
     	if(!clearQueueSuccess) return;
         jmsListenerEndpointRegistry.start();
-        
+        List <String> configuredQueues = queueConfig.getQueues();
         // this section counts which of the 
         int count = 0;
         for (MessageListenerContainer container : jmsListenerEndpointRegistry.getListenerContainers()) {
             if (container instanceof AbstractMessageListenerContainer) {
                 AbstractMessageListenerContainer abstractContainer = (AbstractMessageListenerContainer) container;
+                
+                String destinationName = abstractContainer.getDestinationName();
+               
+                // stop listener if in ignored queues
+                if (!configuredQueues.contains(destinationName)) {
+                    if (abstractContainer.isRunning()) {
+                        System.out.println("Stopping listener for " + destinationName + " as it's not selected by user.");
+                        abstractContainer.stop();
+                    }
+                    continue;
+                }
+                
                 if (abstractContainer.isRunning()) {
-                    System.out.println("Listener for " + abstractContainer.getDestinationName() + " is running.");
+                    System.out.println("Listener for " + destinationName + " is running.");
                     count ++;
                 }
             }
         }
-        if (count >= 1) {
-        	System.out.println("listenersStartSuccess");
+        // check if all queues in queueConfig started
+        if (count >= configuredQueues.size()) {
         	listenersStartSuccess = true;
         } else {
-        	returnMessage = "Listeners couldn't start";
+        	throw new Exception("Listeners couldn't start, only " + count + " of " + configuredQueues.size() + " started.");
         }
     	
     }
