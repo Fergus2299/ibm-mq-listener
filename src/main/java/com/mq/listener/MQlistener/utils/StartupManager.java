@@ -11,6 +11,8 @@ import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -38,7 +40,8 @@ import com.mq.listener.MQlistener.config.QueueConfig;
 @Component
 @DependsOn("configManager")
 public class StartupManager implements ApplicationRunner {
-    
+	private static final Logger logger = LoggerFactory.getLogger(StartupManager.class);
+
 	@Autowired
 	Utilities utilities;
 
@@ -104,21 +107,26 @@ public class StartupManager implements ApplicationRunner {
     
     @Override
     public void run(ApplicationArguments args) {
+    	logger.info("StartupManager initialization started.");
+    	
         Config config = configLoader.getConfig();
-        System.out.println("" + queueConfig.toString());
+        logger.info("Queues to clear: " + queueConfig.toString());
         
         if (config != null) {
+        	logger.info("Configuration loaded successfully.");
         	loadConfig = true;
         	try {
         		clearAllEventQueues();
         		startJmsListeners();
         	} catch (Exception e) {
         		// clearing event queues wasn't successful, we try and ge
+        		logger.error("Exception occurred: {}", e.getMessage(), e); 
         		returnMessage = e.getMessage();
         	}
             
         } else {
-            // TODO: Handle missing configuration
+        	// TODO: Handle missing configuration
+            logger.error("Failed to load configuration.");
             returnMessage = "Configuration has failed to load.";
         }
         sendFinalStatus();
@@ -127,9 +135,11 @@ public class StartupManager implements ApplicationRunner {
     private void sendFinalStatus() {
         if(clearQueueSuccess && listenersStartSuccess && loadConfig) {
             sendLoginStatus.sendStatus(true, "Login successful");
+            logger.info("Startup sequence completed successfully.");
         } else {
             System.out.println(returnMessage);
             sendLoginStatus.sendStatus(false, returnMessage);
+            logger.warn("Startup sequence completed with errors: {}", returnMessage);
         }
     }
     
@@ -147,7 +157,7 @@ public class StartupManager implements ApplicationRunner {
  		        // checking response
  		        for (int i = 0; i < responses.length;) {
  		           if ((responses[i]).getCompCode() == CMQC.MQCC_OK) {
- 		        	   System.out.println("Successfully cleared queue '"+queueName+"' of messages.");
+ 		        	  logger.info("Successfully cleared queue '"+queueName+"' of messages.");
  		        	   return true;
  		           }
  		           else {
@@ -192,33 +202,34 @@ public class StartupManager implements ApplicationRunner {
         Future<MQQueueManager> future = executor.submit(() -> new MQQueueManager(qMgrName, mqht));
         // connect to queue manger
         try {
-        	System.out.println("Trying to connect with: " + qMgrName + " " + mqht.toString());
+        	logger.info("Trying to connect to " + qMgrName + ", with: " + mqht.toString());
             qMgr = future.get(5, TimeUnit.SECONDS);
         	qMgr = new MQQueueManager(qMgrName, mqht);
-            System.out.println("successfully connected to " + qMgrName);
+        	logger.info("successfully connected to " + qMgrName);
             agent = new PCFMessageAgent(qMgr);
-            System.out.println("successfully created agent");
+            logger.info("successfully created agent");
             // going through queues from config and clear them if they are in allowedQueues
             for (String queue : queueConfig.getQueues()) {
-                if(!allowedQueues.contains(queue)|| !clearQueue(agent, queue)) {
+                if(!allowedQueues.contains(queue) || !clearQueue(agent, queue)) {
                 	// all queues must be cleared or the app will not function as intended
                 	clearQueueSuccess = false;
+                	logger.error("Failed to clear: " + queue);
                 	throw new Exception("Failed to clear: " + queue);
                 }
             }
 	    } catch (MQDataException e) {
-	    	 System.out.println("error");
+	    	logger.error("Error connecting to queue manager.");
 	    	 throw new Exception("CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]");
         } catch (TimeoutException e) {
-            System.out.println("Connection timed out!");
+        	logger.error("Connection timed out!");
             future.cancel(true);
             throw new Exception("Connection to queue manager timed out.");
         } catch (Exception e) {
+        	logger.error(e.getMessage());
         	throw new Exception(e.getMessage());
         } finally {
+        	// deleting timed event
             executor.shutdownNow();
-        	System.out.println(clearQueueSuccess);
-        	System.out.println(listenersStartSuccess);
         }
         
         
@@ -226,18 +237,17 @@ public class StartupManager implements ApplicationRunner {
        try {
           if (agent != null) {
              agent.disconnect();
-             System.out.println("disconnected from agent");
+             logger.info("Successfully disconnected from agent");
           }
        } catch (MQDataException e) {
-    	  
+    	   
     	   throw new Exception("CC=" +e.completionCode + " : RC=" + e.reasonCode + " [" + MQConstants.lookup(e.reasonCode, "MQRC_.*") + "]");
       }
       try {
          if (qMgr != null)
          {
             qMgr.disconnect();
-            System.out.println("disconnected from "+ qMgrName);
-            System.out.println("successfully cleared " + queuesCleared + " queues");
+            logger.info("disconnected from "+ qMgrName);
             clearQueueSuccess = true;
            	 return;
          }
@@ -251,6 +261,7 @@ public class StartupManager implements ApplicationRunner {
     	// if clear queues wasn't successful then login info is wrong
     	// don't start listeners
     	if(!clearQueueSuccess) return;
+    	logger.info("Starting JMS listeners.");
         jmsListenerEndpointRegistry.start();
         List <String> configuredQueues = queueConfig.getQueues();
         // this section counts which of the 
@@ -264,14 +275,14 @@ public class StartupManager implements ApplicationRunner {
                 // stop listener if in ignored queues
                 if (!configuredQueues.contains(destinationName)) {
                     if (abstractContainer.isRunning()) {
-                        System.out.println("Stopping listener for " + destinationName + " as it's not selected by user.");
+                    	logger.info("Stopping listener for queue: {}", destinationName);
                         abstractContainer.stop();
                     }
                     continue;
                 }
                 
                 if (abstractContainer.isRunning()) {
-                    System.out.println("Listener for " + destinationName + " is running.");
+                	logger.info("Listener for queue {} is running.", destinationName);
                     count ++;
                 }
             }
@@ -280,6 +291,7 @@ public class StartupManager implements ApplicationRunner {
         if (count >= configuredQueues.size()) {
         	listenersStartSuccess = true;
         } else {
+        	
         	throw new Exception("Listeners couldn't start, only " + count + " of " + configuredQueues.size() + " started.");
         }
     	

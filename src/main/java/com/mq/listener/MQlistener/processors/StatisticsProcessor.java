@@ -125,6 +125,7 @@ public class StatisticsProcessor {
             conns = pcfMsg.getIntParameterValue(MQConstants.MQIAMO_CONNS);
         } catch (Exception e) {
             conns = 0;
+            log.warn("Failure getting MQIAMO_CONNS data.");
         }
 
      // For MQIAMO_CONNS_FAILED
@@ -132,6 +133,7 @@ public class StatisticsProcessor {
             connsFailed = pcfMsg.getIntParameterValue(MQConstants.MQIAMO_CONNS_FAILED);
         } catch (Exception e) {
             connsFailed = 0;
+            log.warn("Failure getting MQIAMO_CONNS_FAILED data.");
         }
 
 
@@ -145,6 +147,7 @@ public class StatisticsProcessor {
             }
         } catch (Exception e) {
             opens = 0;
+            log.warn("Failure getting MQIAMO_OPENS data.");
         }
 
         // For MQIAMO_OPENS_FAILED
@@ -157,6 +160,7 @@ public class StatisticsProcessor {
             }
         } catch (Exception e) {
             opensFailed = 0;
+            log.warn("Failure getting MQIAMO_OPENS_FAILED data.");
         }
 
      // For MQIAMO_PUTS
@@ -169,6 +173,7 @@ public class StatisticsProcessor {
             }
         } catch (Exception e) {
             puts = 0;
+            log.warn("Failure getting MQIAMO_PUTS data.");
         }
 
      // For MQIAMO_PUTS_FAILED
@@ -176,6 +181,7 @@ public class StatisticsProcessor {
             putsFailed = pcfMsg.getIntParameterValue(MQConstants.MQIAMO_PUTS_FAILED);
         } catch (Exception e) {
             putsFailed = 0;
+            log.warn("Failure getting MQIAMO_PUTS_FAILED data.");
         }
 
         // For MQIAMO_PUT1S
@@ -188,6 +194,7 @@ public class StatisticsProcessor {
             }
         } catch (Exception e) {
             put1s = 0;
+            log.warn("Failure getting MQIAMO_PUT1S data.");
         }
 
         // For MQIAMO_PUT1S_FAILED
@@ -200,6 +207,7 @@ public class StatisticsProcessor {
             }
         } catch (Exception e) {
             put1sFailed = 0;
+            log.warn("Failure getting MQIAMO_PUT1S_FAILED data.");
         }
 
         // For MQIAMO_GETS
@@ -212,6 +220,7 @@ public class StatisticsProcessor {
             }
         } catch (Exception e) {
             gets = 0;
+            log.warn("Failure getting MQIAMO_GETS data.");
         }
 
      // For MQIAMO_GETS_FAILED
@@ -219,6 +228,7 @@ public class StatisticsProcessor {
             getsFailed = pcfMsg.getIntParameterValue(MQConstants.MQIAMO_GETS_FAILED);
         } catch (Exception e) {
             getsFailed = 0;
+            log.warn("Failure getting MQIAMO_GETS_FAILED data.");
         }
         
         // puts and put1s are very similar
@@ -430,7 +440,9 @@ public class StatisticsProcessor {
         double requestRatePerMinute = (60.0 * requests) / intervalInSeconds;
         double connsRatePerMinute = (60.0 * conns) / intervalInSeconds;
         
-        
+        System.out.println("connsRatePerMinute: " + connsRatePerMinute);
+        System.out.println("connsRatePerMinute: " + connsRatePerMinute);
+        System.out.println("queueManagerMaxConnections: " + queueManagerMaxConnections);
         if (connsRatePerMinute > queueManagerMaxConnections) {
             message = 
             "Spike in connections to the queue manager " 
@@ -452,7 +464,6 @@ public class StatisticsProcessor {
             log.warn("Spike in activity detected for " + qMgrName + ": PutGetRate = {} per minute, ConnRate = {} per minute", 
             		requestRatePerMinute, connsRatePerMinute);
 
-            // TODO: <QMGR> cannot be the object name
         	ActivitySpike issue = issueObjectMap.getOrDefault("<QMGR>", new ActivitySpike(
         		message,
 	        	"<QMGR>",
@@ -466,7 +477,6 @@ public class StatisticsProcessor {
             sender.sendIssue(issue);
             // update issue map
             issueObjectMap.put("<QMGR>", issue);
-            log.info("New issue detected and added for queue: \"<QMGR>\"");
         }
     }
     
@@ -500,12 +510,13 @@ public class StatisticsProcessor {
                 case MQConstants.MQCA_Q_NAME:
                     QName = nestedParameter.getStringValue().trim();
                     break;
-                // for now assuming puts and put1s are the same, etc.,
+                // once again summing persistent and non-persistent messages, see link for details:
+                // https://www.ibm.com/docs/en/ibm-mq/7.5?topic=reference-notes#q037510___q037510_2
                 case MQConstants.MQIAMO_PUTS:
                 case MQConstants.MQIAMO_PUT1S:
                     if (value instanceof int[]) {
-                        int firstElement = ((int[]) value)[0];
-                        quantPut = quantPut + firstElement;
+                    	int sum = Arrays.stream((int[]) value).sum();
+                        quantPut = quantPut + sum;
                     }
                     break;
                 case MQConstants.MQIAMO_PUTS_FAILED:
@@ -517,8 +528,8 @@ public class StatisticsProcessor {
                     break;
                 case MQConstants.MQIAMO_GETS:
                     if (value instanceof int[]) {
-                        int firstElement = ((int[]) value)[0];
-                        quantGet = quantGet + firstElement;
+                        int sum = Arrays.stream((int[]) value).sum();
+                        quantGet = quantGet + sum;
                     }
                     break;
                 case MQConstants.MQIAMO_GETS_FAILED:
@@ -531,6 +542,7 @@ public class StatisticsProcessor {
     	}
         // adding the queue's stats to the queue stats map for this period - always a new map
         if(QName != null && !QName.contains("ADMIN") && !QName.contains("SYSTEM")) {
+        	log.info("Adding stats info for " + QName);
             observedQueues.add(QName);
             Map<String, Integer> statsForQueue = new HashMap<>();
             statsForQueue.put("PUTS", quantPut);
@@ -539,7 +551,6 @@ public class StatisticsProcessor {
             statsForQueue.put("GETS_FAILED", quantGetFails);
             queueStatsMap.put(QName, statsForQueue);
             
-            // log queue to files
         }
     }
     
@@ -560,12 +571,13 @@ public class StatisticsProcessor {
     	queueManagerConfig
     	.getQueue()
     	.getOperationsSpecificQueues();
-    	
+    	// TODO: seems this might be run twice
     	Integer operationsDefault = 
     	    	queueManagerConfig
     	    	.getQueue()
     	    	.getOperationsDefault();
-    	System.out.println("Trying to find" + queueName + ", from operationsSpecificQueues: " + operationsSpecificQueues.toString());
+    	System.out.println("Trying to find " + queueName + ", from operationsSpecificQueues: " + operationsSpecificQueues.toString());
+    	System.out.println(queueName + ": " + operationsSpecificQueues.get(queueName) );
         return operationsSpecificQueues.getOrDefault(queueName, operationsDefault);
     }
 }

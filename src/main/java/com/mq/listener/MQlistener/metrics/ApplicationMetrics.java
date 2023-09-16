@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,6 +16,7 @@ import com.mq.listener.MQlistener.config.ConfigManager;
 import com.mq.listener.MQlistener.config.Config.QMConfig;
 import com.mq.listener.MQlistener.models.AccountingData;
 import com.mq.listener.MQlistener.models.Issue.ConnectionPatternIssue;
+import com.mq.listener.MQlistener.processors.QMGRProcessor;
 import com.mq.listener.MQlistener.utils.IssueSender;
 
 // we assume one user = one connecting app
@@ -21,6 +24,8 @@ import com.mq.listener.MQlistener.utils.IssueSender;
 // strategy means granular permissions and easier auditing.
 @Component
 public class ApplicationMetrics {
+    private static final Logger log = LoggerFactory.getLogger(ApplicationMetrics.class);
+
 	DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
 	// Config:
@@ -87,8 +92,7 @@ public class ApplicationMetrics {
     
     @Scheduled(fixedRate = WINDOW_DURATION_MILLIS)
     public void evaluateAndResetCounts() throws Exception {
-    	
-    	// load specific queue manger settings
+    	log.info("Checking application statistics");
     	// load specific queue manger settings
     	QMConfig queueManagerConfig = 
     	configManager
@@ -122,8 +126,9 @@ public class ApplicationMetrics {
         float appConnectionOperationsMax = number.floatValue();
         
         
-    	System.out.println(
-    "connThreshold: " 
+        log.info(
+    "Apps Configuration: "
+    + "connThreshold: " 
     + appConnectionsMax 
     + ", CORConnectionsThreshold: " 
     + appConnectionOperationsConnections
@@ -133,7 +138,7 @@ public class ApplicationMetrics {
         for (String userId : connectionCounts.keySet()) {
             int userConnectionCount = connectionCounts.getOrDefault(userId, 0);
             int userPutGetCount = putGetCounts.getOrDefault(userId, 0);
-            System.out.println("User: " + userId + ", Connections: " + userConnectionCount + ", Put/Get Count: " + userPutGetCount);
+            log.info("User: " + userId + ", Connections: " + userConnectionCount + ", Put/Get Count: " + userPutGetCount);
             // checking if they've breached the connection threshold per minute
             double userRatio = userConnectionCount / (double) userPutGetCount;
             ConnectionPatternIssue issue;
@@ -161,7 +166,6 @@ public class ApplicationMetrics {
                 issueDetails.put("userRatio", String.valueOf(userRatio));
                 
                 issue.addWindowData(issueDetails, combinedTime);
-                System.out.println("sending app issue");
                 sender.sendIssue(issue);
                 issueObjectMap.put(userId, issue);
                 

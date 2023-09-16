@@ -1,12 +1,12 @@
 ibmmq:
-  container_name: QM4
+  container_name: QM3
   image: ibmcom/mq
   ports:
-    - "1417:1414"
-    - "9446:9443"
+    - "1416:1414"
+    - "9445:9443"
   environment:
     - LICENSE=accept
-    - MQ_QMGR_NAME=QM4
+    - MQ_QMGR_NAME=QM3
   volumes:
     - /home/mquser/setup.mqsc:/etc/mqm/20-config.mqsc
   restart: always

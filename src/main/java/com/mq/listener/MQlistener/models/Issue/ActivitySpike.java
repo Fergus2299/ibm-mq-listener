@@ -9,17 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.mq.listener.MQlistener.utils.Utilities;
 
 public class ActivitySpike extends Issue {
-	
-	@Autowired
-	Utilities utilities;
-	
     public ActivitySpike(
     		String generalDesc,
     		String MQObjectType, 
     		String MQObjectName
     		) {
+    	System.out.println("Creating Activity spike");
         this.issueCode = "Too_Much_Activity";
-        this.startTimeStamp = utilities.formatNow();
+        this.startTimeStamp = Utilities.formatNow();
         this.generalDesc = generalDesc;
         this.technicalDetails = new HashMap<>();
         this.MQObjectType = MQObjectType;

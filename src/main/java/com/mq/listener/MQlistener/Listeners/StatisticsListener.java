@@ -16,7 +16,7 @@ import com.ibm.mq.MQMessage;
 @Component
 public class StatisticsListener {
     
-    private static final Logger log = LoggerFactory.getLogger(StatisticsListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(StatisticsListener.class);
 
     private final StatisticsProcessor statisticsProcessor;
     
@@ -30,14 +30,14 @@ public class StatisticsListener {
             try {
                 MQMessage mqMsg = MQListener.convertToMQMessage((BytesMessage) receivedMessage);
                 PCFMessage pcfMsg = new PCFMessage(mqMsg);
-                System.out.println("recieved stats Message!");
+                logger.info("recieved stats Message!");
                 // TODO: assuming StatQ message is the only stats message being produced by MQ
                 statisticsProcessor.processStatisticsMessage(pcfMsg);
             } catch (Exception e) {
                 MQListener.logProcessingError(e, "PCF");
             }
         } else {
-            log.warn("Received non-bytes message: {}", receivedMessage);
+        	logger.warn("Received non-bytes message: {}", receivedMessage);
         }
     }
 

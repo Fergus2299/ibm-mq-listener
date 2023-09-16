@@ -22,17 +22,17 @@ public class QMGRProcessor {
 	        int eventReason = cfh.getReason();
 	        switch (eventReason) {
 	        	case 2035:
-//	        		log.info("Received QMGR EVENT with a 2035 error!");
+	        		log.info("Received QMGR EVENT with a 2035 error!");
 	        		// there are in total 7 types of 2035 error which are handled by this func
 	        		process2035Message(pcfMsg);
 	                break;
 	            case 2085:
-//	            	log.info("Received QMGR EVENT with a 2035 error!");
+	            	log.info("Received QMGR EVENT with a 2035 error!");
 //	                System.out.println("Received QMGR EVENT with a 2085 error!");
 	                process2085Message(pcfMsg);
 	                break;
 	        	default:
-	            	System.out.println("Recieved QMGR EVENT which was not a 2035!");
+	        		log.info("Recieved QMGR EVENT which was not a 2035!");
 	            	PCFParser.parsePCFMessage(pcfMsg);
 	            	break;
 	        }
@@ -99,14 +99,14 @@ public class QMGRProcessor {
     			
     		// type 3: close not auth
     		case "MQRQ_CLOSE_NOT_AUTHORIZED":
-    			log.info("Recieved 2035 error of type 3!");
+    			log.info("Recieved 2035 error of type 3! - these aren't processed by this app.");
     			break;
     		// type 4: command not auth
     		case "MQRQ_CMD_NOT_AUTHORIZED":
-    			log.info("Recieved 2035 error of type 4!");
+    			log.info("Recieved 2035 error of type 4! - these aren't processed by this app.");
     			break;
     		default:
-    			log.error("Recieved 2035 error of unknown origin!");
+    			log.info("Recieved unknown 2035 error!");
             	break;
     	}
     }

@@ -3,6 +3,8 @@ package com.mq.listener.MQlistener.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 //import com.mq.listener.MQlistener.config.AppConfigUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,11 +20,13 @@ import com.mq.listener.MQlistener.config.Config.QMConfig;
 import com.mq.listener.MQlistener.config.Config.QMConfig.AppConfig;
 import com.mq.listener.MQlistener.config.Config.QMConfig.QueueConfig;
 import com.mq.listener.MQlistener.config.Config.QMConfig.QueueManagerConfig;
+import com.mq.listener.MQlistener.processors.AccountingProcessor;
 
 import org.springframework.http.HttpStatus;
 
 @RestController
 public class ConfigController {
+	private static final Logger log = LoggerFactory.getLogger(ConfigController.class);
 
 
     @Autowired
@@ -31,13 +35,10 @@ public class ConfigController {
 	// injecting qMgrName property
 	@Value("${ibm.mq.queueManager}")
 	private String qMgrName;
-	
 
-    
-    
     @GetMapping("/configurations")
     public ConfigDataTransferObject getConfigurations() {
-        System.out.println("Config requested by frontend");
+        log.info("Config requested by frontend");
         
     	QMConfig queueManagerConfig = 
     	configManager
@@ -85,7 +86,8 @@ public class ConfigController {
         
         // Put RetrievedThresholdsDTO in main DTO
         dataTransferObject.setRetrievedThresholds(retrievedThresholdsDTO);
-
+        log.info("Sent following config to frontend: " + configManager
+            	.getConfig().toString());
         return dataTransferObject;
     }
     
@@ -93,7 +95,7 @@ public class ConfigController {
     @PostMapping("/updateConfig")
     public ResponseEntity<String> updateConfig(@RequestBody ConfigDataTransferObject configDTO) {
         try {
-            System.out.println("Checking posted configuration...");
+            log.info("Checking posted configuration...");
             validateAndConvertDTO(configDTO);
             try {
                 configManager.updateConfigurations(configDTO);
@@ -104,7 +106,7 @@ public class ConfigController {
             }
             
         } catch (Exception e) {
-        	System.out.println(e.getMessage());
+        	log.error(e.getMessage());
             return new ResponseEntity<>("Error updating configuration: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

@@ -12,11 +12,10 @@ import com.mq.listener.MQlistener.utils.Utilities;
 
 
 public class ConnectionPatternIssue extends Issue {
-	@Autowired
-	Utilities utilities;
+
 	    public ConnectionPatternIssue(int connectionCount,String generalDescription, double putGetCount, String userId) {
 	        this.issueCode = "Misconfigured_Connection_Pattern";
-	        this.startTimeStamp = utilities.formatNow();
+	        this.startTimeStamp = Utilities.formatNow();
 	        this.generalDesc = generalDescription;
 	        this.technicalDetails = new HashMap<>();
 	        this.MQObjectName = userId;

@@ -7,17 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.mq.listener.MQlistener.utils.Utilities;
 
 public class QueueServiceHighIssue extends Issue {
-	@Autowired
-	Utilities utilities;
+
 	// constructor function
 	public QueueServiceHighIssue(String QName, Integer timeSinceReset, Integer highQDepth, Integer enQCount, Integer deQCount) {
         this.issueCode = "Queue_Service_High";
-        this.startTimeStamp = utilities.formatNow();
+        this.startTimeStamp = Utilities.formatNow();
         this.generalDesc = 
         		"Queue: "
         		+ QName
         		+ " produced a service high event at:  "
-        		+ utilities.prettyDateTime();
+        		+ Utilities.prettyDateTime();
         
         // issue active when service high event created
         this.technicalDetails = new HashMap<>();
@@ -32,7 +31,7 @@ public class QueueServiceHighIssue extends Issue {
 	
 	public void okEventReceived() {
 		// ensure that 
-        this.generalDesc += "; Queue interval is now ok as of: " + utilities.prettyDateTime() + ".";
+        this.generalDesc += "; Queue interval is now ok as of: " + Utilities.prettyDateTime() + ".";
         this.technicalDetails.put("isActiveEvent", "0");
     }
 }

@@ -16,7 +16,7 @@ import com.ibm.mq.MQMessage;
 @Component
 public class AccountingListener {
 
-    private static final Logger log = LoggerFactory.getLogger(AccountingListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccountingListener.class);
 
     @JmsListener(destination = "SYSTEM.ADMIN.ACCOUNTING.QUEUE")
     public void listen(Message receivedMessage) throws JMSException {
@@ -24,14 +24,14 @@ public class AccountingListener {
             try {
                 MQMessage mqMsg = MQListener.convertToMQMessage((BytesMessage) receivedMessage);
                 PCFMessage pcfMsg = new PCFMessage(mqMsg);
-                
+                logger.info("recieved Accounting Message!");
                 // send PCF message for processing
                 AccountingProcessor.processAccountingMessage(pcfMsg);
             } catch (Exception e) {
                 MQListener.logProcessingError(e, "PCF");
             }
         } else {
-            log.warn("Received non-bytes message: {}", receivedMessage);
+        	logger.warn("Received non-bytes message: {}", receivedMessage);
         }
     }
 }

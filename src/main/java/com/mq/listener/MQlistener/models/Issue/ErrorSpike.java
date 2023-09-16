@@ -6,20 +6,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.mq.listener.MQlistener.models.Errors.ErrorDetails;
 import com.mq.listener.MQlistener.utils.Utilities;
 
 public class ErrorSpike extends Issue {
-	@Autowired
-	Utilities utilities;
+
 	
 	DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
     public ErrorSpike(String issueCode, String MQObjectType, String MQObjectName) {
         this.issueCode = issueCode;
-        this.startTimeStamp = utilities.formatNow();
+        this.startTimeStamp = Utilities.formatNow();
         this.generalDesc = "";
         this.technicalDetails = new HashMap<>();
         this.MQObjectType = MQObjectType;
@@ -40,7 +37,7 @@ public class ErrorSpike extends Issue {
     	}
 
         archivedRequestRates.add(rate.toString());
-        String currentTimeString = utilities.formatNow();
+        String currentTimeString = Utilities.formatNow();
         archivedTimestamps.add(currentTimeString);
 
         technicalDetails.put("archivedRequestRates", archivedRequestRates);
