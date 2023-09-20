@@ -6,13 +6,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import TimeFormatter.TimeFormatter;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.mq.listener.MQlistener.utils.Utilities;
 
 
 public class ConnectionPatternIssue extends Issue {
+
 	    public ConnectionPatternIssue(int connectionCount,String generalDescription, double putGetCount, String userId) {
 	        this.issueCode = "Misconfigured_Connection_Pattern";
-	        this.startTimeStamp = TimeFormatter.formatNow();
+	        this.startTimeStamp = Utilities.formatNow();
 	        this.generalDesc = generalDescription;
 	        this.technicalDetails = new HashMap<>();
 	        this.MQObjectName = userId;

@@ -1,6 +1,5 @@
-package com.mq.listener.MQlistener.issue_makers;
+package com.mq.listener.MQlistener.metrics;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -13,25 +12,38 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.mq.listener.MQlistener.config.ConfigManager;
+import com.mq.listener.MQlistener.config.Config.QMConfig;
 import com.mq.listener.MQlistener.models.Errors.Auth1ErrorDetails;
 import com.mq.listener.MQlistener.models.Errors.AuthErrorDetails;
 import com.mq.listener.MQlistener.models.Errors.ErrorDetails;
 import com.mq.listener.MQlistener.models.Errors.UnknownObjectErrorDetails;
 import com.mq.listener.MQlistener.models.Issue.ErrorSpike;
-import com.mq.listener.MQlistener.utils.ConsoleLogger;
 import com.mq.listener.MQlistener.utils.IssueSender;
 
 @Component
-public class QMGRCounter {
-    private static final Logger log = LoggerFactory.getLogger(QMGRCounter.class);
+public class ErrorMetrics {
+    private static final Logger log = LoggerFactory.getLogger(ErrorMetrics.class);
+    
+
+    private final ConfigManager configManager;
+    int queueManagerThreshold;
+    int queueThreshold;
+    
     @Autowired
     private IssueSender sender;
     
-    // using value injection to get the threshold for errors per minute
-    @Value("${config.errors.threshold}")
-    private double threshold;
-//    private static final double ERRORS_PER_MINUTE_THRESHOLD = 10; // Threshold for errors per minute
-    private static final long WINDOW_DURATION_MILLIS = 20 * 1000; // 10 seconds window
+    @Autowired
+    public ErrorMetrics(ConfigManager configManager) {
+        this.configManager = configManager;
+
+    }
+    
+	// injecting qMgrName property
+	@Value("${ibm.mq.queueManager}")
+	private String qMgrName;
+
+    private static final long WINDOW_DURATION_MILLIS = 20 * 1000; // 10 second window
     private static final long MILLIS_IN_MINUTE = 60 * 1000; // 60 seconds * 1000 milliseconds/second
     
     // Active issues for each queue
@@ -72,6 +84,34 @@ public class QMGRCounter {
     // Evaluate error rates and reset counts at a fixed rate
     @Scheduled(fixedRate = WINDOW_DURATION_MILLIS)
     public void evaluateAndResetCounts() throws Exception {
+    	// loading config information
+    	
+    	// load specific queue manger settings
+    	QMConfig queueManagerConfig = 
+    	configManager
+    	.getConfig()
+    	.getQms()
+    	.getOrDefault(
+    			qMgrName, 
+    			configManager.getConfig().getQms().get("<DEFAULT>"));
+    	
+    	// get error threshold for queue manager
+    	queueManagerThreshold = 
+    	queueManagerConfig
+    	.getQueueManager()
+    	.getErrors()
+    	.getMax();
+    	
+    	// get error threshold which applies to all queues
+    	queueThreshold = 
+    	queueManagerConfig
+    	.getQueue()
+    	.getErrors()
+    	.getMax();
+    	
+    	
+    	
+    	System.out.println("queueManagerThreshold: " + queueManagerThreshold + " queueThreshold: " + queueThreshold);
         double rate;
         // TODO: ensure that the time interval is being evaluated correctly
         // Iterate over all queues with active issues and those in tempCounts
@@ -92,17 +132,19 @@ public class QMGRCounter {
 //            long durationMillis = currentTimeMillis - startTimestamps.getOrDefault(queue, currentTimeMillis);
             rate = ((double) count / WINDOW_DURATION_MILLIS) * MILLIS_IN_MINUTE;
             // Check the rate and handle the issues accordingly
-            if (rate > threshold) {
+            
+            // TODO: for now using queue manager threshold for all - change this
+            if (rate > queueManagerThreshold) {
             	// get or create issue for this queue or whole queue manager
             	ErrorSpike issue;
             	log.info("ErrorSpike issue for the queue manager, object: " + mqObject + ". Rate of error is: " + rate);
             	
             	// TODO: add achived info when initiating to technical details
             	if (mqObject == "<QMGR - Auth>") {
-            		issue = issueObjectMap.getOrDefault(mqObject, new ErrorSpike("Too_Many_2035s","<QMGR>","<QMGR>"));
+            		issue = issueObjectMap.getOrDefault(mqObject, new ErrorSpike("Too_Many_2035s","<QMGR>",qMgrName));
             		
             	} else if (mqObject == "<QMGR - UnknownObject>") {
-            		issue = issueObjectMap.getOrDefault(mqObject, new ErrorSpike("Too_Many_2085s","<QMGR>","<QMGR>"));
+            		issue = issueObjectMap.getOrDefault(mqObject, new ErrorSpike("Too_Many_2085s","<QMGR>",qMgrName));
             		
             	} else {
             		issue = issueObjectMap.getOrDefault(mqObject, new ErrorSpike("Too_Many_2035s","<QUEUE>",mqObject));
@@ -120,15 +162,6 @@ public class QMGRCounter {
                 objectsWithIssues.add(mqObject);
             } 
         }
-//        // sending to the accumulator
-//        try {
-//            issueAggregatorService.sendIssues("ErrorSpikeIssues", issueObjectMap);
-//        } catch (Exception e) {
-//            System.err.println("Failed to send issues to aggregator: " + e.getMessage());
-//        }
-        
-
-        ConsoleLogger.printQueueCurrentIssues(issueObjectMap, "Error Rates");
         // Clear only queues without active issues
         tempCounts.keySet().removeAll(objectsWithIssues);
 

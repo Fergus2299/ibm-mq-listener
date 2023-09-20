@@ -8,15 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
-import com.ibm.mq.headers.pcf.MQCFH;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.mq.listener.MQlistener.processors.QMGRProcessor;
 import com.ibm.mq.MQMessage;
-import com.ibm.mq.constants.MQConstants;
 
 @Component
 public class QMGRListener {
-    private static final Logger log = LoggerFactory.getLogger(QMGRListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(QMGRListener.class);
 
     @JmsListener(destination = "SYSTEM.ADMIN.QMGR.EVENT")
     public void listen(Message receivedMessage) throws JMSException {
@@ -24,13 +22,13 @@ public class QMGRListener {
             try {
                 MQMessage mqMsg = MQListener.convertToMQMessage((BytesMessage) receivedMessage);
                 PCFMessage pcfMsg = new PCFMessage(mqMsg);
-//                System.out.println(pcfMsg);
+                logger.info("recieved Qmgr Message!");
                 QMGRProcessor.processQMGRMessage(pcfMsg);
             } catch (Exception e) {
                 MQListener.logProcessingError(e, "PCF");
             }
         } else {
-            log.warn("Received non-bytes message: {}", receivedMessage);
+        	logger.warn("Received non-bytes message: {}", receivedMessage);
         }
     }
 }

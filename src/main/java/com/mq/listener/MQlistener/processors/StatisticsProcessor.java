@@ -1,6 +1,5 @@
 package com.mq.listener.MQlistener.processors;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap;
@@ -18,48 +17,37 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.headers.pcf.MQCFGR;
-import com.ibm.mq.headers.pcf.MQCFH;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.headers.pcf.PCFParameter;
-import com.mq.listener.MQlistener.logging.BaseLogger;
-import com.mq.listener.MQlistener.logging.QMLogger;
+import com.mq.listener.MQlistener.config.ConfigManager;
+import com.mq.listener.MQlistener.config.Config.QMConfig;
+import com.mq.listener.MQlistener.logging.StatisticsLogger;
 import com.mq.listener.MQlistener.models.Issue.ActivitySpike;
-import com.mq.listener.MQlistener.models.Issue.ErrorSpike;
-import com.mq.listener.MQlistener.models.Issue.Issue;
 import com.mq.listener.MQlistener.parsers.PCFParser;
-import com.mq.listener.MQlistener.utils.ConsoleLogger;
 import com.mq.listener.MQlistener.utils.IssueSender;
 
 @Component
-@ConfigurationProperties(prefix = "config.queue.operations")
 public class StatisticsProcessor {
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH.mm.ss");
     private static final Logger log = LoggerFactory.getLogger(StatisticsProcessor.class);
     
-    // value injection from config file
-    @Value("${config.queueManager.connections.max}")
-    private int queueManagerMaxConnections;
-    @Value("${config.queueManager.operations.max}")
-    private int queueManagerMaxOperations;
-    @Value("${config.queue.operations.max}")
-    private int defaultQueueMaxOperations;
-    // constructing a map from specific queues
-    private Map<String, Integer> specificQueues = new HashMap<>();
+    private final ConfigManager configManager;
+    int queueManagerMaxConnections;
+    int queueManagerMaxOperations;
+    
+    
+    @Autowired
+    public StatisticsProcessor(ConfigManager configManager) {
+        this.configManager = configManager;
 
-    public Map<String, Integer> getSpecificQueues() {
-        return specificQueues;
     }
-
-    public void setSpecificQueues(Map<String, Integer> specificQueues) {
-        this.specificQueues = specificQueues;
-    }
+	// injecting qMgrName property
+	@Value("${ibm.mq.queueManager}")
+	private String qMgrName;
     
     
     // observedQueues stores queues from past messages, STATQ messages only include any one given queue if there's been some
@@ -84,7 +72,7 @@ public class StatisticsProcessor {
     @Autowired
     private IssueSender sender;
 	@Autowired
-	private BaseLogger logger;
+	private StatisticsLogger logger;
     
     public void processStatisticsMessage(PCFMessage pcfMsg) throws Exception {
     	if (pcfMsg == null) {
@@ -119,9 +107,7 @@ public class StatisticsProcessor {
     	String QMName = pcfMsg.getStringParameterValue(MQConstants.MQCA_Q_MGR_NAME).trim();
     	
     	// MQIAMO_OPENS is https://www.ibm.com/docs/en/ibm-mq/9.3?topic=reference-notes#q037510___q037510_1
-        String startDate = pcfMsg.getStringParameterValue(MQConstants.MQCAMO_START_DATE).trim();
         String startTime = pcfMsg.getStringParameterValue(MQConstants.MQCAMO_START_TIME).trim();
-        String endDate = pcfMsg.getStringParameterValue(MQConstants.MQCAMO_END_DATE).trim();
         String endTime = pcfMsg.getStringParameterValue(MQConstants.MQCAMO_END_TIME).trim();
         int conns = 0, 
     		connsFailed = 0, 
@@ -139,6 +125,7 @@ public class StatisticsProcessor {
             conns = pcfMsg.getIntParameterValue(MQConstants.MQIAMO_CONNS);
         } catch (Exception e) {
             conns = 0;
+            log.warn("Failure getting MQIAMO_CONNS data.");
         }
 
      // For MQIAMO_CONNS_FAILED
@@ -146,6 +133,7 @@ public class StatisticsProcessor {
             connsFailed = pcfMsg.getIntParameterValue(MQConstants.MQIAMO_CONNS_FAILED);
         } catch (Exception e) {
             connsFailed = 0;
+            log.warn("Failure getting MQIAMO_CONNS_FAILED data.");
         }
 
 
@@ -159,6 +147,7 @@ public class StatisticsProcessor {
             }
         } catch (Exception e) {
             opens = 0;
+            log.warn("Failure getting MQIAMO_OPENS data.");
         }
 
         // For MQIAMO_OPENS_FAILED
@@ -171,6 +160,7 @@ public class StatisticsProcessor {
             }
         } catch (Exception e) {
             opensFailed = 0;
+            log.warn("Failure getting MQIAMO_OPENS_FAILED data.");
         }
 
      // For MQIAMO_PUTS
@@ -183,6 +173,7 @@ public class StatisticsProcessor {
             }
         } catch (Exception e) {
             puts = 0;
+            log.warn("Failure getting MQIAMO_PUTS data.");
         }
 
      // For MQIAMO_PUTS_FAILED
@@ -190,6 +181,7 @@ public class StatisticsProcessor {
             putsFailed = pcfMsg.getIntParameterValue(MQConstants.MQIAMO_PUTS_FAILED);
         } catch (Exception e) {
             putsFailed = 0;
+            log.warn("Failure getting MQIAMO_PUTS_FAILED data.");
         }
 
         // For MQIAMO_PUT1S
@@ -202,6 +194,7 @@ public class StatisticsProcessor {
             }
         } catch (Exception e) {
             put1s = 0;
+            log.warn("Failure getting MQIAMO_PUT1S data.");
         }
 
         // For MQIAMO_PUT1S_FAILED
@@ -214,6 +207,7 @@ public class StatisticsProcessor {
             }
         } catch (Exception e) {
             put1sFailed = 0;
+            log.warn("Failure getting MQIAMO_PUT1S_FAILED data.");
         }
 
         // For MQIAMO_GETS
@@ -226,6 +220,7 @@ public class StatisticsProcessor {
             }
         } catch (Exception e) {
             gets = 0;
+            log.warn("Failure getting MQIAMO_GETS data.");
         }
 
      // For MQIAMO_GETS_FAILED
@@ -233,6 +228,7 @@ public class StatisticsProcessor {
             getsFailed = pcfMsg.getIntParameterValue(MQConstants.MQIAMO_GETS_FAILED);
         } catch (Exception e) {
             getsFailed = 0;
+            log.warn("Failure getting MQIAMO_GETS_FAILED data.");
         }
         
         // puts and put1s are very similar
@@ -380,8 +376,6 @@ public class StatisticsProcessor {
             double requestRatePerMinute = (60.0 * requests) / intervalInSeconds;
             // use either the default threshold or specialised threshold
             if (requestRatePerMinute > getQueueMaxOperations(queueName)) {
-            	// creation of the issue
-                log.warn("Spike in PUT activity detected for queue {}: Rate = {} per minute", queueName, requestRatePerMinute);
                 String message = 
                 "Spike in MQ operations on: " 
                 + queueName 
@@ -404,7 +398,31 @@ public class StatisticsProcessor {
        }
     }
     private void checkQueueManagerActivity( Map.Entry<LocalTime, LocalTime> timeKey, Map<String, Integer> stats, String combinedTime) throws Exception {
+    	// load specific queue manger settings
+    	QMConfig queueManagerConfig = 
+    	configManager
+    	.getConfig()
+    	.getQms()
+    	.getOrDefault(
+    			qMgrName, 
+    			configManager.getConfig().getQms().get("<DEFAULT>"));
     	
+    	queueManagerMaxConnections = 
+    	queueManagerConfig
+    	.getQueueManager()
+    	.getConnections()
+    	.getMax();
+    	queueManagerMaxOperations = 
+    	queueManagerConfig
+    	.getQueueManager()
+		.getOperations()
+		.getMax();
+
+    	System.out.println(
+    	"queueManagerMaxConnections: " 
+    	+ queueManagerMaxConnections
+    	+ " queueManagerMaxOperations: " 
+    	+ queueManagerMaxOperations);
         // a flag to tell whether issue is present for queue in this window
     	Boolean flag = false;
     	String message = "";
@@ -422,7 +440,9 @@ public class StatisticsProcessor {
         double requestRatePerMinute = (60.0 * requests) / intervalInSeconds;
         double connsRatePerMinute = (60.0 * conns) / intervalInSeconds;
         
-        
+        System.out.println("connsRatePerMinute: " + connsRatePerMinute);
+        System.out.println("connsRatePerMinute: " + connsRatePerMinute);
+        System.out.println("queueManagerMaxConnections: " + queueManagerMaxConnections);
         if (connsRatePerMinute > queueManagerMaxConnections) {
             message = 
             "Spike in connections to the queue manager " 
@@ -432,7 +452,8 @@ public class StatisticsProcessor {
             flag = true;
         } else if (requestRatePerMinute > queueManagerMaxOperations) {
             message = 
-            "Spike in MQ operations on queue manager " 
+            "Spike in MQ operations on "
+            + qMgrName
             + ", which has a configured threshold of no more than "
             + queueManagerMaxOperations
             + " operations per window";
@@ -440,14 +461,13 @@ public class StatisticsProcessor {
         }
         
         if (flag) {
-            log.warn("Spike in activity detected for QMGR: PutGetRate = {} per minute, ConnRate = {} per minute", 
+            log.warn("Spike in activity detected for " + qMgrName + ": PutGetRate = {} per minute, ConnRate = {} per minute", 
             		requestRatePerMinute, connsRatePerMinute);
 
-            // TODO: <QMGR> cannot be the object name
         	ActivitySpike issue = issueObjectMap.getOrDefault("<QMGR>", new ActivitySpike(
         		message,
 	        	"<QMGR>",
-	        	"<QMGR>"));
+	        	qMgrName));
         	Map<String, String> detailsHashMap = new HashMap<>();
         	detailsHashMap.put("requestRate", Double.toString(requestRatePerMinute));
         	detailsHashMap.put("connRate", Double.toString(connsRatePerMinute));
@@ -457,7 +477,6 @@ public class StatisticsProcessor {
             sender.sendIssue(issue);
             // update issue map
             issueObjectMap.put("<QMGR>", issue);
-            log.info("New issue detected and added for queue: \"<QMGR>\"");
         }
     }
     
@@ -491,12 +510,13 @@ public class StatisticsProcessor {
                 case MQConstants.MQCA_Q_NAME:
                     QName = nestedParameter.getStringValue().trim();
                     break;
-                // for now assuming puts and put1s are the same, etc.,
+                // once again summing persistent and non-persistent messages, see link for details:
+                // https://www.ibm.com/docs/en/ibm-mq/7.5?topic=reference-notes#q037510___q037510_2
                 case MQConstants.MQIAMO_PUTS:
                 case MQConstants.MQIAMO_PUT1S:
                     if (value instanceof int[]) {
-                        int firstElement = ((int[]) value)[0];
-                        quantPut = quantPut + firstElement;
+                    	int sum = Arrays.stream((int[]) value).sum();
+                        quantPut = quantPut + sum;
                     }
                     break;
                 case MQConstants.MQIAMO_PUTS_FAILED:
@@ -508,8 +528,8 @@ public class StatisticsProcessor {
                     break;
                 case MQConstants.MQIAMO_GETS:
                     if (value instanceof int[]) {
-                        int firstElement = ((int[]) value)[0];
-                        quantGet = quantGet + firstElement;
+                        int sum = Arrays.stream((int[]) value).sum();
+                        quantGet = quantGet + sum;
                     }
                     break;
                 case MQConstants.MQIAMO_GETS_FAILED:
@@ -522,6 +542,7 @@ public class StatisticsProcessor {
     	}
         // adding the queue's stats to the queue stats map for this period - always a new map
         if(QName != null && !QName.contains("ADMIN") && !QName.contains("SYSTEM")) {
+        	log.info("Adding stats info for " + QName);
             observedQueues.add(QName);
             Map<String, Integer> statsForQueue = new HashMap<>();
             statsForQueue.put("PUTS", quantPut);
@@ -530,7 +551,6 @@ public class StatisticsProcessor {
             statsForQueue.put("GETS_FAILED", quantGetFails);
             queueStatsMap.put(QName, statsForQueue);
             
-            // log queue to files
         }
     }
     
@@ -538,8 +558,26 @@ public class StatisticsProcessor {
      * or returns the default for this queue
      * */
     public int getQueueMaxOperations(String queueName) {
-        return specificQueues.getOrDefault(queueName, defaultQueueMaxOperations);
+    	// load specific queue manger settings
+    	QMConfig queueManagerConfig = 
+    	configManager
+    	.getConfig()
+    	.getQms()
+    	.getOrDefault(
+    			qMgrName, 
+    			configManager.getConfig().getQms().get("<DEFAULT>"));
+    	
+    	Map<String, Integer> operationsSpecificQueues = 
+    	queueManagerConfig
+    	.getQueue()
+    	.getOperationsSpecificQueues();
+    	// TODO: seems this might be run twice
+    	Integer operationsDefault = 
+    	    	queueManagerConfig
+    	    	.getQueue()
+    	    	.getOperationsDefault();
+    	System.out.println("Trying to find " + queueName + ", from operationsSpecificQueues: " + operationsSpecificQueues.toString());
+    	System.out.println(queueName + ": " + operationsSpecificQueues.get(queueName) );
+        return operationsSpecificQueues.getOrDefault(queueName, operationsDefault);
     }
-    
-    
 }

@@ -2,25 +2,18 @@ spring:
   jms:
     listener:
       auto-startup: false
-
+server:
+  ssl:
+    key-alias: springboot
+    key-store: classpath:springboot.jks
+    key-store-type: JKS
+    key-password: password
+    key-store-password: password
+    enabled: true
+  port: 8080
 config:
-  errors:
-    threshold: 10 # threshold for how many errors per minute is too many, and will cause an issue
-  apps:
-    connections:
-      threshold: 100 # threshold for how many connections per minute per app
-    connectionOperations:
-      connections: 5 # an app must connect more than this quantity per window for the application to consider its connection - operation ratio
-      threshold: 0.8 # ratio of MQCONNs to operations (puts, gets,...) performed by the user in configured time
-  queueManager:
-    connections:
-      max: 500
-    operations:
-      max: 700 # maximum num of operations (puts, gets,...) on the queue manager in the configured time
-  queue:
-    operations:
-      max: 200 # default maximum num of operations (puts, gets,...) on queue in the configured time
-      specificQueues: # maximum which can be applied to an individual queue
-        DEV.QUEUE.1: 150
-        DEV.QUEUE.2: 250
-        DEV.QUEUE.3: 180
+  queues: # these can be removed if you want to turn off a particular issue
+    - SYSTEM.ADMIN.ACCOUNTING.QUEUE # corresponds to application issues
+    - SYSTEM.ADMIN.PERFM.EVENT # corresponds to queue service high issues
+    - SYSTEM.ADMIN.QMGR.EVENT # corresponds to error rate spikes
+    - SYSTEM.ADMIN.STATISTICS.QUEUE # corresponds to activity rate spikes

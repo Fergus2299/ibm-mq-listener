@@ -15,7 +15,7 @@ import com.ibm.mq.MQMessage;
 
 @Component
 public class PerformanceListener {
-    private static final Logger log = LoggerFactory.getLogger(PerformanceListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(PerformanceListener.class);
     
     private final PerformanceProcessor performanceProcessor;
 
@@ -29,13 +29,13 @@ public class PerformanceListener {
                 MQMessage mqMsg = MQListener.convertToMQMessage((BytesMessage) receivedMessage);
                 PCFMessage pcfMsg = new PCFMessage(mqMsg);
                 // send PCF message for processing
-                System.out.println("recieved performance Message!");
+                logger.info("recieved Performance Message!");
                 performanceProcessor.processPerformanceMessage(pcfMsg);
             } catch (Exception e) {
                 MQListener.logProcessingError(e, "PCF");
             }
         } else {
-            log.warn("Received non-bytes message: {}", receivedMessage);
+        	logger.warn("Received non-bytes message: {}", receivedMessage);
         }
     }
 }

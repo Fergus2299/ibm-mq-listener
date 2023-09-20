@@ -1,46 +1,67 @@
 package com.mq.listener.MQlistener.utils;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
+import javax.net.ssl.SSLException;
 
-import java.util.Collections;
-import java.util.Map;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.stereotype.Service;
+
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.tcp.TcpClient;
 
 @Service
 public class SendLoginStatus {
-	// TODO: change to web client
-	private final String POST_URL = "https://127.0.0.1:5000/javaloginfeedback";
+	private static final Logger logger = LoggerFactory.getLogger(SendLoginStatus.class);
 	
+    private final String POST_URL = "https://127.0.0.1:5000/javaloginfeedback";
+    private final WebClient webClient;
+
+    // TODO: for a development environment SSL is ignored
+    @Autowired
+    public SendLoginStatus(WebClient.Builder webClientBuilder) throws SSLException {
+        SslContext sslContext = SslContextBuilder
+                .forClient()
+                .trustManager(InsecureTrustManagerFactory.INSTANCE)
+                .build();
+            
+        TcpClient tcpClient = TcpClient.create().secure(t -> t.sslContext(sslContext));
+        this.webClient = webClientBuilder
+            .clientConnector(new ReactorClientHttpConnector(HttpClient.from(tcpClient)))
+            .baseUrl(POST_URL)
+            .build();
+    }
+
     public void sendStatus(Boolean success, String message) {
-        RestTemplate restTemplate = new RestTemplate();
-        Map<String, String> jsonPayload = Collections.singletonMap("message", message);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<Map<String, String>> request = new HttpEntity<>(jsonPayload, headers);
-
-        try {
-            ResponseEntity<String> response = restTemplate.postForEntity(POST_URL, request, String.class);
-            if (response.getStatusCode().is2xxSuccessful()) {
-                System.out.println("POST request successful. Response: " + response.getBody());
-            } else {
-                System.out.println("POST request returned an unexpected status: " + response.getStatusCode());
-            }
-        } catch (HttpClientErrorException e) {
-            // Specific exception for 4xx errors
-            System.err.println("Error " + e.getStatusCode() + ": " + e.getResponseBodyAsString());
-        } catch (RestClientException e) {
-            // Base exception for RestTemplate, catches general network issues
-            System.err.println("Error sending POST request: " + e.getMessage());
-        } catch (Exception e) {
-            // Handle other exceptions that may occur
-            System.err.println("An unexpected error occurred: " + e.getMessage());
-        }
-    } 
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("message", message);
+        logger.info("Json sent to Python server: " + jsonObject.toString());
+        webClient.post()
+                .uri(POST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(jsonObject.toString()), String.class)
+                .retrieve()
+                .bodyToMono(String.class)
+                .subscribe(
+                        response -> System.out.println("POST request successful. Response: " + response),
+                        error -> {
+                            if (error instanceof WebClientResponseException) {
+                                WebClientResponseException webClientError = (WebClientResponseException) error;
+                                System.err.println("Error " + webClientError.getStatusCode() + ": " + webClientError.getResponseBodyAsString());
+                            } else {
+                                System.err.println("Error sending POST request: " + error.getMessage());
+                            }
+                        }
+                );
+    }
 }

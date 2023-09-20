@@ -1,23 +1,22 @@
 package com.mq.listener.MQlistener.models.Issue;
 
 
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.mq.listener.MQlistener.models.Errors.ErrorDetails;
-
-import TimeFormatter.TimeFormatter;
+import com.mq.listener.MQlistener.utils.Utilities;
 
 public class ErrorSpike extends Issue {
+
+	
 	DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
     public ErrorSpike(String issueCode, String MQObjectType, String MQObjectName) {
         this.issueCode = issueCode;
-        this.startTimeStamp = TimeFormatter.formatNow();
+        this.startTimeStamp = Utilities.formatNow();
         this.generalDesc = "";
         this.technicalDetails = new HashMap<>();
         this.MQObjectType = MQObjectType;
@@ -38,7 +37,7 @@ public class ErrorSpike extends Issue {
     	}
 
         archivedRequestRates.add(rate.toString());
-        String currentTimeString = LocalTime.now().format(timeFormatter);
+        String currentTimeString = Utilities.formatNow();
         archivedTimestamps.add(currentTimeString);
 
         technicalDetails.put("archivedRequestRates", archivedRequestRates);
@@ -46,7 +45,6 @@ public class ErrorSpike extends Issue {
         
         Map<String, Object> detailsHashMap = details.toHashMap();
         detailsHashMap.remove("count");
-        
         detailsHashMap.put("archivedRequestRates", archivedRequestRates); 
         detailsHashMap.put("archivedTimestamps", archivedTimestamps); 
         technicalDetails.putAll(detailsHashMap);

@@ -1,49 +1,66 @@
-package com.mq.listener.MQlistener.issue_makers;
+package com.mq.listener.MQlistener.metrics;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.AbstractMap;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.mq.listener.MQlistener.config.ConfigManager;
+import com.mq.listener.MQlistener.config.Config.QMConfig;
 import com.mq.listener.MQlistener.models.AccountingData;
 import com.mq.listener.MQlistener.models.Issue.ConnectionPatternIssue;
-import com.mq.listener.MQlistener.utils.ConsoleLogger;
+import com.mq.listener.MQlistener.processors.QMGRProcessor;
 import com.mq.listener.MQlistener.utils.IssueSender;
 
 // we assume one user = one connecting app
 // this isn't uniformed accross use cases of IBM MQ but is common because this 
 // strategy means granular permissions and easier auditing.
 @Component
-public class AccountingMetrics {
+public class ApplicationMetrics {
+    private static final Logger log = LoggerFactory.getLogger(ApplicationMetrics.class);
+
 	DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+	
+	// Config:
+	private final ConfigManager configManager;
+    int appConnectionsMax;
+    float appConnectionOperationsConnections;
+    float appConnectionOperationsMax;
+    
     @Autowired
     private IssueSender sender;
-        
-	// hardcoded threshold of number of conns per minute
+    @Autowired
+    public ApplicationMetrics(ConfigManager configManager) {
+    	this.configManager = configManager;
+    }
     
-    // TODO: do these need to be static???
-    @Value("${config.apps.connections.threshold}")
-    private int connThreshold;
+	// injecting qMgrName property
+	@Value("${ibm.mq.queueManager}")
+	private String qMgrName;
+    
+    
+
+    
+
+    
     
 	// if the user is below this level of conns then their connection pattern is ignored
     // --- because we only penalise connection patterns which are frequent and therefore taking up 
     // a lot of resources
     
     // COR = shortening of connections operations ratio
-    @Value("${config.apps.connectionOperations.connections}")
-    private int CORConnectionsThreshold;
+//    @Value("${config.app.connectionOperationsRatio.connections}")
+//    private int CORConnectionsThreshold;
     
-    @Value("${config.apps.connectionOperations.threshold}")
-    private double CORThreshold;
+//    @Value("${config.app.connectionOperationsRatio.max}")
+//    private double CORThreshold;
     // the ratio of conns to put/gets where, if below this and connecting often then the app is ine-
     // fficient
     // time window length 
@@ -75,29 +92,64 @@ public class AccountingMetrics {
     
     @Scheduled(fixedRate = WINDOW_DURATION_MILLIS)
     public void evaluateAndResetCounts() throws Exception {
+    	log.info("Checking application statistics");
+    	// load specific queue manger settings
+    	QMConfig queueManagerConfig = 
+    	configManager
+    	.getConfig()
+    	.getQms()
+    	.getOrDefault(
+    			qMgrName, 
+    			configManager.getConfig().getQms().get("<DEFAULT>"));
     	
-//    	System.out.println("Doing scheduled function");
-//        System.out.println("Connections: " + connectionCounts);
-//        System.out.println("putGetCounts: " + putGetCounts);
-    	
-    	System.out.println("connThreshold: " + connThreshold + ", CORConnectionsThreshold: " + CORConnectionsThreshold + ", CORThreshold: " + CORThreshold);
+    	// getting max MQCONNs per application
+        appConnectionsMax = 
+        queueManagerConfig
+        .getApp()
+        .getConnections()
+        .getMax();
+        
+        // getting max conns to consider MQCONN:MQOPERATIONS ratio
+        appConnectionOperationsConnections = 
+        queueManagerConfig
+        .getApp()
+        .getConnectionOperationsRatio()
+        .getConnections();
+        
+        
+        // getting MQCONN:MQOPERATIONS ratio threshold for issue to be created
+        Number number = 
+        (Number) queueManagerConfig
+        .getApp()
+        .getConnectionOperationsRatio()
+        .getMax();
+        float appConnectionOperationsMax = number.floatValue();
+        
+        
+        log.info(
+    "Apps Configuration: "
+    + "connThreshold: " 
+    + appConnectionsMax 
+    + ", CORConnectionsThreshold: " 
+    + appConnectionOperationsConnections
+    + ", CORThreshold: " 
+	+ appConnectionOperationsMax);
     	// iterating through each user
         for (String userId : connectionCounts.keySet()) {
             int userConnectionCount = connectionCounts.getOrDefault(userId, 0);
             int userPutGetCount = putGetCounts.getOrDefault(userId, 0);
-            System.out.println("User: " + userId + ", Connections: " + userConnectionCount + ", Put/Get Count: " + userPutGetCount);
+            log.info("User: " + userId + ", Connections: " + userConnectionCount + ", Put/Get Count: " + userPutGetCount);
             // checking if they've breached the connection threshold per minute
             double userRatio = userConnectionCount / (double) userPutGetCount;
-            boolean shouldLogIssue = false;
-            String errorMessage = "";
             ConnectionPatternIssue issue;
+            
             // if app connects too much issue gets first priority, then we check for the ratio of conns
-            if (userConnectionCount > connThreshold) {
+            if (userConnectionCount > appConnectionsMax) {
             	String windowDurationInSeconds = String.valueOf(WINDOW_DURATION_MILLIS / 1000);
                 issue = issueObjectMap.getOrDefault(userId, new ConnectionPatternIssue(
                         userConnectionCount,
                         "Too many MQCONNs in time interval. Breached limit of " 
-                                + connThreshold
+                                + appConnectionsMax
                                 + " in the window of: " 
                                 + windowDurationInSeconds
                                 + ".",
@@ -114,17 +166,17 @@ public class AccountingMetrics {
                 issueDetails.put("userRatio", String.valueOf(userRatio));
                 
                 issue.addWindowData(issueDetails, combinedTime);
-                System.out.println("sending app issue");
                 sender.sendIssue(issue);
                 issueObjectMap.put(userId, issue);
                 
-            } else if (userConnectionCount > CORConnectionsThreshold && userRatio >= CORThreshold) {
+            } else if (
+            		userConnectionCount > appConnectionOperationsConnections && userRatio >= appConnectionOperationsMax) {
                 String windowDurationInSeconds = String.valueOf(WINDOW_DURATION_MILLIS / 1000);
                 
                 issue = issueObjectMap.getOrDefault(userId, new ConnectionPatternIssue(
                         userConnectionCount,
                         "Ratio of MQCONNS to GETS/PUTS is above " 
-                                + CORThreshold
+                                + appConnectionOperationsMax
                                 + " too high " 
                                 + " in the configured interval of "
                                 + windowDurationInSeconds
