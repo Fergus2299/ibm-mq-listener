@@ -9,7 +9,9 @@ mvn spring-boot:run
 '''
 
 def start_spring_boot_app():
-    cmd = ["mvn", "spring-boot:run"]
+    # cmd = ["mvn", "spring-boot:run"]
+    ##WINDOWS##
+    cmd = ["C:\\apache-maven\\bin\\mvn.cmd", "spring-boot:run"]
     subprocess.run(cmd)
 
 def set_env_variables(**properties):
@@ -19,12 +21,7 @@ def set_env_variables(**properties):
     for key, value in properties.items():
         os.environ[key] = value
 
-def start_spring_boot_app():
-    """
-    Start the Spring Boot application.
-    """
-    cmd = ["mvn", "spring-boot:run"]
-    subprocess.run(cmd)
+
     
     
     

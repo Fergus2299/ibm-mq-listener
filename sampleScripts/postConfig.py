@@ -10,7 +10,7 @@ payload = {
     "retrievedThresholds": {
         "apps": {
             "connThreshold": 400,
-            "connOpRatioThreshold": 0.45,
+            "connOpRatioThreshold": 0.48,
             "minimumConns": 4
         },
         "queue_manager": {
@@ -22,11 +22,11 @@ payload = {
             "errorThreshold": 26,
             "queueThresholds": {
                 "DEV.QUEUE.1": {
-                    "activity": 26,
+                    "activity": 809990,
                     "depth":26
                 },
                 "DEV.QUEUE.2": {
-                    "activity": 46,
+                    "activity": 8080333,
                     "depth":40
                 }
             }

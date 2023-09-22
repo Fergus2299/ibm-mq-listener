@@ -44,27 +44,9 @@ public class ApplicationMetrics {
 	// injecting qMgrName property
 	@Value("${ibm.mq.queueManager}")
 	private String qMgrName;
-    
-    
 
-    
-
-    
-    
-	// if the user is below this level of conns then their connection pattern is ignored
-    // --- because we only penalise connection patterns which are frequent and therefore taking up 
-    // a lot of resources
-    
-    // COR = shortening of connections operations ratio
-//    @Value("${config.app.connectionOperationsRatio.connections}")
-//    private int CORConnectionsThreshold;
-    
-//    @Value("${config.app.connectionOperationsRatio.max}")
-//    private double CORThreshold;
-    // the ratio of conns to put/gets where, if below this and connecting often then the app is ine-
-    // fficient
-    // time window length 
-    private static final long WINDOW_DURATION_MILLIS = 10 * 1000;
+    // time window length 60 seconds
+    private static final long WINDOW_DURATION_MILLIS = 60 * 1000;
    
     // Active issues for each userId
     private static Map<String, ConnectionPatternIssue> issueObjectMap = new HashMap<>();    // these maps hold temporarily the amount of connects and put/gets per user 
@@ -194,12 +176,11 @@ public class ApplicationMetrics {
                 issueDetails.put("userRatio", String.valueOf(userRatio));
                 
                 issue.addWindowData(issueDetails, combinedTime);
-                System.out.println("sending app issue");
                 // sending created or updated issue to frontend
                 sender.sendIssue(issue);
                 issueObjectMap.put(userId, issue);
             }
-            System.out.println("User: " + userId + ", Connections: " + userConnectionCount + ", userRatio: " + userRatio);
+//            System.out.println("User: " + userId + ", Connections: " + userConnectionCount + ", userRatio: " + userRatio);
 
         }
         // Reset the counts for the next window

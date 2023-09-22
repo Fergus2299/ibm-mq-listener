@@ -21,7 +21,7 @@ import com.mq.listener.MQlistener.config.ConfigManager;
 
 @Service
 public class StatisticsLogger {
-    private static final Logger logger = LoggerFactory.getLogger(ConfigManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(StatisticsLogger.class);
 
 	// TODO: ensure is atomic
 	// TODO: ensure that user opening the log files while the app is running will not break the app
@@ -66,7 +66,7 @@ public class StatisticsLogger {
             try {
                 isNewFile = csvFile.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("Error creating the log file.", e);
             }
         }
         
@@ -85,7 +85,7 @@ public class StatisticsLogger {
                 for (String key : statsForQM.keySet()) {
                     raf.writeBytes(key + ",");
                 }
-                raf.writeBytes("\n");
+                raf.writeBytes(System.lineSeparator());
             }
 
             StringBuilder line = new StringBuilder();
@@ -95,7 +95,7 @@ public class StatisticsLogger {
                 line.append(entry.getValue()).append(",");
             }
             line.setLength(line.length() - 1);
-            line.append("\n");
+            line.append(System.lineSeparator());
             
             raf.writeBytes(line.toString());
         } catch (IOException e) {

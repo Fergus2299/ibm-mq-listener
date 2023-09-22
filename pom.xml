@@ -159,5 +159,15 @@
 			</releases>
 		</pluginRepository>
 	</pluginRepositories>
-
+<profiles>
+    <profile>
+        <id>production</id>
+        <properties>
+            <spring.profiles.active>production</spring.profiles.active>
+        </properties>
+        <build>
+            <!-- Define specific build steps for the production profile here -->
+        </build>
+    </profile>
+</profiles>
 </project>

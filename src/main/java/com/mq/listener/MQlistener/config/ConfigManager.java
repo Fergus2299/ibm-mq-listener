@@ -18,24 +18,33 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 @Component
 public class ConfigManager {
     private static final Logger logger = LoggerFactory.getLogger(ConfigManager.class);
+    protected static final String BASE_PATH = "config/";
+
     private Config config;
     
 	// injecting qMgrName property
 	@Value("${ibm.mq.queueManager}")
 	private String qMgrName;
 
+    // default value is used unless app.config.path is set
+    @Value("${app.config.path:src/main/resources/}")
+    private String configPath;
+
+
     @PostConstruct
     public void init() {
         ObjectMapper mapper = new ObjectMapper();
-        
-        String projectRootPath = new File("").getAbsolutePath();
-        File file =  new File(projectRootPath, "src/main/resources/config.json");
+        File file = new File(BASE_PATH + "config.json");
         logger.info("Reading config from: {}", file.getAbsolutePath());
         try {
             if (file.exists()) {
+                System.out.println("file exists");
                 // Read using File when running in a development environment
                 this.config = mapper.readValue(file, Config.class);
             } else {
@@ -45,7 +54,7 @@ public class ConfigManager {
                 }
             }
         } catch (JsonMappingException e) {
-        	logger.info("Configuration JSON is not in the expected format" + e);
+        	logger.error("Configuration JSON is not in the expected format" + e);
         } catch (IOException e) {
         	logger.error("Failed to load configuration", e);
             throw new RuntimeException("Failed to load configuration", e);
@@ -55,25 +64,18 @@ public class ConfigManager {
     // atomic saving new config when posted
     public void saveConfigToFile() {
         ObjectMapper mapper = new ObjectMapper();
-        String projectRootPath = new File("").getAbsolutePath();
-        
-        File tempFile = new File(projectRootPath, "src/main/resources/config.temp.json");
-        File targetFile = new File(projectRootPath, "src/main/resources/config.json");
-        System.out.println("Writing config to temporary file: " + tempFile.getAbsolutePath());
+        Path tempFilePath = Path.of(BASE_PATH, "configTemp.json");
+        Path targetFilePath = Path.of(BASE_PATH, "config.json");
+        logger.info("Writing config to temporary file: {}", tempFilePath.toString());
         try {
             // Write the config to the tempfile
-            mapper.writeValue(tempFile, config);
-            
-            if(!tempFile.renameTo(targetFile)) {
-                throw new IOException("Failed to rename temp file to target file.");
-            }
-            
+            mapper.writeValue(tempFilePath.toFile(), config);
+            Files.deleteIfExists(targetFilePath);
+            Files.move(tempFilePath, targetFilePath);
+            logger.info("New config successfully saved");
         } catch (IOException e) {
+            logger.error("Failed to save configuration" + e);
             throw new RuntimeException("Failed to save configuration", e);
-        } finally {
-            if (tempFile.exists()) {
-                tempFile.delete();
-            }
         }
     }
 

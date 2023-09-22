@@ -541,7 +541,7 @@ public class StatisticsProcessor {
         	}
     	}
         // adding the queue's stats to the queue stats map for this period - always a new map
-        if(QName != null && !QName.contains("ADMIN") && !QName.contains("SYSTEM")) {
+        if(QName != null && !QName.contains("ADMIN") && !QName.contains("SYSTEM")&& !QName.contains("AMQ")) {
         	log.info("Adding stats info for " + QName);
             observedQueues.add(QName);
             Map<String, Integer> statsForQueue = new HashMap<>();
@@ -576,8 +576,6 @@ public class StatisticsProcessor {
     	    	queueManagerConfig
     	    	.getQueue()
     	    	.getOperationsDefault();
-    	System.out.println("Trying to find " + queueName + ", from operationsSpecificQueues: " + operationsSpecificQueues.toString());
-    	System.out.println(queueName + ": " + operationsSpecificQueues.get(queueName) );
         return operationsSpecificQueues.getOrDefault(queueName, operationsDefault);
     }
 }

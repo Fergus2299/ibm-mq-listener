@@ -52,7 +52,8 @@ public class IssueSender {
     }
 
 	public void sendIssue(Issue issue) throws Exception {
-		
+		System.out.println("Sending Issue:");
+		issue.printIssueDetails();
 		List<Issue> issueList = new ArrayList<>();
         issueList.add(issue);
         

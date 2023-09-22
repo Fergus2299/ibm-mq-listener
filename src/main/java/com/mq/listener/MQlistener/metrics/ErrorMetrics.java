@@ -42,9 +42,10 @@ public class ErrorMetrics {
 	// injecting qMgrName property
 	@Value("${ibm.mq.queueManager}")
 	private String qMgrName;
-
-    private static final long WINDOW_DURATION_MILLIS = 20 * 1000; // 10 second window
-    private static final long MILLIS_IN_MINUTE = 60 * 1000; // 60 seconds * 1000 milliseconds/second
+	
+	// minute time window
+    private static final long WINDOW_DURATION_MILLIS = 60 * 1000;
+    private static final long MILLIS_IN_MINUTE = 60 * 1000;
     
     // Active issues for each queue
     private static Map<String, ErrorSpike> issueObjectMap = new HashMap<>();

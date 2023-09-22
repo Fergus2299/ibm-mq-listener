@@ -18,7 +18,9 @@ public class ConnectionPatternIssue extends Issue {
 	        this.startTimeStamp = Utilities.formatNow();
 	        this.generalDesc = generalDescription;
 	        this.technicalDetails = new HashMap<>();
+	        this.MQObjectType = "<QMGR>";
 	        this.MQObjectName = userId;
+	        logToJson();
 	    }
 	    // TODO: add addWindowData function
 	    public void addWindowData(Map<String, String> detailsHashMap,  String timeKey) {

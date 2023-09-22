@@ -12,10 +12,10 @@
       },
       "queueManager": {
         "connections": {
-          "max": 101
+          "max": 300
         },
         "operations": {
-          "max": 51
+          "max": 300
         },
         "errors": {
           "max": 6
@@ -44,10 +44,10 @@
       },
       "queueManager": {
         "connections": {
-          "max": 101
+          "max": 300
         },
         "operations": {
-          "max": 51
+          "max": 300
         },
         "errors": {
           "max": 6
