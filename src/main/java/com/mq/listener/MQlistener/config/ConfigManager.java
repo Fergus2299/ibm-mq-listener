@@ -44,7 +44,7 @@ public class ConfigManager {
         logger.info("Reading config from: {}", file.getAbsolutePath());
         try {
             if (file.exists()) {
-                System.out.println("file exists");
+                System.out.println("Loading Config.");
                 // Read using File when running in a development environment
                 this.config = mapper.readValue(file, Config.class);
             } else {

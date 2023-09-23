@@ -197,18 +197,7 @@ public class StatisticsProcessor {
             log.warn("Failure getting MQIAMO_PUT1S data.");
         }
 
-        // For MQIAMO_PUT1S_FAILED
-        try {
-            int[] put1sFailedArray = pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_PUT1S_FAILED);
-            if (put1sFailedArray != null) {
-                put1sFailed = Arrays.stream(put1sFailedArray).sum();
-            } else {
-                put1sFailed = 0;
-            }
-        } catch (Exception e) {
-            put1sFailed = 0;
-            log.warn("Failure getting MQIAMO_PUT1S_FAILED data.");
-        }
+
 
         // For MQIAMO_GETS
         try {
@@ -221,6 +210,14 @@ public class StatisticsProcessor {
         } catch (Exception e) {
             gets = 0;
             log.warn("Failure getting MQIAMO_GETS data.");
+        }
+        
+        // For MQIAMO_PUT1S_FAILED
+        try {
+            put1sFailed = pcfMsg.getIntParameterValue(MQConstants.MQIAMO_PUT1S_FAILED);
+        } catch (Exception e) {
+            put1sFailed = 0;
+            log.warn("Failure getting MQIAMO_PUT1S_FAILED data.");
         }
 
      // For MQIAMO_GETS_FAILED
@@ -440,9 +437,7 @@ public class StatisticsProcessor {
         double requestRatePerMinute = (60.0 * requests) / intervalInSeconds;
         double connsRatePerMinute = (60.0 * conns) / intervalInSeconds;
         
-        System.out.println("connsRatePerMinute: " + connsRatePerMinute);
-        System.out.println("connsRatePerMinute: " + connsRatePerMinute);
-        System.out.println("queueManagerMaxConnections: " + queueManagerMaxConnections);
+
         if (connsRatePerMinute > queueManagerMaxConnections) {
             message = 
             "Spike in connections to the queue manager " 

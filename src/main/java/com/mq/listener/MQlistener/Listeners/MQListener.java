@@ -31,16 +31,6 @@ public class MQListener {
         return mqMsg;
     }
     
-
-    
-    public static void saveToFile(String data, String filename) {
-        try (FileWriter file = new FileWriter(filename)) {
-            file.write(data);
-            System.out.println("Successfully written data to " + filename);
-        } catch (IOException e) {
-            log.error("An error occurred while writing to the file: {}", e.getMessage());
-        }
-    }
     public static void logProcessingError(Exception e, String context) {
         log.error("Error processing {} message", context, e);
     }

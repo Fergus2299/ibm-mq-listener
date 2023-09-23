@@ -112,7 +112,6 @@ public class ErrorMetrics {
     	
     	
     	
-    	System.out.println("queueManagerThreshold: " + queueManagerThreshold + " queueThreshold: " + queueThreshold);
         double rate;
         // TODO: ensure that the time interval is being evaluated correctly
         // Iterate over all queues with active issues and those in tempCounts

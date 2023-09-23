@@ -134,6 +134,7 @@ public class StartupManager implements ApplicationRunner {
     
     private void sendFinalStatus() {
         if(clearQueueSuccess && listenersStartSuccess && loadConfig) {
+        	System.out.println("Login successful");
             sendLoginStatus.sendStatus(true, "Login successful");
             logger.info("Startup sequence completed successfully.");
         } else {

@@ -180,7 +180,6 @@ public class ApplicationMetrics {
                 sender.sendIssue(issue);
                 issueObjectMap.put(userId, issue);
             }
-//            System.out.println("User: " + userId + ", Connections: " + userConnectionCount + ", userRatio: " + userRatio);
 
         }
         // Reset the counts for the next window

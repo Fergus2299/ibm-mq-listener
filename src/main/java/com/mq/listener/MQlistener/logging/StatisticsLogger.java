@@ -24,20 +24,20 @@ public class StatisticsLogger {
     private static final Logger logger = LoggerFactory.getLogger(StatisticsLogger.class);
 
 	// TODO: ensure is atomic
-	// TODO: ensure that user opening the log files while the app is running will not break the app
     protected static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     protected static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
     protected static final String BASE_PATH = "logs/";
 
-    private final Object fileLock = new Object();
     
     public void logToCsv(
+    		
     		String QMName,
     		// queue name is an empty string if the stats are for the queue manager
     		Optional<String> optQName,
     		LocalTime startTime,
     		LocalTime endTime,
     		Map<String, Integer> statsForQM) {
+    	
     	
     	LocalDate currentDate = LocalDate.now();
         String currentDateString = currentDate.format(DATE_FORMATTER);
@@ -72,7 +72,7 @@ public class StatisticsLogger {
         
         
         
-        
+        // file lock and exclusive access ensured
         try (RandomAccessFile raf = new RandomAccessFile(csvFile, "rw");
                 FileChannel channel = raf.getChannel();
                 FileLock lock = channel.lock()) {
