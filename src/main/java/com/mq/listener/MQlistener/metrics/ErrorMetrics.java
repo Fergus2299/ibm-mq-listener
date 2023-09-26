@@ -36,7 +36,6 @@ public class ErrorMetrics {
     @Autowired
     public ErrorMetrics(ConfigManager configManager) {
         this.configManager = configManager;
-
     }
     
 	// injecting qMgrName property
@@ -54,7 +53,7 @@ public class ErrorMetrics {
     // this will delete issues as they are closed
     Set<String> objectsWithIssues = new HashSet<>();
 
-
+    
     public static void countType1AuthError(String userId, String appName, String channelName, String connName, String CSPUserId) {
     	ErrorDetails currentDetails = tempCounts.getOrDefault(
     			"<QMGR - Auth>", 

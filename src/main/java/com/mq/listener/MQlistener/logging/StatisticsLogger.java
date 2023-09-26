@@ -37,7 +37,7 @@ public class StatisticsLogger {
     		LocalTime startTime,
     		LocalTime endTime,
     		Map<String, Integer> statsForQM) {
-    	
+    	System.out.println("Attempting to log stats data");
     	
     	LocalDate currentDate = LocalDate.now();
         String currentDateString = currentDate.format(DATE_FORMATTER);

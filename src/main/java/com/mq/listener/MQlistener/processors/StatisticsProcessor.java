@@ -30,6 +30,7 @@ import com.mq.listener.MQlistener.models.Issue.ActivitySpike;
 import com.mq.listener.MQlistener.parsers.PCFParser;
 import com.mq.listener.MQlistener.utils.IssueSender;
 
+
 @Component
 public class StatisticsProcessor {
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH.mm.ss");
@@ -43,6 +44,8 @@ public class StatisticsProcessor {
     @Autowired
     public StatisticsProcessor(ConfigManager configManager) {
         this.configManager = configManager;
+        System.out.println("MyComponent has been initialized");
+        
 
     }
 	// injecting qMgrName property
@@ -79,6 +82,7 @@ public class StatisticsProcessor {
             log.error("Provided PCFMessage is null.");
             return;
         }
+
 
 		String commandString = PCFParser.extractCommandString(pcfMsg);
 //		System.out.println("Recieved Stats message, command: " + commandString);

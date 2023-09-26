@@ -17,3 +17,5 @@ ALTER QMGR STATINT(10000)
 * Enable accounting
 ALTER QMGR ACCTMQI(ON)
 
+* set the heartbeat interval of 20 seconds to make the MQ instance more responsive to apps disconnecting
+ALTER CHL(DEV.ADMIN.SVRCONN) CHLTYPE(SVRCONN) HBINT(20)
