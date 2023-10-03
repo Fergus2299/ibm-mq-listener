@@ -21,7 +21,7 @@ public class ErrorSpike extends Issue {
         this.technicalDetails = new HashMap<>();
         this.MQObjectType = MQObjectType;
         this.MQObjectName = MQObjectName;
-        logToJson();
+        logToCsv();
     }
     
     // puts window data into the map

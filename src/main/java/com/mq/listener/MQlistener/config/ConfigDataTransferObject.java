@@ -28,6 +28,14 @@ public class ConfigDataTransferObject {
 		public void setQueues(QueueDTO queues) {
 			this.queues = queues;
 		}
+	    @Override
+	    public String toString() {
+	        return "RetrievedThresholdsDTO{" +
+	            "apps=" + apps +
+	            ", queue_manager=" + queue_manager +
+	            ", queues=" + queues +
+	            '}';
+	    }
         
     }
     public static class AppDTO {
@@ -52,6 +60,14 @@ public class ConfigDataTransferObject {
 		public void setMinimumConns(int minimumConns) {
 			this.minimumConns = minimumConns;
 		}
+	    @Override
+	    public String toString() {
+	        return "AppDTO{" +
+	            "connThreshold=" + connThreshold +
+	            ", connOpRatioThreshold=" + connOpRatioThreshold +
+	            ", minimumConns=" + minimumConns +
+	            '}';
+	    }
     }
 
     public static class QueueManagerDTO {
@@ -76,6 +92,14 @@ public class ConfigDataTransferObject {
 		public void setMaxMQOps(int maxMQOps) {
 			this.maxMQOps = maxMQOps;
 		}
+	    @Override
+	    public String toString() {
+	        return "QueueManagerDTO{" +
+	            "errorThreshold=" + errorThreshold +
+	            ", maxMQConns=" + maxMQConns +
+	            ", maxMQOps=" + maxMQOps +
+	            '}';
+	    }
 
     }
 
@@ -95,6 +119,13 @@ public class ConfigDataTransferObject {
 		public void setQueueThresholds(Map<String, QueueThresholdDTO> queueThresholds) {
 			this.queueThresholds = queueThresholds;
 		}
+	    @Override
+	    public String toString() {
+	        return "QueueDTO{" +
+	            "errorThreshold=" + errorThreshold +
+	            ", queueThresholds=" + queueThresholds +
+	            '}';
+	    }
 
 
     }
@@ -114,7 +145,13 @@ public class ConfigDataTransferObject {
 		public void setActivity(int activity) {
 			this.activity = activity;
 		}
-
+	    @Override
+	    public String toString() {
+	        return "QueueThresholdDTO{" +
+	            "depth=" + depth +
+	            ", activity=" + activity +
+	            '}';
+	    }
 
 
     }
@@ -127,6 +164,11 @@ public class ConfigDataTransferObject {
 		this.retrievedThresholds = retrievedThresholds;
 	}
 
-
+	@Override
+	public String toString() {
+	    return "ConfigDataTransferObject{" +
+	        "retrievedThresholds=" + retrievedThresholds +
+	        '}';
+	}
     
 }

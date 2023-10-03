@@ -2,6 +2,7 @@ package com.mq.listener.MQlistener.config;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mq.listener.MQlistener.config.Config.QMConfig;
@@ -26,19 +27,15 @@ public class ConfigManager {
     private static final Logger logger = LoggerFactory.getLogger(ConfigManager.class);
     protected static final String BASE_PATH = "config/";
 
-    private Config config;
+    public Config config;
     
 	// injecting qMgrName property
 	@Value("${ibm.mq.queueManager}")
 	private String qMgrName;
 
-    // default value is used unless app.config.path is set
-    @Value("${app.config.path:src/main/resources/}")
-    private String configPath;
-
 
     @PostConstruct
-    public void init() {
+    public void init() throws RuntimeException {
         ObjectMapper mapper = new ObjectMapper();
         File file = new File(BASE_PATH + "config.json");
         logger.info("Reading config from: {}", file.getAbsolutePath());
@@ -55,6 +52,7 @@ public class ConfigManager {
             }
         } catch (JsonMappingException e) {
         	logger.error("Configuration JSON is not in the expected format" + e);
+        	throw new RuntimeException("Failed to load configuration", e);
         } catch (IOException e) {
         	logger.error("Failed to load configuration", e);
             throw new RuntimeException("Failed to load configuration", e);
@@ -62,14 +60,18 @@ public class ConfigManager {
     }
     
     // atomic saving new config when posted
-    public void saveConfigToFile() {
+    public void saveConfigToFile(String fileName) throws IOException {
+    	System.out.println("Changing Config File!");
         ObjectMapper mapper = new ObjectMapper();
-        Path tempFilePath = Path.of(BASE_PATH, "configTemp.json");
-        Path targetFilePath = Path.of(BASE_PATH, "config.json");
+        String tempFileName = fileName + "Temp";
+        Path tempFilePath = Path.of(BASE_PATH, tempFileName + ".json");
+        Path targetFilePath = Path.of(BASE_PATH, fileName + ".json");
         logger.info("Writing config to temporary file: {}", tempFilePath.toString());
         try {
             // Write the config to the tempfile
-            mapper.writeValue(tempFilePath.toFile(), config);
+        	System.out.println("Saving to file: " + tempFilePath.toFile().getAbsolutePath());
+        	System.out.println(config.toString());
+        	mapper.writeValue(tempFilePath.toFile(), config);
             Files.deleteIfExists(targetFilePath);
             Files.move(tempFilePath, targetFilePath);
             logger.info("New config successfully saved");
@@ -85,10 +87,12 @@ public class ConfigManager {
     // TODO: test the atomicity of this and file saving
     public void updateConfigurations(ConfigDataTransferObject dto) throws Exception {
         // Clone the original config
-    	logger.info("Old Config: " + config.toString());
+//    	logger.info("Old Config: " + config.toString());
+//    	System.out.println("Old Config: " + config.toString());
         Config clonedConfig = deepClone(config);
 
         try {
+        	System.out.println(qMgrName);
             // Update the cloned config
             QMConfig queueManagerConfig = 
                  clonedConfig
@@ -102,8 +106,9 @@ public class ConfigManager {
             // if all is good, the original config is replaced
             config = clonedConfig;
             logger.info("New Config: " + config.toString());
+            logger.info("New Config: " + config.toString());
             // update JSON file with new data
-            saveConfigToFile();
+            saveConfigToFile("config");
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -119,6 +124,7 @@ public class ConfigManager {
             throw new RuntimeException("Failed to clone configuration", e);
         }
     }
+
 }
 
 

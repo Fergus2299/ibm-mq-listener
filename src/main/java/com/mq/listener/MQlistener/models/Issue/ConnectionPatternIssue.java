@@ -20,7 +20,7 @@ public class ConnectionPatternIssue extends Issue {
 	        this.technicalDetails = new HashMap<>();
 	        this.MQObjectType = "<QMGR>";
 	        this.MQObjectName = userId;
-	        logToJson();
+	        logToCsv();
 	    }
 	    // TODO: add addWindowData function
 	    public void addWindowData(Map<String, String> detailsHashMap,  String timeKey) {

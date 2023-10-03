@@ -87,7 +87,7 @@ public abstract class Issue {
 	    }
 	}
 	
-    public void logToJson(){
+    public void logToCsv(){
     	
     	String logFilePath;
 

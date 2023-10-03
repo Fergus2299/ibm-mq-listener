@@ -9,9 +9,9 @@ POST_URL = 'https://localhost:8080/updateConfig'
 payload = {
     "retrievedThresholds": {
         "apps": {
-            "connThreshold": 400,
+            "connThreshold": 707,
             "connOpRatioThreshold": 0.48,
-            "minimumConns": 4
+            "minimumConns": 707
         },
         "queue_manager": {
             "errorThreshold": 6,
@@ -22,11 +22,11 @@ payload = {
             "errorThreshold": 26,
             "queueThresholds": {
                 "DEV.QUEUE.1": {
-                    "activity": 809990,
+                    "activity": 707,
                     "depth":26
                 },
                 "DEV.QUEUE.2": {
-                    "activity": 8080333,
+                    "activity": 707,
                     "depth":40
                 }
             }

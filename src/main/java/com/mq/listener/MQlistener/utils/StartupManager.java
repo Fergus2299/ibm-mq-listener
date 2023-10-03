@@ -137,10 +137,12 @@ public class StartupManager implements ApplicationRunner {
         	System.out.println("Login successful");
             sendLoginStatus.sendStatus(true, "Login successful");
             logger.info("Startup sequence completed successfully.");
+            System.out.println("Startup sequence completed successfully.");
         } else {
             System.out.println(returnMessage);
             sendLoginStatus.sendStatus(false, returnMessage);
             logger.warn("Startup sequence completed with errors: {}", returnMessage);
+            System.out.println("Startup sequence completed with errors: " + returnMessage);
         }
     }
     
@@ -204,6 +206,7 @@ public class StartupManager implements ApplicationRunner {
         // connect to queue manger
         try {
         	logger.info("Trying to connect to " + qMgrName + ", with: " + mqht.toString());
+        	System.out.println("Trying to connect to " + qMgrName + ", with: " + mqht.toString());
             qMgr = future.get(5, TimeUnit.SECONDS);
         	qMgr = new MQQueueManager(qMgrName, mqht);
         	logger.info("successfully connected to " + qMgrName);

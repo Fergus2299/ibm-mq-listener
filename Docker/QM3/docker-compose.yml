@@ -1,12 +1,14 @@
-ibmmq:
-  container_name: QM3
-  image: ibmcom/mq
-  ports:
-    - "1416:1414"
-    - "9445:9443"
-  environment:
-    - LICENSE=accept
-    - MQ_QMGR_NAME=QM3
-  volumes:
-    - /home/mquser/setup.mqsc:/etc/mqm/20-config.mqsc
-  restart: always
+services:
+  mqseries:
+    image: ibmcom/mq:latest
+    ports:
+      - "1414:1414"
+      - "9443:9443"
+    hostname: mq
+    environment:
+      - LICENSE=accept
+      - MQ_QMGR_NAME=QM1
+    container_name: mqserver
+    stdin_open: true
+    tty: true
+    restart: always

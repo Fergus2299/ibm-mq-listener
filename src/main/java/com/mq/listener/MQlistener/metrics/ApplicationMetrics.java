@@ -37,8 +37,9 @@ public class ApplicationMetrics {
     @Autowired
     private IssueSender sender;
     @Autowired
-    public ApplicationMetrics(ConfigManager configManager) {
+    public ApplicationMetrics(ConfigManager configManager, IssueSender sender) {
     	this.configManager = configManager;
+    	this.sender = sender;
     }
     
 	// injecting qMgrName property
@@ -73,7 +74,7 @@ public class ApplicationMetrics {
     }
     
     @Scheduled(fixedRate = WINDOW_DURATION_MILLIS)
-    public void evaluateAndResetCounts() throws Exception {
+    public void evaluateMetrics() throws Exception {
     	log.info("Checking application statistics");
     	// load specific queue manger settings
     	QMConfig queueManagerConfig = 
@@ -186,4 +187,7 @@ public class ApplicationMetrics {
         connectionCounts.clear();
         putGetCounts.clear();
     }
+	public void setSender(IssueSender sender) {
+		this.sender = sender;
+	}
 }

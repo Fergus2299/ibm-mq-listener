@@ -1,5 +1,6 @@
 package com.mq.listener.MQlistener.config;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.mq.listener.MQlistener.config.ConfigDataTransferObject.*;
@@ -8,7 +9,7 @@ import com.mq.listener.MQlistener.config.ConfigDataTransferObject.*;
 public class Config {
 	// TODO: error handling for updateFromDTO methods, check for empty Dto's etc
     private Map<String, QMConfig> qms;
-    private static Integer OPERATIONS_DEFAULT = 1000;
+    public static Integer OPERATIONS_DEFAULT = 1000;
 
     public static class QMConfig {
 
@@ -35,7 +36,6 @@ public class Config {
 	            public String toString() {
 	                return "ConnectionConfig [max=" + max + "]";
 	            }
-                
             }
 
             public static class ConnectionOperationsRatioConfig {
@@ -292,6 +292,54 @@ public class Config {
 	public void setQms(Map<String, QMConfig> qms) {
 		this.qms = qms;
 	}
+	
+	
+	public ConfigDataTransferObject toConfigDataTransferObject(String qMgrName) {
+	    ConfigDataTransferObject dataTransferObject = new ConfigDataTransferObject();
+	    ConfigDataTransferObject.RetrievedThresholdsDTO retrievedThresholdsDTO = new ConfigDataTransferObject.RetrievedThresholdsDTO();
+	    
+	    QMConfig queueManagerConfig = qms.getOrDefault(qMgrName, qms.get("<DEFAULT>"));
+	    
+	    QMConfig.AppConfig appConfig = queueManagerConfig.getApp();
+	    ConfigDataTransferObject.AppDTO appDTO = new ConfigDataTransferObject.AppDTO();
+	    appDTO.setConnThreshold(appConfig.getConnections().getMax());
+	    appDTO.setConnOpRatioThreshold((float) appConfig.getConnectionOperationsRatio().getMax());
+	    appDTO.setMinimumConns(appConfig.getConnectionOperationsRatio().getConnections());
+	    
+	    QMConfig.QueueManagerConfig QMConfig = queueManagerConfig.getQueueManager();
+	    ConfigDataTransferObject.QueueManagerDTO queueManagerDTO = new ConfigDataTransferObject.QueueManagerDTO();
+	    queueManagerDTO.setErrorThreshold(QMConfig.getErrors().getMax());
+	    queueManagerDTO.setMaxMQConns(QMConfig.getConnections().getMax());
+	    queueManagerDTO.setMaxMQOps(QMConfig.getOperations().getMax());
+	    
+	    QMConfig.QueueConfig queueConfig = queueManagerConfig.getQueue();
+	    ConfigDataTransferObject.QueueDTO queueDTO = new ConfigDataTransferObject.QueueDTO();
+	    queueDTO.setErrorThreshold(queueConfig.getErrors().getMax());
+	    Map<String, Integer> queueActivityMap = queueConfig.getOperationsSpecificQueues();
+	    Map<String, ConfigDataTransferObject.QueueThresholdDTO> queueThresholdsMap = new HashMap<>();
+	    for (String key : queueActivityMap.keySet()) {
+	        ConfigDataTransferObject.QueueThresholdDTO queueThresholdDTO = new ConfigDataTransferObject.QueueThresholdDTO();
+	        queueThresholdDTO.setActivity(queueActivityMap.get(key));
+	        queueThresholdsMap.put(key, queueThresholdDTO);
+	    }
+	    queueDTO.setQueueThresholds(queueThresholdsMap);
+	    
+	    // Put all DTOs in RetrievedThresholdsDTO
+	    retrievedThresholdsDTO.setApps(appDTO);
+	    retrievedThresholdsDTO.setQueue_manager(queueManagerDTO);
+	    retrievedThresholdsDTO.setQueues(queueDTO);
+	    
+	    // Put RetrievedThresholdsDTO in main DTO
+	    dataTransferObject.setRetrievedThresholds(retrievedThresholdsDTO);
+	    
+	    return dataTransferObject;
+	}
+	
+	
+	
+	
+	
+	
 	
 	// a printing statement for this class
 	@Override

@@ -27,7 +27,7 @@ public class QueueServiceHighIssue extends Issue {
         this.technicalDetails.put("deQCount", deQCount.toString());
         this.MQObjectType = "<QUEUE>";
         this.MQObjectName = QName;
-        logToJson();
+        logToCsv();
     }
 	
 	public void okEventReceived() {

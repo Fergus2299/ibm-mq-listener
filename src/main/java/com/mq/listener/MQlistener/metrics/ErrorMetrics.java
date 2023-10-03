@@ -25,17 +25,18 @@ import com.mq.listener.MQlistener.utils.IssueSender;
 public class ErrorMetrics {
     private static final Logger log = LoggerFactory.getLogger(ErrorMetrics.class);
     
-
     private final ConfigManager configManager;
     int queueManagerThreshold;
     int queueThreshold;
     
     @Autowired
-    private IssueSender sender;
+    public IssueSender sender;
     
     @Autowired
-    public ErrorMetrics(ConfigManager configManager) {
+    public ErrorMetrics(ConfigManager configManager, IssueSender sender) {
         this.configManager = configManager;
+        this.sender = sender;
+
     }
     
 	// injecting qMgrName property
@@ -83,17 +84,17 @@ public class ErrorMetrics {
     // TODO: potentially have a start time for the timestamp
     // Evaluate error rates and reset counts at a fixed rate
     @Scheduled(fixedRate = WINDOW_DURATION_MILLIS)
-    public void evaluateAndResetCounts() throws Exception {
+    public void evaluateMetrics() throws Exception {
     	// loading config information
     	
     	// load specific queue manger settings
     	QMConfig queueManagerConfig = 
     	configManager
-    	.getConfig()
+    	.config
     	.getQms()
     	.getOrDefault(
     			qMgrName, 
-    			configManager.getConfig().getQms().get("<DEFAULT>"));
+    			configManager.config.getQms().get("<DEFAULT>"));
     	
     	// get error threshold for queue manager
     	queueManagerThreshold = 
@@ -165,4 +166,13 @@ public class ErrorMetrics {
         tempCounts.keySet().removeAll(objectsWithIssues);
 
     }
+
+	public IssueSender getSender() {
+		return sender;
+	}
+
+	public void setSender(IssueSender sender) {
+		this.sender = sender;
+	}
+    
 }
