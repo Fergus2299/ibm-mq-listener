@@ -84,7 +84,7 @@ public class StartupManager implements ApplicationRunner {
     private JmsListenerEndpointRegistry jmsListenerEndpointRegistry;
     
 	@Autowired
-	private SendLoginStatus sendLoginStatus;
+	private LoginStatusSender sendLoginStatus;
 	
     // var for checking queues were cleared successfully
 	private Boolean loadConfig = false;
@@ -264,7 +264,7 @@ public class StartupManager implements ApplicationRunner {
     private void startJmsListeners() throws Exception {
     	// if clear queues wasn't successful then login info is wrong
     	// don't start listeners
-    	if(!clearQueueSuccess) return;
+    	if(!clearQueueSuccess || !loadConfig) return;
     	logger.info("Starting JMS listeners.");
         jmsListenerEndpointRegistry.start();
         List <String> configuredQueues = queueConfig.getQueues();

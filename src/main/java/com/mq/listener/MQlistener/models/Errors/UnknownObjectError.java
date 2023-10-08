@@ -2,13 +2,13 @@ package com.mq.listener.MQlistener.models.Errors;
 
 import java.util.Map;
 
-public class UnknownObjectErrorDetails extends ErrorDetails {
+public class UnknownObjectError extends Error {
 
     private String connName;
     private String channelName;
     private String QName;
 
-    public UnknownObjectErrorDetails(
+    public UnknownObjectError(
     		int count, 
     		String appName,
     		String connName,

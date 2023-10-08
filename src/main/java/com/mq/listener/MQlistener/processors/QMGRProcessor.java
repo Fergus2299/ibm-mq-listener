@@ -2,6 +2,8 @@ package com.mq.listener.MQlistener.processors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.headers.pcf.MQCFH;
@@ -10,10 +12,20 @@ import com.ibm.mq.headers.pcf.PCFMessage;
 import com.mq.listener.MQlistener.metrics.ErrorMetrics;
 import com.mq.listener.MQlistener.parsers.PCFParser;
 
+@Service
 public class QMGRProcessor {
     private static final Logger log = LoggerFactory.getLogger(QMGRProcessor.class);
+    
+    // using constructor based di
+    private final ErrorMetrics errorMetrics;
 
-    public static void processQMGRMessage(PCFMessage pcfMsg) {
+    @Autowired
+    public QMGRProcessor(ErrorMetrics errorMetrics) {
+        this.errorMetrics = errorMetrics;
+    }
+    
+
+    public void processQMGRMessage(PCFMessage pcfMsg) {
 
     	try {
     		// TODO: test all cases where you recieve a message which is not a handled case
@@ -42,16 +54,14 @@ public class QMGRProcessor {
     	}
     }
 
-    private static void process2035Message(PCFMessage pcfMsg) throws PCFException {
+    private void process2035Message(PCFMessage pcfMsg) throws PCFException {
     	// might have a queue associated with it or a channel
     	
     	// all 2035's will have a reason qualifier
 		// clarify what kind of 2035 error. e.g., RQ = 1 means MQRQ_CONN_NOT_AUTHORIZED
 		// or RQ = 2 means MQRQ_OPEN_NOT_AUTHORIZED
     	String RQ = MQConstants.lookup(pcfMsg.getIntParameterValue(MQConstants.MQIACF_REASON_QUALIFIER), "MQRQ_.*");
-    	// for now we're handling type 1 to 4 - mainly point to point messaging
-    	
-    	// TODO: extend issue making to pub-sub
+
     	String appName;
     	String userId;
     	String QName;
@@ -76,7 +86,7 @@ public class QMGRProcessor {
 	            if (pcfMsg.getStringParameterValue(MQConstants.MQCACF_CSP_USER_IDENTIFIER) != null) {
 	            	CSPUserId = pcfMsg.getStringParameterValue(MQConstants.MQCACF_CSP_USER_IDENTIFIER).trim();
 	            } else {CSPUserId = "";}
-	            ErrorMetrics.countType1AuthError(userId, appName, channelName, connName, CSPUserId);
+	            errorMetrics.countType1AuthError(userId, appName, channelName, connName, CSPUserId);
     			break;
     		// type 2: open not auth
     		case "MQRQ_OPEN_NOT_AUTHORIZED":
@@ -89,7 +99,7 @@ public class QMGRProcessor {
 	            } else {QName = "";}
 	            
 	            if (QName != "") {
-	            	ErrorMetrics.countType2AuthError(userId, appName, QName);
+	            	errorMetrics.countType2AuthError(userId, appName, QName);
 	            } else {
 	            	System.out.println("2035 type 2 had no queue associated with it!");
 	            }
@@ -133,7 +143,7 @@ public class QMGRProcessor {
         // there are cases where a user might try and put to a topic (not a queue)
         // for now our app is ignoring this case. - This could be a future development
         if (QName != "") {
-        	ErrorMetrics.countUnknownObjectError(appName, connName, channelName, QName);
+        	errorMetrics.countUnknownObjectError(appName, connName, channelName, QName);
         } else {
         	log.error("2035 type 2 had no queue associated with it. Could not process PCF!");
         	PCFParser.parsePCFMessage(pcfMsg);

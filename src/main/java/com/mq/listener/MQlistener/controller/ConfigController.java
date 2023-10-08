@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mq.listener.MQlistener.config.ConfigDataTransferObject;
+import com.mq.listener.MQlistener.config.ConfigDTO;
 import com.mq.listener.MQlistener.config.ConfigManager;
 import com.mq.listener.MQlistener.config.Config.QMConfig;
 import com.mq.listener.MQlistener.config.Config.QMConfig.AppConfig;
@@ -39,7 +39,7 @@ public class ConfigController {
 	private String qMgrName;
 
     @GetMapping("/configurations")
-    public ConfigDataTransferObject getConfigurations() {
+    public ConfigDTO getConfigurations() {
         log.info("Config requested by frontend");
         System.out.println(configManager
             	.getConfig());
@@ -87,16 +87,15 @@ public class ConfigController {
 //        retrievedThresholdsDTO.setApps(appDTO);
 //        retrievedThresholdsDTO.setQueue_manager(queueManagerDTO);
 //        retrievedThresholdsDTO.setQueues(queueDTO);
-    	ConfigDataTransferObject dataTransferObject = configManager.getConfig().toConfigDataTransferObject(qMgrName);
+    	ConfigDTO dataTransferObject = configManager.getConfig().toConfigDataTransferObject(qMgrName);
 
         log.info("Sent following config to frontend: " + configManager
             	.getConfig().toString());
         return dataTransferObject;
     }
     
-    // TODO: ensure that update is atomic - ie everything is rolled back if something fails
     @PostMapping("/updateConfig")
-    public ResponseEntity<String> updateConfig(@RequestBody ConfigDataTransferObject configDTO) {
+    public ResponseEntity<String> updateConfig(@RequestBody ConfigDTO configDTO) {
         try {
             log.info("Checking posted configuration...");
             validateAndConvertDTO(configDTO);
@@ -105,7 +104,7 @@ public class ConfigController {
                 configManager.updateConfigurations(configDTO);
                 return new ResponseEntity<>("Configuration updated successfully!", HttpStatus.OK);
             } catch (Exception e) {
-                // Log exception
+            	log.error(e.getMessage());
                 return new ResponseEntity<>("An error occurred.", HttpStatus.INTERNAL_SERVER_ERROR);
             }
             
@@ -115,7 +114,7 @@ public class ConfigController {
         }
     }
     
-    private void validateAndConvertDTO(ConfigDataTransferObject configDTO) throws Exception {
+    private void validateAndConvertDTO(ConfigDTO configDTO) throws Exception {
         // Apps Config
         Integer connThreshold = configDTO.getRetrievedThresholds().getApps().getConnThreshold();
         if (connThreshold == null || connThreshold <= 0) {
@@ -155,8 +154,8 @@ public class ConfigController {
         }
 
         // Checking QueueThresholds values
-        Map<String, ConfigDataTransferObject.QueueThresholdDTO> queueThresholds = configDTO.getRetrievedThresholds().getQueues().getQueueThresholds();
-        for (ConfigDataTransferObject.QueueThresholdDTO queueThresholdDTO : queueThresholds.values()) {
+        Map<String, ConfigDTO.QueueThresholdDTO> queueThresholds = configDTO.getRetrievedThresholds().getQueues().getQueueThresholds();
+        for (ConfigDTO.QueueThresholdDTO queueThresholdDTO : queueThresholds.values()) {
 
 
             Integer activity = queueThresholdDTO.getActivity();

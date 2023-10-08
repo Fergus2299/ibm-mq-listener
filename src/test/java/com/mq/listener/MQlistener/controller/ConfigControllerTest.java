@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 import com.mq.listener.MQlistener.config.Config;
-import com.mq.listener.MQlistener.config.ConfigDataTransferObject;
+import com.mq.listener.MQlistener.config.ConfigDTO;
 import com.mq.listener.MQlistener.config.ConfigManager;
 import com.mq.listener.MQlistener.testConfig.TestConfig;
 
@@ -55,9 +55,9 @@ class ConfigControllerTest {
     // test that we can post to this endpoint and status 200
     @Test
     public void updateConfigurationsTest() throws Exception {
-    	ConfigDataTransferObject mockConfigDTO = TestConfig.createSampleConfig2().toConfigDataTransferObject("QM1");
+    	ConfigDTO mockConfigDTO = TestConfig.createSampleConfig2().toConfigDataTransferObject("QM1");
         // Mocking configManager's behavior
-        doNothing().when(configManager).updateConfigurations(any(ConfigDataTransferObject.class));
+        doNothing().when(configManager).updateConfigurations(any(ConfigDTO.class));
 
         // Send POST request
         mockMvc.perform(post("/updateConfig")

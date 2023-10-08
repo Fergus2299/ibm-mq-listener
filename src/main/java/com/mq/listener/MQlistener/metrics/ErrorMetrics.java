@@ -14,11 +14,12 @@ import org.springframework.stereotype.Component;
 
 import com.mq.listener.MQlistener.config.ConfigManager;
 import com.mq.listener.MQlistener.config.Config.QMConfig;
-import com.mq.listener.MQlistener.models.Errors.Auth1ErrorDetails;
-import com.mq.listener.MQlistener.models.Errors.AuthErrorDetails;
-import com.mq.listener.MQlistener.models.Errors.ErrorDetails;
-import com.mq.listener.MQlistener.models.Errors.UnknownObjectErrorDetails;
+import com.mq.listener.MQlistener.models.Errors.Auth1Error;
+import com.mq.listener.MQlistener.models.Errors.AuthError;
+import com.mq.listener.MQlistener.models.Errors.Error;
+import com.mq.listener.MQlistener.models.Errors.UnknownObjectError;
 import com.mq.listener.MQlistener.models.Issue.ErrorSpike;
+import com.mq.listener.MQlistener.utils.ConsoleLogger;
 import com.mq.listener.MQlistener.utils.IssueSender;
 
 @Component
@@ -44,41 +45,40 @@ public class ErrorMetrics {
 	private String qMgrName;
 	
 	// minute time window
-    private static final long WINDOW_DURATION_MILLIS = 60 * 1000;
-    private static final long MILLIS_IN_MINUTE = 60 * 1000;
+    private final long WINDOW_DURATION_MILLIS = 20 * 1000;
+    private final long MILLIS_IN_MINUTE = 60 * 1000;
     
     // Active issues for each queue
-    private static Map<String, ErrorSpike> issueObjectMap = new HashMap<>();
+    private Map<String, ErrorSpike> issueObjectMap = new HashMap<>();
     // Temporary counts for each queue
-    private static Map<String, ErrorDetails> tempCounts = new HashMap<>();
-    // this will delete issues as they are closed
-    Set<String> objectsWithIssues = new HashSet<>();
+    private Map<String, Error> errorCount = new HashMap<>();
+
 
     
-    public static void countType1AuthError(String userId, String appName, String channelName, String connName, String CSPUserId) {
-    	ErrorDetails currentDetails = tempCounts.getOrDefault(
+    public void countType1AuthError(String userId, String appName, String channelName, String connName, String CSPUserId) {
+    	Error currentDetails = errorCount.getOrDefault(
     			"<QMGR - Auth>", 
-    			new Auth1ErrorDetails(0, userId, appName,channelName,connName,CSPUserId));
+    			new Auth1Error(0, userId, appName,channelName,connName,CSPUserId));
     	currentDetails.incrementCount();
     	log.info("\"<QMGR - Auth>\" incremented to: " + currentDetails.getCount());
-    	tempCounts.put("<QMGR - Auth>", currentDetails);
+    	errorCount.put("<QMGR - Auth>", currentDetails);
     	}
     
     // Count 2035 - 2 errors for the given queue and error code
-    public static void countType2AuthError(String userId, String appName, String queueName) {
-        ErrorDetails currentDetails = tempCounts.getOrDefault(queueName, new AuthErrorDetails(0, userId, appName));
+    public void countType2AuthError(String userId, String appName, String queueName) {
+        Error currentDetails = errorCount.getOrDefault(queueName, new AuthError(0, userId, appName));
         currentDetails.incrementCount();
         log.info(queueName + " incremented to: " + currentDetails.getCount());
-        tempCounts.put(queueName, currentDetails);
+        errorCount.put(queueName, currentDetails);
     }
     
-    public static void countUnknownObjectError(String appName, String connName, String channelName, String queueName) {
-    	ErrorDetails currentDetails = tempCounts.getOrDefault(
+    public void countUnknownObjectError(String appName, String connName, String channelName, String queueName) {
+    	Error currentDetails = errorCount.getOrDefault(
     			"<QMGR - UnknownObject>", 
-    			new UnknownObjectErrorDetails(0, appName, connName,channelName,queueName));
+    			new UnknownObjectError(0, appName, connName,channelName,queueName));
     	currentDetails.incrementCount();
     	log.info("\"<QMGR - UnknownObject>\" incremented to: " + currentDetails.getCount());
-    	tempCounts.put("<QMGR - UnknownObject>", currentDetails);
+    	errorCount.put("<QMGR - UnknownObject>", currentDetails);
     	}
     
     // TODO: potentially have a start time for the timestamp
@@ -112,60 +112,65 @@ public class ErrorMetrics {
     	
     	
     	
-        double rate;
-        // TODO: ensure that the time interval is being evaluated correctly
-        // Iterate over all queues with active issues and those in tempCounts
-        Set<String> queuesToEvaluate = new HashSet<>(objectsWithIssues);
-        queuesToEvaluate.addAll(tempCounts.keySet());
-        for (String mqObject : queuesToEvaluate) {
-        	ErrorDetails errorInfo;
-        	// getting current info about the temp count
-        	if (mqObject == "<QMGR - Auth>") {
-    		 	errorInfo = tempCounts.getOrDefault(mqObject, new Auth1ErrorDetails(0, "", "", "", "", ""));
-        	} else if (mqObject == "<QMGR - UnknownObject>") {
-       		 	errorInfo = tempCounts.getOrDefault(mqObject, new UnknownObjectErrorDetails(0, "", "","",""));
-        	} else {
-        		errorInfo = tempCounts.getOrDefault(mqObject, new AuthErrorDetails(0, "", ""));
-        	}
+
+    	for (Map.Entry<String, Error> entry : errorCount.entrySet()) {       	
+    	    String mqObject = entry.getKey();
+    	    Error errorInfo = entry.getValue();
+    	    System.out.println(mqObject);
+//        	// getting current info about the temp count
+//        	if (mqObject == "<QMGR - Auth>") {
+//    		 	errorInfo = errorCount.getOrDefault(mqObject, new Auth1Error(0, "", "", "", "", ""));
+//        	} else if (mqObject == "<QMGR - UnknownObject>") {
+//       		 	errorInfo = errorCount.getOrDefault(mqObject, new UnknownObjectError(0, "", "","",""));
+//        	} else {
+//        		errorInfo = errorCount.getOrDefault(mqObject, new AuthError(0, "", ""));
+//        	}
+    	    // get the count
         	int count = errorInfo.getCount();
-        	// time since the first issue
-//            long durationMillis = currentTimeMillis - startTimestamps.getOrDefault(queue, currentTimeMillis);
-            rate = ((double) count / WINDOW_DURATION_MILLIS) * MILLIS_IN_MINUTE;
-            // Check the rate and handle the issues accordingly
-            
-            // TODO: for now using queue manager threshold for all - change this
-            if (rate > queueManagerThreshold) {
+			ErrorSpike issue;
+        	System.out.println("Count: " + count+ ", QMGR?: " + mqObject.contains("<QMGR>") +queueManagerThreshold + ", " + queueThreshold );
+            if (mqObject.contains("QMGR") && count > queueManagerThreshold) {
             	// get or create issue for this queue or whole queue manager
-            	ErrorSpike issue;
-            	log.info("ErrorSpike issue for the queue manager, object: " + mqObject + ". Rate of error is: " + rate);
             	
-            	// TODO: add achived info when initiating to technical details
+            	log.info("ErrorSpike issue for the queue manager, object: " + mqObject + ". Rate of errors per minute is: " + count);
             	if (mqObject == "<QMGR - Auth>") {
             		issue = issueObjectMap.getOrDefault(mqObject, new ErrorSpike("Too_Many_2035s","<QMGR>",qMgrName));
+                    // add new archieved info
+                    issue.addWindowData(errorInfo, count);
+                    
+                    sender.sendIssue(issue);
+                    
+                    // we re-put into active issues
+                    issueObjectMap.put(mqObject, issue);
             		
             	} else if (mqObject == "<QMGR - UnknownObject>") {
             		issue = issueObjectMap.getOrDefault(mqObject, new ErrorSpike("Too_Many_2085s","<QMGR>",qMgrName));
+                    // add new archieved info
+                    issue.addWindowData(errorInfo, count);
+                    
+                    sender.sendIssue(issue);
+                    
+                    // we re-put into active issues
+                    issueObjectMap.put(mqObject, issue);
             		
-            	} else {
-            		issue = issueObjectMap.getOrDefault(mqObject, new ErrorSpike("Too_Many_2035s","<QUEUE>",mqObject));
             	}
 
-                // add new archieved info
-                issue.addWindowData(errorInfo, rate);
-                
-                sender.sendIssue(issue);
-                
-                // we re-put into active issues
-                issueObjectMap.put(mqObject, issue);
-            }
-            if (issueObjectMap.containsKey(mqObject)) {
-                objectsWithIssues.add(mqObject);
-            } 
-        }
-        // Clear only queues without active issues
-        tempCounts.keySet().removeAll(objectsWithIssues);
 
-    }
+             
+        } else if (!mqObject.contains("QMGR") && count > queueThreshold) {
+        	issue = issueObjectMap.getOrDefault(mqObject, new ErrorSpike("Too_Many_2035s","<QUEUE>",mqObject));
+            // add new archieved info
+            issue.addWindowData(errorInfo, count);
+            
+            sender.sendIssue(issue);
+            
+            // we re-put into active issues
+            issueObjectMap.put(mqObject, issue);
+        }
+        ConsoleLogger.printQueueCurrentIssues(issueObjectMap, "Error Metrics");
+
+    	}
+	}
 
 	public IssueSender getSender() {
 		return sender;

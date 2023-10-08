@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.mq.listener.MQlistener.config.Config;
-import com.mq.listener.MQlistener.config.ConfigDataTransferObject;
+import com.mq.listener.MQlistener.config.ConfigDTO;
+import com.mq.listener.MQlistener.models.AccountingData;
 
 public class TestConfig {
 	
@@ -15,37 +16,36 @@ public class TestConfig {
         // App Configurations
         Config.QMConfig.AppConfig appConfig = new Config.QMConfig.AppConfig();
         Config.QMConfig.AppConfig.ConnectionConfig appConnectionConfig = new Config.QMConfig.AppConfig.ConnectionConfig();
-        appConnectionConfig.setMax(100); // set max connections for app
+        appConnectionConfig.setMax(100);
         appConfig.setConnections(appConnectionConfig);
 
         Config.QMConfig.AppConfig.ConnectionOperationsRatioConfig connectionOperationsRatioConfig = new Config.QMConfig.AppConfig.ConnectionOperationsRatioConfig();
-        connectionOperationsRatioConfig.setMax(0.8); // set ratio max for demonstration
-        connectionOperationsRatioConfig.setConnections(10); // set connection number for ratio
+        connectionOperationsRatioConfig.setMax(0.8);
+        connectionOperationsRatioConfig.setConnections(10);
         appConfig.setConnectionOperationsRatio(connectionOperationsRatioConfig);
         
         // Queue Manager Configurations
         Config.QMConfig.QueueManagerConfig queueManagerConfig = new Config.QMConfig.QueueManagerConfig();
         Config.QMConfig.QueueManagerConfig.ConnectionConfig qmConnectionConfig = new Config.QMConfig.QueueManagerConfig.ConnectionConfig();
-        qmConnectionConfig.setMax(200); // set max connections for QM
+        qmConnectionConfig.setMax(200);
         queueManagerConfig.setConnections(qmConnectionConfig);
         
         Config.QMConfig.QueueManagerConfig.OperationsConfig operationsConfig = new Config.QMConfig.QueueManagerConfig.OperationsConfig();
-        operationsConfig.setMax(500); // set max operations for QM
+        operationsConfig.setMax(500);
         queueManagerConfig.setOperations(operationsConfig);
         
         Config.QMConfig.QueueManagerConfig.ErrorsConfig errorsConfig = new Config.QMConfig.QueueManagerConfig.ErrorsConfig();
-        errorsConfig.setMax(10); // set max errors for QM
+        errorsConfig.setMax(10);
         queueManagerConfig.setErrors(errorsConfig);
         
         // Queue Configurations
         Config.QMConfig.QueueConfig queueConfig = new Config.QMConfig.QueueConfig();
         Config.QMConfig.QueueConfig.ErrorsConfig queueErrorsConfig = new Config.QMConfig.QueueConfig.ErrorsConfig();
-        queueErrorsConfig.setMax(5); // set max errors for queue
+        queueErrorsConfig.setMax(5); 
         queueConfig.setErrors(queueErrorsConfig);
         queueConfig.setOperationsDefault(Config.OPERATIONS_DEFAULT);
         queueConfig.setOperationsSpecificQueues(Map.of("Queue1", 200, "Queue2", 400)); // set specific operations for queues
         
-        // Setting the configurations to qmConfig
         qmConfig.setApp(appConfig);
         qmConfig.setQueueManager(queueManagerConfig);
         qmConfig.setQueue(queueConfig);
@@ -71,25 +71,25 @@ public class TestConfig {
     
     
     
-    public static ConfigDataTransferObject createSampleDto1() {
-	    ConfigDataTransferObject dto = new ConfigDataTransferObject();
+    public static ConfigDTO createSampleDto1() {
+	    ConfigDTO dto = new ConfigDTO();
 	
-	    ConfigDataTransferObject.RetrievedThresholdsDTO retrievedThresholdsDTO = new ConfigDataTransferObject.RetrievedThresholdsDTO();
+	    ConfigDTO.RetrievedThresholdsDTO retrievedThresholdsDTO = new ConfigDTO.RetrievedThresholdsDTO();
 	    
-	    ConfigDataTransferObject.AppDTO appDTO = new ConfigDataTransferObject.AppDTO();
+	    ConfigDTO.AppDTO appDTO = new ConfigDTO.AppDTO();
 	    appDTO.setConnThreshold(10);
 	    appDTO.setConnOpRatioThreshold(0.5f);
 	    appDTO.setMinimumConns(4);
 	    
-	    ConfigDataTransferObject.QueueManagerDTO queueManagerDTO = new ConfigDataTransferObject.QueueManagerDTO();
+	    ConfigDTO.QueueManagerDTO queueManagerDTO = new ConfigDTO.QueueManagerDTO();
 	    queueManagerDTO.setErrorThreshold(2);
 	    queueManagerDTO.setMaxMQConns(50);
 	    queueManagerDTO.setMaxMQOps(60);
 	
-	    ConfigDataTransferObject.QueueDTO queueDTO = new ConfigDataTransferObject.QueueDTO();
+	    ConfigDTO.QueueDTO queueDTO = new ConfigDTO.QueueDTO();
 	    queueDTO.setErrorThreshold(3);
-	    Map<String, ConfigDataTransferObject.QueueThresholdDTO> queueThresholds = new HashMap<>();
-	    ConfigDataTransferObject.QueueThresholdDTO thresholdDTO = new ConfigDataTransferObject.QueueThresholdDTO();
+	    Map<String, ConfigDTO.QueueThresholdDTO> queueThresholds = new HashMap<>();
+	    ConfigDTO.QueueThresholdDTO thresholdDTO = new ConfigDTO.QueueThresholdDTO();
 	    thresholdDTO.setDepth(4);
 	    thresholdDTO.setActivity(20);
 	    queueThresholds.put("SAMPLE_QUEUE", thresholdDTO);
@@ -103,5 +103,46 @@ public class TestConfig {
 	    return dto;
     }
     
+    public static AccountingData sampleAccountingData1() {
+    	
+        AccountingData sample = new AccountingData();
+
+        sample.setUserIdentifier("app1");
+        sample.setAppName("SampleApp");
+        sample.setConnName("SampleConnection");
+        sample.setStartDate("2023-10-03");
+        sample.setStartTime("12:00:00");
+        sample.setEndDate("2023-10-03");
+        sample.setEndTime("13:00:00");
+        sample.setPuts(1);
+        sample.setPutsFailed(0);
+        sample.setPut1s(0);
+        sample.setPut1sFailed(0);
+        sample.setGets(0);
+        sample.setGetsFailed(0);
+
+        return sample;
+    }
+    public static AccountingData sampleAccountingData2() {
+    	
+        AccountingData sample = new AccountingData();
+
+        sample.setUserIdentifier("app2");
+        sample.setAppName("SampleApp");
+        sample.setConnName("SampleConnection");
+        sample.setStartDate("2023-10-03");
+        sample.setStartTime("12:00:00");
+        sample.setEndDate("2023-10-03");
+        sample.setEndTime("13:00:00");
+        sample.setPuts(1);
+        sample.setPutsFailed(0);
+        sample.setPut1s(0);
+        sample.setPut1sFailed(0);
+        sample.setGets(0);
+        sample.setGetsFailed(0);
+
+        return sample;
+    }
     
+
 }

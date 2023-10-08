@@ -2,7 +2,7 @@ package com.mq.listener.MQlistener.config;
 
 import java.util.Map;
 
-public class ConfigDataTransferObject {
+public class ConfigDTO {
     private RetrievedThresholdsDTO retrievedThresholds;
 
     public static class RetrievedThresholdsDTO {

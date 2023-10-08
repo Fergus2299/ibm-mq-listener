@@ -3,12 +3,12 @@ package com.mq.listener.MQlistener.models.Errors;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ErrorDetails {
+public class Error {
     
     protected int count;
     protected String appName;
 
-    public ErrorDetails(int count, String appName) {
+    public Error(int count, String appName) {
         this.count = count;
         this.appName = appName;
     }

@@ -44,7 +44,7 @@ public class StatisticsLogger {
         String directoryPath;
         String logFilePath;
         
-        // checking if file exists, if not it's created
+        // checking if file exists, if not it needs to be created
         if (optQName.isPresent()) {
             directoryPath = BASE_PATH + QMName + "/Queues/";
             logFilePath = directoryPath + optQName.get() + "-" + currentDateString + ".csv";
@@ -53,13 +53,14 @@ public class StatisticsLogger {
             logFilePath = directoryPath + QMName + "-" + currentDateString + ".csv";
         }
         
-        // Ensure the directory exists
+        
+        // ensure the directory exists
         File logDir = new File(directoryPath);
         if (!logDir.exists()) {
             logDir.mkdirs();
         }
 
-        // Check if the file exists and, if not, create it
+        // check if the file exists and, if not, create it
         File csvFile = new File(logFilePath);
         boolean isNewFile = false;
         if (!csvFile.exists()) {

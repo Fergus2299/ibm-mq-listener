@@ -21,15 +21,15 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.TcpClient;
 
 @Service
-public class SendLoginStatus {
-	private static final Logger logger = LoggerFactory.getLogger(SendLoginStatus.class);
+public class LoginStatusSender {
+	private static final Logger logger = LoggerFactory.getLogger(LoginStatusSender.class);
 	
     private final String POST_URL = "https://127.0.0.1:5000/javaloginfeedback";
     private final WebClient webClient;
 
     // TODO: for a development environment SSL is ignored
     @Autowired
-    public SendLoginStatus(WebClient.Builder webClientBuilder) throws SSLException {
+    public LoginStatusSender(WebClient.Builder webClientBuilder) throws SSLException {
         SslContext sslContext = SslContextBuilder
                 .forClient()
                 .trustManager(InsecureTrustManagerFactory.INSTANCE)

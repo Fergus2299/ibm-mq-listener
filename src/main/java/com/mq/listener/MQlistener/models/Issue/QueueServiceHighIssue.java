@@ -10,14 +10,18 @@ public class QueueServiceHighIssue extends Issue {
 
 	// constructor function
 	public QueueServiceHighIssue(String QName, Integer timeSinceReset, Integer highQDepth, Integer enQCount, Integer deQCount) {
+		 double rate = (deQCount != 0) ? (double) enQCount / deQCount : 0;
         this.issueCode = "Queue_Service_High";
         this.startTimeStamp = Utilities.formatNow();
         this.generalDesc = 
-        		"Queue: "
-        		+ QName
-        		+ " produced a service high event at:  "
-        		+ Utilities.prettyDateTime();
-        
+                "Queue: "
+                + QName
+                + " produced a service high event at:  "
+                + Utilities.prettyDateTime()
+                + ", at which point "
+                + String.format("%.2f", rate) // rounded to 2dp
+                + " messages were put for each message retrieved"
+                ;
         // issue active when service high event created
         this.technicalDetails = new HashMap<>();
         this.technicalDetails.put("isActiveIssue", "1"); 
@@ -33,6 +37,6 @@ public class QueueServiceHighIssue extends Issue {
 	public void okEventReceived() {
 		// ensure that 
         this.generalDesc += "; Queue interval is now ok as of: " + Utilities.prettyDateTime() + ".";
-        this.technicalDetails.put("isActiveEvent", "0");
+        this.technicalDetails.put("isActiveIssue", "0");
     }
 }

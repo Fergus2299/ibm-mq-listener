@@ -9,7 +9,7 @@ POST_URL = 'https://localhost:8080/updateConfig'
 payload = {
     "retrievedThresholds": {
         "apps": {
-            "connThreshold": 707,
+            "connThreshold": 1444,
             "connOpRatioThreshold": 0.48,
             "minimumConns": 707
         },

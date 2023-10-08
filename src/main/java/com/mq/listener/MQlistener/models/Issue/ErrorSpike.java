@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mq.listener.MQlistener.models.Errors.ErrorDetails;
+import com.mq.listener.MQlistener.models.Errors.Error;
 import com.mq.listener.MQlistener.utils.Utilities;
 
 public class ErrorSpike extends Issue {
@@ -25,7 +25,7 @@ public class ErrorSpike extends Issue {
     }
     
     // puts window data into the map
-    public void addWindowData(ErrorDetails details, Double rate) {
+    public void addWindowData(Error details, Number count) {
     	ArrayList<String> archivedRequestRates;
     	ArrayList<String> archivedTimestamps;
     	try {
@@ -37,7 +37,7 @@ public class ErrorSpike extends Issue {
     	    System.out.println("Error: The stored value for 'archivedRequestRates' or 'archivedTimestamps' was not of the expected type. Initializing with an empty list.");
     	}
 
-        archivedRequestRates.add(rate.toString());
+        archivedRequestRates.add(count.toString());
         String currentTimeString = Utilities.formatNow();
         archivedTimestamps.add(currentTimeString);
 

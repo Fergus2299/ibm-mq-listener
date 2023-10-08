@@ -43,7 +43,6 @@ public class AccountingProcessor {
 	
     private static AccountingData extractAccountingData(PCFMessage pcfMsg) throws Exception {
         AccountingData data = new AccountingData();
-        // TODO: error handling
         data.setUserIdentifier(pcfMsg.getStringParameterValue(MQConstants.MQCACF_USER_IDENTIFIER).trim());
         data.setAppName(pcfMsg.getStringParameterValue(MQConstants.MQCACF_APPL_NAME).trim());
         data.setStartDate(pcfMsg.getStringParameterValue(MQConstants.MQCAMO_START_DATE).trim());
@@ -58,7 +57,7 @@ public class AccountingProcessor {
             log.warn("Failure getting MQCACH_CONNECTION_NAME data.");
         }
 
-        // lists contain data for nonpersistent and persistent messages so we sum them to get total
+        // lists contain data for non-persistent and persistent messages so we sum them to get total
         // For MQIAMO_PUTS
         try {
             int[] putsArray = pcfMsg.getIntListParameterValue(MQConstants.MQIAMO_PUTS);
@@ -112,7 +111,7 @@ public class AccountingProcessor {
             log.warn("Could not get getsfailed data for Accouting Message");
         }
 
-
+        System.out.println(data.toString());
         return data;
     }
 }

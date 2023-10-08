@@ -10,22 +10,28 @@ import org.springframework.stereotype.Component;
 
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.mq.listener.MQlistener.processors.QMGRProcessor;
+import com.mq.listener.MQlistener.processors.StatisticsProcessor;
 import com.ibm.mq.MQMessage;
 
 @Component
 public class QMGRListener {
     private static final Logger logger = LoggerFactory.getLogger(QMGRListener.class);
 
+    private final QMGRProcessor qmgrProcessor;
+    
+    public QMGRListener(QMGRProcessor qmgrProcessor) {
+        this.qmgrProcessor = qmgrProcessor;
+    }
     @JmsListener(destination = "SYSTEM.ADMIN.QMGR.EVENT")
     public void listen(Message receivedMessage) throws JMSException {
         if (receivedMessage instanceof BytesMessage) {
             try {
-                MQMessage mqMsg = MQListener.convertToMQMessage((BytesMessage) receivedMessage);
+                MQMessage mqMsg = ListenerUtilities.convertToMQMessage((BytesMessage) receivedMessage);
                 PCFMessage pcfMsg = new PCFMessage(mqMsg);
-                logger.info("recieved Qmgr Message!");
-                QMGRProcessor.processQMGRMessage(pcfMsg);
+                System.out.println("recieved Qmgr Message!");
+                qmgrProcessor.processQMGRMessage(pcfMsg);
             } catch (Exception e) {
-                MQListener.logProcessingError(e, "PCF");
+                ListenerUtilities.logProcessingError(e, "PCF");
             }
         } else {
         	logger.warn("Received non-bytes message: {}", receivedMessage);

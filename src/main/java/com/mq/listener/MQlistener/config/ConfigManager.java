@@ -84,16 +84,13 @@ public class ConfigManager {
     public Config getConfig() {
         return config;
     }
-    // TODO: test the atomicity of this and file saving
-    public void updateConfigurations(ConfigDataTransferObject dto) throws Exception {
-        // Clone the original config
-//    	logger.info("Old Config: " + config.toString());
-//    	System.out.println("Old Config: " + config.toString());
+    
+    public void updateConfigurations(ConfigDTO dto) throws Exception {
+        // clone the original config
         Config clonedConfig = deepClone(config);
 
         try {
-        	System.out.println(qMgrName);
-            // Update the cloned config
+            //update the cloned config
             QMConfig queueManagerConfig = 
                  clonedConfig
                  .getQms()
@@ -102,13 +99,14 @@ public class ConfigManager {
             queueManagerConfig.getQueueManager().updateFromDTO(dto.getRetrievedThresholds().getQueue_manager());
             queueManagerConfig.getQueue().updateFromDTO(dto.getRetrievedThresholds().getQueues());
             clonedConfig.getQms().put(qMgrName, queueManagerConfig);
-
-            // if all is good, the original config is replaced
+            
+            // attempt to save to file
+			saveConfigToFile("config");
+			
+            // if file saving succesful then replace in memory
             config = clonedConfig;
             logger.info("New Config: " + config.toString());
-            logger.info("New Config: " + config.toString());
-            // update JSON file with new data
-            saveConfigToFile("config");
+            
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

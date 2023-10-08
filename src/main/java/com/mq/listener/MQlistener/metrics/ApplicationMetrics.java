@@ -17,6 +17,7 @@ import com.mq.listener.MQlistener.config.Config.QMConfig;
 import com.mq.listener.MQlistener.models.AccountingData;
 import com.mq.listener.MQlistener.models.Issue.ConnectionPatternIssue;
 import com.mq.listener.MQlistener.processors.QMGRProcessor;
+import com.mq.listener.MQlistener.utils.ConsoleLogger;
 import com.mq.listener.MQlistener.utils.IssueSender;
 
 // we assume one user = one connecting app
@@ -50,9 +51,9 @@ public class ApplicationMetrics {
     private static final long WINDOW_DURATION_MILLIS = 60 * 1000;
    
     // Active issues for each userId
-    private static Map<String, ConnectionPatternIssue> issueObjectMap = new HashMap<>();    // these maps hold temporarily the amount of connects and put/gets per user 
+    private static Map<String, ConnectionPatternIssue> issueObjectMap = new HashMap<>();
     private static Map<String, Integer> connectionCounts = new HashMap<>();
-    private static Map<String, Integer> putGetCounts = new HashMap<>();
+    private static Map<String, Integer> MQICount = new HashMap<>();
     
     // TODO: synchronized allows for no one of these to be running at one time and therefore is more thread safe
     
@@ -70,7 +71,7 @@ public class ApplicationMetrics {
         		+ data.getPutsFailed()
         		+ data.getGetsFailed()
         		+ data.getPut1sFailed();
-        putGetCounts.put(userId, putGetCounts.getOrDefault(userId, 0) + currentPutGetCount);
+        MQICount.put(userId, MQICount.getOrDefault(userId, 0) + currentPutGetCount);
     }
     
     @Scheduled(fixedRate = WINDOW_DURATION_MILLIS)
@@ -79,11 +80,11 @@ public class ApplicationMetrics {
     	// load specific queue manger settings
     	QMConfig queueManagerConfig = 
     	configManager
-    	.getConfig()
+    	.config
     	.getQms()
     	.getOrDefault(
     			qMgrName, 
-    			configManager.getConfig().getQms().get("<DEFAULT>"));
+    			configManager.config.getQms().get("<DEFAULT>"));
     	
     	// getting max MQCONNs per application
         appConnectionsMax = 
@@ -109,7 +110,7 @@ public class ApplicationMetrics {
         float appConnectionOperationsMax = number.floatValue();
         
         
-        log.info(
+        System.out.println(
     "Apps Configuration: "
     + "connThreshold: " 
     + appConnectionsMax 
@@ -120,10 +121,11 @@ public class ApplicationMetrics {
     	// iterating through each user
         for (String userId : connectionCounts.keySet()) {
             int userConnectionCount = connectionCounts.getOrDefault(userId, 0);
-            int userPutGetCount = putGetCounts.getOrDefault(userId, 0);
-            log.info("User: " + userId + ", Connections: " + userConnectionCount + ", Put/Get Count: " + userPutGetCount);
+            int userPutGetCount = MQICount.getOrDefault(userId, 0);
+            
             // checking if they've breached the connection threshold per minute
             double userRatio = userConnectionCount / (double) userPutGetCount;
+            System.out.println("User: " + userId + ", Connections: " + userConnectionCount + ", Put/Get Count: " + userPutGetCount + ", userRatio: " + userRatio);
             ConnectionPatternIssue issue;
             
             // if app connects too much issue gets first priority, then we check for the ratio of conns
@@ -133,8 +135,9 @@ public class ApplicationMetrics {
                         userConnectionCount,
                         "Too many MQCONNs in time interval. Breached limit of " 
                                 + appConnectionsMax
-                                + " in the window of: " 
+                                + " in the window of:" 
                                 + windowDurationInSeconds
+                                + " seconds"
                                 + ".",
                         userPutGetCount,
                         userId
@@ -163,6 +166,7 @@ public class ApplicationMetrics {
                                 + " too high " 
                                 + " in the configured interval of "
                                 + windowDurationInSeconds
+                                + " seconds"
                                 + ".",
                         userPutGetCount,
                         userId
@@ -180,12 +184,15 @@ public class ApplicationMetrics {
                 // sending created or updated issue to frontend
                 sender.sendIssue(issue);
                 issueObjectMap.put(userId, issue);
+                
             }
+            
 
         }
         // Reset the counts for the next window
         connectionCounts.clear();
-        putGetCounts.clear();
+        MQICount.clear();
+        ConsoleLogger.printQueueCurrentIssues(issueObjectMap, "Application Metrics");
     }
 	public void setSender(IssueSender sender) {
 		this.sender = sender;

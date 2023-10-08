@@ -22,13 +22,14 @@ public class AccountingListener {
     public void listen(Message receivedMessage) throws JMSException {
         if (receivedMessage instanceof BytesMessage) {
             try {
-                MQMessage mqMsg = MQListener.convertToMQMessage((BytesMessage) receivedMessage);
+                MQMessage mqMsg = ListenerUtilities.convertToMQMessage((BytesMessage) receivedMessage);
                 PCFMessage pcfMsg = new PCFMessage(mqMsg);
                 logger.info("recieved Accounting Message!");
+                System.out.println("recieved Accounting Message!");
                 // send PCF message for processing
                 AccountingProcessor.processAccountingMessage(pcfMsg);
             } catch (Exception e) {
-                MQListener.logProcessingError(e, "PCF");
+                ListenerUtilities.logProcessingError(e, "PCF");
             }
         } else {
         	logger.warn("Received non-bytes message: {}", receivedMessage);

@@ -3,13 +3,13 @@ package com.mq.listener.MQlistener.models.Errors;
 import java.util.Map;
 
 
-public class Auth1ErrorDetails extends AuthErrorDetails {
+public class Auth1Error extends AuthError {
 
     private String channelName;
     private String connName;
     private String CSPUserId;
 
-    public Auth1ErrorDetails(
+    public Auth1Error(
     		int count,
     		String userId, 
     		String appName,

@@ -11,14 +11,8 @@ import jakarta.jms.JMSException;
 import com.ibm.mq.MQMessage;
 
 
-//TODO: We only want to detect errors while the tool is turned on, it might be advisable to
-// delete everything off the event queues when the app starts. - Might be worth advising IBM MQ
-// to include date-time for events because of this because then we could have used this information.
-
-//TODO:Threading
-
-public class MQListener {
-    private static final Logger log = LoggerFactory.getLogger(MQListener.class);
+public class ListenerUtilities {
+    private static final Logger log = LoggerFactory.getLogger(ListenerUtilities.class);
 
     public static MQMessage convertToMQMessage(BytesMessage bytesMessage) throws JMSException, IOException {
         byte[] bytesReceived = new byte[(int) bytesMessage.getBodyLength()];

@@ -26,13 +26,13 @@ public class PerformanceListener {
     public void listen(Message receivedMessage) throws JMSException {
         if (receivedMessage instanceof BytesMessage) {
             try {
-                MQMessage mqMsg = MQListener.convertToMQMessage((BytesMessage) receivedMessage);
+                MQMessage mqMsg = ListenerUtilities.convertToMQMessage((BytesMessage) receivedMessage);
                 PCFMessage pcfMsg = new PCFMessage(mqMsg);
                 // send PCF message for processing
                 logger.info("recieved Performance Message!");
                 performanceProcessor.processPerformanceMessage(pcfMsg);
             } catch (Exception e) {
-                MQListener.logProcessingError(e, "PCF");
+                ListenerUtilities.logProcessingError(e, "PCF");
             }
         } else {
         	logger.warn("Received non-bytes message: {}", receivedMessage);
