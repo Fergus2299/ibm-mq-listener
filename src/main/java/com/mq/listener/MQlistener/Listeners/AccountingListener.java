@@ -11,13 +11,20 @@ import org.springframework.stereotype.Component;
 
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.mq.listener.MQlistener.processors.AccountingProcessor;
+import com.mq.listener.MQlistener.processors.PerformanceProcessor;
 import com.ibm.mq.MQMessage;
 
 @Component
 public class AccountingListener {
 
     private static final Logger logger = LoggerFactory.getLogger(AccountingListener.class);
+    
+    private final AccountingProcessor accountingProcessor;
 
+    public AccountingListener(AccountingProcessor accountingProcessor) {
+        this.accountingProcessor = accountingProcessor;
+    }
+    
     @JmsListener(destination = "SYSTEM.ADMIN.ACCOUNTING.QUEUE")
     public void listen(Message receivedMessage) throws JMSException {
         if (receivedMessage instanceof BytesMessage) {
@@ -27,7 +34,7 @@ public class AccountingListener {
                 logger.info("recieved Accounting Message!");
                 System.out.println("recieved Accounting Message!");
                 // send PCF message for processing
-                AccountingProcessor.processAccountingMessage(pcfMsg);
+                accountingProcessor.processAccountingMessage(pcfMsg);
             } catch (Exception e) {
                 ListenerUtilities.logProcessingError(e, "PCF");
             }

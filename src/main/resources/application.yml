@@ -23,5 +23,5 @@ ibm:
     channel: DEV.ADMIN.SVRCONN
     connName: 127.0.0.1(1414)
     user: admin
-    password: Fh3$z$sHRweFxBS
+    password: passw0rd
 

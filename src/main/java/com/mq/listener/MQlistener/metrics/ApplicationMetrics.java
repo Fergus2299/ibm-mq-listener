@@ -51,13 +51,13 @@ public class ApplicationMetrics {
     private static final long WINDOW_DURATION_MILLIS = 60 * 1000;
    
     // Active issues for each userId
-    private static Map<String, ConnectionPatternIssue> issueObjectMap = new HashMap<>();
-    private static Map<String, Integer> connectionCounts = new HashMap<>();
-    private static Map<String, Integer> MQICount = new HashMap<>();
+    private Map<String, ConnectionPatternIssue> issueObjectMap = new HashMap<>();
+    private Map<String, Integer> connectionCounts = new HashMap<>();
+    private Map<String, Integer> MQICount = new HashMap<>();
     
     // TODO: synchronized allows for no one of these to be running at one time and therefore is more thread safe
     
-    public static synchronized void addMessage(AccountingData data) {
+    public void addMessage(AccountingData data) {
         String userId = data.getUserIdentifier();
         // Update connection count
         connectionCounts.put(userId, connectionCounts.getOrDefault(userId, 0) + 1);

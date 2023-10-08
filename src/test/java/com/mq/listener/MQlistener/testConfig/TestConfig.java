@@ -13,7 +13,6 @@ public class TestConfig {
         Config config = new Config();
         Config.QMConfig qmConfig = new Config.QMConfig();
 
-        // App Configurations
         Config.QMConfig.AppConfig appConfig = new Config.QMConfig.AppConfig();
         Config.QMConfig.AppConfig.ConnectionConfig appConnectionConfig = new Config.QMConfig.AppConfig.ConnectionConfig();
         appConnectionConfig.setMax(100);
@@ -24,7 +23,6 @@ public class TestConfig {
         connectionOperationsRatioConfig.setConnections(10);
         appConfig.setConnectionOperationsRatio(connectionOperationsRatioConfig);
         
-        // Queue Manager Configurations
         Config.QMConfig.QueueManagerConfig queueManagerConfig = new Config.QMConfig.QueueManagerConfig();
         Config.QMConfig.QueueManagerConfig.ConnectionConfig qmConnectionConfig = new Config.QMConfig.QueueManagerConfig.ConnectionConfig();
         qmConnectionConfig.setMax(200);
@@ -38,19 +36,19 @@ public class TestConfig {
         errorsConfig.setMax(10);
         queueManagerConfig.setErrors(errorsConfig);
         
-        // Queue Configurations
         Config.QMConfig.QueueConfig queueConfig = new Config.QMConfig.QueueConfig();
         Config.QMConfig.QueueConfig.ErrorsConfig queueErrorsConfig = new Config.QMConfig.QueueConfig.ErrorsConfig();
         queueErrorsConfig.setMax(5); 
         queueConfig.setErrors(queueErrorsConfig);
         queueConfig.setOperationsDefault(Config.OPERATIONS_DEFAULT);
-        queueConfig.setOperationsSpecificQueues(Map.of("Queue1", 200, "Queue2", 400)); // set specific operations for queues
+        queueConfig.setOperationsSpecificQueues(Map.of("Queue1", 200, "Queue2", 400)); 
         
         qmConfig.setApp(appConfig);
         qmConfig.setQueueManager(queueManagerConfig);
         qmConfig.setQueue(queueConfig);
         
         config.setQms(Map.of("QM1", qmConfig));
+        System.out.println(config.toString());
         return config;
     }
     public static Config createSampleConfig2() {
@@ -104,7 +102,7 @@ public class TestConfig {
     }
     
     public static AccountingData sampleAccountingData1() {
-    	
+    	// bad app
         AccountingData sample = new AccountingData();
 
         sample.setUserIdentifier("app1");
@@ -124,7 +122,7 @@ public class TestConfig {
         return sample;
     }
     public static AccountingData sampleAccountingData2() {
-    	
+    	// good app
         AccountingData sample = new AccountingData();
 
         sample.setUserIdentifier("app2");
@@ -134,7 +132,7 @@ public class TestConfig {
         sample.setStartTime("12:00:00");
         sample.setEndDate("2023-10-03");
         sample.setEndTime("13:00:00");
-        sample.setPuts(1);
+        sample.setPuts(4);
         sample.setPutsFailed(0);
         sample.setPut1s(0);
         sample.setPut1sFailed(0);
@@ -143,6 +141,21 @@ public class TestConfig {
 
         return sample;
     }
-    
+    public static Map<String, Integer> SampleQMStats() {
+        Map<String, Integer> statsForQM = new HashMap<>();
+
+        statsForQM.put("CONNS", 100);
+        statsForQM.put("CONNS_FAILED", 5);
+        statsForQM.put("OPENS", 150);
+        statsForQM.put("OPENS_FAILED", 2);
+        statsForQM.put("PUTS", 500);
+        statsForQM.put("PUTS_FAILED", 10);
+        statsForQM.put("GETS", 480);
+        statsForQM.put("GETS_FAILED", 8);
+
+        return statsForQM;
+
+
+    }
 
 }

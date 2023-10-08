@@ -4,18 +4,30 @@ import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.headers.pcf.PCFMessage;
 import com.ibm.mq.headers.pcf.MQCFH;
 import com.mq.listener.MQlistener.metrics.ApplicationMetrics;
+import com.mq.listener.MQlistener.metrics.ErrorMetrics;
 import com.mq.listener.MQlistener.models.AccountingData;
 import com.mq.listener.MQlistener.parsers.PCFParser;
 
+@Service
 public class AccountingProcessor {
 	private static final Logger log = LoggerFactory.getLogger(AccountingProcessor.class);
-    static public void processAccountingMessage(PCFMessage pcfMsg) {
-    	
+	
+    // using constructor based di
+    private final ApplicationMetrics applicationMetrics;
+    @Autowired
+    public AccountingProcessor(ApplicationMetrics applicationMetrics) {
+        this.applicationMetrics = applicationMetrics;
+    }
+    
+    public void processAccountingMessage(PCFMessage pcfMsg) {
+    
 	try {
         // check what command it is
 		MQCFH cfh = pcfMsg.getHeader();
@@ -29,7 +41,7 @@ public class AccountingProcessor {
 	            // creating the AccoutingData object
 	            AccountingData data = extractAccountingData(pcfMsg);
 	            // passing on the message
-	            ApplicationMetrics.addMessage(data);
+	            applicationMetrics.addMessage(data);
                 break;
             default:
             	log.info("Received an unhandled accounting command code: " + command);
@@ -41,7 +53,7 @@ public class AccountingProcessor {
 	}
 }
 	
-    private static AccountingData extractAccountingData(PCFMessage pcfMsg) throws Exception {
+    private  AccountingData extractAccountingData(PCFMessage pcfMsg) throws Exception {
         AccountingData data = new AccountingData();
         data.setUserIdentifier(pcfMsg.getStringParameterValue(MQConstants.MQCACF_USER_IDENTIFIER).trim());
         data.setAppName(pcfMsg.getStringParameterValue(MQConstants.MQCACF_APPL_NAME).trim());

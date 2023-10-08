@@ -36,39 +36,32 @@ public class StatisticsMetrics {
     private final ConfigManager configManager;
     int queueManagerMaxConnections;
     int queueManagerMaxOperations;
-    
+    @Autowired
+    private IssueSender sender;
+
+	private StatisticsLogger logger;
     
     @Autowired
-    public StatisticsMetrics(ConfigManager configManager) {
+    public StatisticsMetrics(ConfigManager configManager, IssueSender sender, StatisticsLogger logger) {
         this.configManager = configManager;
-        System.out.println("MyComponent has been initialized");
+        this.sender = sender;
+        this.logger = logger;
     }
 	// injecting qMgrName property
 	@Value("${ibm.mq.queueManager}")
 	private String qMgrName;
     
     
-    // observedQueues stores queues from past messages, STATQ messages only include any one given queue if there's been some
-    // operation on it (e.g. put, get,...). observedQueues allows us to interpolate 0's data where we don't recieve any data 
-    // for any given queue
-    
-    // queueStatsMap records data from a single STATQ message (ie one period), it includes puts, gets,...
-    
-    // timeSeriesStats is a linked hashmap (allowing for chronology), where the key is the date-time of the retreval of 
-    // a STATQ message and it contains a time-series of queueStatsMap's
     
     
-    private static final Map<Map.Entry<LocalTime, LocalTime>, Map<String, Map<String, Integer>>> QTimeSeries = new LinkedHashMap<>();
+    private final Map<Map.Entry<LocalTime, LocalTime>, Map<String, Map<String, Integer>>> QTimeSeries = new LinkedHashMap<>();
     
-    // having different timeseries for whole QM because it comes at different time intervals
-    private static final Map<Map.Entry<LocalTime, LocalTime>, Map<String, Integer>> QMTimeSeries = new LinkedHashMap<>();
+    private final Map<Map.Entry<LocalTime, LocalTime>, Map<String, Integer>> QMTimeSeries = new LinkedHashMap<>();
 
     
-    private static Map<String, ActivitySpike> issueObjectMap = new HashMap<>();
-    @Autowired
-    private IssueSender sender;
-	@Autowired
-	private StatisticsLogger logger;
+    private Map<String, ActivitySpike> issueObjectMap = new HashMap<>();
+
+
     
 
     public void addQMTimeSeriesStats(
@@ -76,7 +69,7 @@ public class StatisticsMetrics {
     		LocalTime startTimeFormatted, 
     		LocalTime endTimeFormatted,
     		Map<String, Integer> statsForQM) {
-
+    	System.out.println("config manager" + this.configManager);
         Map.Entry<LocalTime, LocalTime> timeKey = new AbstractMap.SimpleEntry<>(startTimeFormatted, endTimeFormatted);
         String combinedTime = startTimeFormatted.format(DateTimeFormatter.ofPattern("HH:mm:ss")) 
         		+ " - " 
@@ -104,6 +97,7 @@ public class StatisticsMetrics {
 		String combinedTime = startTimeFormatted.format(DateTimeFormatter.ofPattern("HH:mm:ss")) 
 			        		+ " - " 
 			        		+ endTimeFormatted.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+		
 		try {
 			// check whether there is a spike of activity for any of the queues
 			checkQueueActivity(timeKey, combinedTime, queueStatsMap);
@@ -138,7 +132,7 @@ public class StatisticsMetrics {
             System.out.println("Time: " + time);
             if (stats.isEmpty()) {
                 System.out.println("\tNo activity in period.");
-                return;  // skip the rest of the processing for this time
+                return; 
             }
             stats.forEach((objectName, objectStats) -> {
                 System.out.println("\tQueue name : " + objectName);
@@ -177,8 +171,10 @@ public class StatisticsMetrics {
             		+ stats.getOrDefault("PUTS_FAILED", 0)
             		+ stats.getOrDefault("GETS", 0)
             		+ stats.getOrDefault("GETS_FAILED", 0);
+            
             double requestRatePerMinute = (60.0 * requests) / intervalInSeconds;
             // use either the default threshold or specialised threshold
+            System.out.println("requestRatePerMinute: " + requestRatePerMinute + ", getQueueMaxOperations(queueName)" + getQueueMaxOperations(queueName));
             if (requestRatePerMinute > getQueueMaxOperations(queueName)) {
                 String message = 
                 "Spike in MQ operations on: " 
@@ -205,14 +201,15 @@ public class StatisticsMetrics {
     		Map.Entry<LocalTime, LocalTime> timeKey, 
     		Map<String, Integer> stats, 
     		String combinedTime) throws Exception {
+    	System.out.println("checking");
     	// load specific queue manger settings
     	QMConfig queueManagerConfig = 
     	configManager
-    	.getConfig()
+    	.config
     	.getQms()
     	.getOrDefault(
     			qMgrName, 
-    			configManager.getConfig().getQms().get("<DEFAULT>"));
+    			configManager.config.getQms().get("<DEFAULT>"));
     	
     	queueManagerMaxConnections = 
     	queueManagerConfig
@@ -247,13 +244,13 @@ public class StatisticsMetrics {
         double requestRatePerMinute = (60.0 * requests) / intervalInSeconds;
         double connsRatePerMinute = (60.0 * conns) / intervalInSeconds;
         
-
+        System.out.println("requests: " + requests + ", conns" + conns);
         if (connsRatePerMinute > queueManagerMaxConnections) {
             message = 
             "Spike in connections to the queue manager " 
             + ", which has a configured threshold of no more than "
             + queueManagerMaxConnections
-            + " connections per window";
+            + " connections per minute";
             flag = true;
         } else if (requestRatePerMinute > queueManagerMaxOperations) {
             message = 
@@ -261,7 +258,7 @@ public class StatisticsMetrics {
             + qMgrName
             + ", which has a configured threshold of no more than "
             + queueManagerMaxOperations
-            + " operations per window";
+            + " operations per minute";
             flag = true;
         }
         
@@ -300,31 +297,39 @@ public class StatisticsMetrics {
         }
     }
     
-    
 
-    
     /* gets the personalised maximum operations rate for a queue
      * or returns the default for this queue
      * */
     public int getQueueMaxOperations(String queueName) {
     	// load specific queue manger settings
+    	System.out.println("qmgrName: " + qMgrName);
     	QMConfig queueManagerConfig = 
     	configManager
-    	.getConfig()
+    	.config
     	.getQms()
     	.getOrDefault(
     			qMgrName, 
-    			configManager.getConfig().getQms().get("<DEFAULT>"));
-    	
+    			configManager.config.getQms().get("<DEFAULT>"));
+    	System.out.println("qmgrName: " + qMgrName);
     	Map<String, Integer> operationsSpecificQueues = 
     	queueManagerConfig
     	.getQueue()
     	.getOperationsSpecificQueues();
-    	// TODO: seems this might be run twice
     	Integer operationsDefault = 
     	    	queueManagerConfig
     	    	.getQueue()
     	    	.getOperationsDefault();
         return operationsSpecificQueues.getOrDefault(queueName, operationsDefault);
     }
+	public void setSender(IssueSender sender) {
+		this.sender = sender;
+	}
+
+
+
+	public void setLogger(StatisticsLogger logger) {
+		this.logger = logger;
+	}
+	
 }

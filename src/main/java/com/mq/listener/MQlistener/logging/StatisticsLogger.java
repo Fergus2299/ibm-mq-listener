@@ -23,10 +23,9 @@ import com.mq.listener.MQlistener.config.ConfigManager;
 public class StatisticsLogger {
     private static final Logger logger = LoggerFactory.getLogger(StatisticsLogger.class);
 
-	// TODO: ensure is atomic
-    protected static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    protected static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
-    protected static final String BASE_PATH = "logs/";
+    protected final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    protected final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
+    protected final String BASE_PATH = "logs/";
 
     
     public void logToCsv(

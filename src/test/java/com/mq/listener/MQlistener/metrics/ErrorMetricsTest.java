@@ -51,9 +51,7 @@ class ErrorMetricsTest {
 	        errorMetrics.setSender(sender); 
 	    }
 	    
-	    
 	    // the following test evaluate metrics when count is 1 above threshold
-	    
 	    @Test
 	    @Order(1)
 	    void test_ErrorSpike_2035_QM_above_threshold() throws Exception {
@@ -74,7 +72,6 @@ class ErrorMetricsTest {
 	    @Test
 	    @Order(2)
 	    void test_ErrorSpike_2035_Q_above_threshold() throws Exception {
-	    	System.out.println("hey");
 	        for (int i = 0; i < 6; i++) {
 	        	errorMetrics.countType2AuthError(userId, appName, queueName);
 	        }

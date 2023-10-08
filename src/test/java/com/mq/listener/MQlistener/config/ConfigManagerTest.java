@@ -56,9 +56,7 @@ class ConfigManagerTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         
-        // Setting mock values for the annotated @Value fields
         ReflectionTestUtils.setField(configManager, "qMgrName", "QM1");
-//        ReflectionTestUtils.setField(configManager, "configPath", "mockConfigPath");
     }
     @Test
     @Order(1)
@@ -77,11 +75,7 @@ class ConfigManagerTest {
     @Test
     @Order(2)
     public void testConfigSaving() throws Exception {
-    	// establishing filepaths
-//    	File testResourcesDirectory = new ClassPathResource("").getFile();
-//        Path configFilePath = testResourcesDirectory.toPath().resolve("config.json");
-//        Path backupFilePath = testResourcesDirectory.toPath().resolve("configBackup.json");
-        
+
     	Path baseDirectory = Paths.get("").toAbsolutePath();
     	Path configFilePath = baseDirectory.resolve(BASE_PATH).resolve("config.json");
     	Path backupFilePath = baseDirectory.resolve(BASE_PATH).resolve("configBackup.json");
@@ -118,13 +112,11 @@ class ConfigManagerTest {
         Exception thrownException = null;
 
         try {
-            // Mock to load corrupted config file
         	configManager.init();
-            // Expect an exception
+        	// we expect this to happen
         } catch (RuntimeException e) {
 	        thrownException = e;
 	    } finally {
-            // restore original config
         	Files.copy(backupFilePath, configFilePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
             Files.deleteIfExists(backupFilePath);
           
@@ -132,10 +124,10 @@ class ConfigManagerTest {
         assertNotNull(thrownException, "Expected exception to be thrown");
     
     }
+    // test tha config can 
     @Test
     @Order(4)
-    public void testUpdatingConfig() throws Exception {
-    	// Once again need to test with real config but roll back changes.
+    public void testUpdatingConfigInMemory() throws Exception {
     	Path baseDirectory = Paths.get("").toAbsolutePath();
     	Path configFilePath = baseDirectory.resolve(BASE_PATH).resolve("config.json");
     	Path backupFilePath = baseDirectory.resolve(BASE_PATH).resolve("configBackup.json");
@@ -149,10 +141,8 @@ class ConfigManagerTest {
     			updatedConfig
                 .getQms()
                 .get("QM1");
-    	// asserting that certain sample values have been changed - this should be sufficient.
-    	System.out.println(queueManagerConfig.getApp().getConnectionOperationsRatio().getMax());
-    	System.out.println(queueManagerConfig.getApp().getConnectionOperationsRatio().getConnections());
-    	System.out.println(queueManagerConfig.getApp().getConnections().getMax());
+    	// asserting that certain sample values have been changed - this should be sufficient
+    	// won't check all values
     	  assertEquals(0.5f, queueManagerConfig.getApp().getConnectionOperationsRatio().getMax(), 0.01); // tolerance added for float comparison
     	  assertEquals(4, queueManagerConfig.getApp().getConnectionOperationsRatio().getConnections());
     	  assertEquals(10, queueManagerConfig.getApp().getConnections().getMax());

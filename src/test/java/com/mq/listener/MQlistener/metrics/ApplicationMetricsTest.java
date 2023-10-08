@@ -37,17 +37,19 @@ class ApplicationMetricsTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        
+        applicationMetrics = new ApplicationMetrics(configManager, sender);
         ReflectionTestUtils.setField(applicationMetrics, "qMgrName", "QM1");
         ReflectionTestUtils.setField(configManager, "config", TestConfig.createSampleConfig1());
         applicationMetrics.setSender(sender); 
     }
-    // test whether too many connections works
+    // test whether 1 above threshold makes correct error
     @Test
     @Order(1)
-    void testApplicationMetrics_TooManyConnections() throws Exception {
+    void test_ConnectionPatternIssue_conns_above_threshold() throws Exception {
     	System.out.println(configManager.config);
-    	for (int i = 0; i < 500; i++) {
-    		ApplicationMetrics.addMessage(TestConfig.sampleAccountingData1());
+    	for (int i = 0; i < 101; i++) {
+    		applicationMetrics.addMessage(TestConfig.sampleAccountingData1());
     	}
     	applicationMetrics.evaluateMetrics();
         ArgumentCaptor<Issue> issueCaptor = ArgumentCaptor.forClass(Issue.class);
@@ -58,13 +60,13 @@ class ApplicationMetricsTest {
         String generalDesc = sentIssue.getGeneralDesc();
         assertTrue(generalDesc.contains("Too many MQCONNs in time interval"), "The generalDesc does not contain the expected text");
     }
-    // test whether connections to put get ration issue works
+    // test whether connections to put get ratio issue works
     @Test
     @Order(2)
-    void testApplicationMetrics_BadConnectionPattern() throws Exception {
+    void test_ConnectionPatternIssue_COR_Bad() throws Exception {
     	System.out.println(configManager.config);
     	for (int i = 0; i < 20; i++) {
-    		ApplicationMetrics.addMessage(TestConfig.sampleAccountingData2());
+    		applicationMetrics.addMessage(TestConfig.sampleAccountingData1());
     	}
     	applicationMetrics.evaluateMetrics();
         ArgumentCaptor<Issue> issueCaptor = ArgumentCaptor.forClass(Issue.class);
@@ -73,5 +75,44 @@ class ApplicationMetricsTest {
         Issue sentIssue = issueCaptor.getValue();
         String generalDesc = sentIssue.getGeneralDesc();
         assertTrue(generalDesc.contains("Ratio of MQCONNS to GETS/PUTS"), "The generalDesc does not contain the expected text");
+    }
+ 
+    
+    
+    // test whether 1 below threshold makes issue 
+    @Test
+    @Order(3)
+    void test_ConnectionPatternIssue_conns_below_threshold() throws Exception {
+    	System.out.println(configManager.config);
+    	for (int i = 0; i < 100; i++) {
+    		applicationMetrics.addMessage(TestConfig.sampleAccountingData2());
+    	}
+    	applicationMetrics.evaluateMetrics();
+        verify(sender, times(0)).sendIssue(any());
+
+    }
+    // test when COR ok
+    @Test
+    @Order(4)
+    void test_ConnectionPatternIssue_COR_OK() throws Exception {
+    	System.out.println(configManager.config);
+    	for (int i = 0; i < 20; i++) {
+    		applicationMetrics.addMessage(TestConfig.sampleAccountingData2());
+    	}
+    	applicationMetrics.evaluateMetrics();
+    	verify(sender, times(0)).sendIssue(any());
+    }
+    
+    // test when COR ratio is bad, but min connections not met to see this as a problem
+    @Test
+    @Order(5)
+    void test_ConnectionPatternIssue_COR_Bad_MinCons_Not_Met() throws Exception {
+    	System.out.println(configManager.config);
+    	for (int i = 0; i < 9; i++) {
+    		applicationMetrics.addMessage(TestConfig.sampleAccountingData1());
+    	}
+    	applicationMetrics.evaluateMetrics();
+    	verify(sender, times(0)).sendIssue(any());
+
     }
 }

@@ -120,7 +120,7 @@ public class QMGRProcessor {
             	break;
     	}
     }
-    private static void process2085Message(PCFMessage pcfMsg) throws PCFException {
+    private void process2085Message(PCFMessage pcfMsg) throws PCFException {
     	
     	// The 2085 means some MQOPEN or PUT1 command was unsuccessful due to trying to 
     	// access an object which doesn't exist. more info: https://www.ibm.com/docs/en/ibm-mq/9.3?topic=descriptions-unknown-object-name
