@@ -1,8 +1,5 @@
 package com.mq.listener.MQlistener.logging;
-
-
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
@@ -16,8 +13,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import com.mq.listener.MQlistener.config.ConfigManager;
 
 @Service
 public class StatisticsLogger {
@@ -69,9 +64,7 @@ public class StatisticsLogger {
                 logger.error("Error creating the log file.", e);
             }
         }
-        
-        
-        
+
         // file lock and exclusive access ensured
         try (RandomAccessFile raf = new RandomAccessFile(csvFile, "rw");
                 FileChannel channel = raf.getChannel();
@@ -101,8 +94,6 @@ public class StatisticsLogger {
         } catch (IOException e) {
             logger.error("Error writing to CSV", e);
         } 
-        
-        
-               
+   
     }
 }

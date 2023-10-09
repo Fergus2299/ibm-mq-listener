@@ -17,15 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.ibm.mq.constants.MQConstants;
-import com.ibm.mq.headers.pcf.MQCFGR;
-import com.ibm.mq.headers.pcf.PCFMessage;
-import com.ibm.mq.headers.pcf.PCFParameter;
 import com.mq.listener.MQlistener.config.ConfigManager;
 import com.mq.listener.MQlistener.config.Config.QMConfig;
 import com.mq.listener.MQlistener.logging.StatisticsLogger;
 import com.mq.listener.MQlistener.models.Issue.ActivitySpike;
-import com.mq.listener.MQlistener.parsers.PCFParser;
 import com.mq.listener.MQlistener.utils.IssueSender;
 
 

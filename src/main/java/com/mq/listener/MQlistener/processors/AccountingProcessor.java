@@ -36,9 +36,6 @@ public class AccountingProcessor {
         switch (command) {
             case 167: // MQCMD_ACCOUNTING_MQI
                 
-                // Note: we are assuming a model of only applications which put and get
-                // in reality the landscape of MQ is richer and there can be other calls e.g. MQIAMO_TOPIC_PUTS
-	            // creating the AccoutingData object
 	            AccountingData data = extractAccountingData(pcfMsg);
 	            // passing on the message
 	            applicationMetrics.addMessage(data);

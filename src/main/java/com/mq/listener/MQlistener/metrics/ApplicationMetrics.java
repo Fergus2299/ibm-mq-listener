@@ -16,13 +16,10 @@ import com.mq.listener.MQlistener.config.ConfigManager;
 import com.mq.listener.MQlistener.config.Config.QMConfig;
 import com.mq.listener.MQlistener.models.AccountingData;
 import com.mq.listener.MQlistener.models.Issue.ConnectionPatternIssue;
-import com.mq.listener.MQlistener.processors.QMGRProcessor;
 import com.mq.listener.MQlistener.utils.ConsoleLogger;
 import com.mq.listener.MQlistener.utils.IssueSender;
 
-// we assume one user = one connecting app
-// this isn't uniformed accross use cases of IBM MQ but is common because this 
-// strategy means granular permissions and easier auditing.
+
 @Component
 public class ApplicationMetrics {
     private static final Logger log = LoggerFactory.getLogger(ApplicationMetrics.class);

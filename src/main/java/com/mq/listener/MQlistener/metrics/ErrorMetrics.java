@@ -81,7 +81,6 @@ public class ErrorMetrics {
     	errorCount.put("<QMGR - UnknownObject>", currentDetails);
     	}
     
-    // TODO: potentially have a start time for the timestamp
     // Evaluate error rates and reset counts at a fixed rate
     @Scheduled(fixedRate = WINDOW_DURATION_MILLIS)
     public void evaluateMetrics() throws Exception {
@@ -110,21 +109,10 @@ public class ErrorMetrics {
     	.getErrors()
     	.getMax();
     	
-    	
-    	
-
     	for (Map.Entry<String, Error> entry : errorCount.entrySet()) {       	
     	    String mqObject = entry.getKey();
     	    Error errorInfo = entry.getValue();
-    	    System.out.println(mqObject);
-//        	// getting current info about the temp count
-//        	if (mqObject == "<QMGR - Auth>") {
-//    		 	errorInfo = errorCount.getOrDefault(mqObject, new Auth1Error(0, "", "", "", "", ""));
-//        	} else if (mqObject == "<QMGR - UnknownObject>") {
-//       		 	errorInfo = errorCount.getOrDefault(mqObject, new UnknownObjectError(0, "", "","",""));
-//        	} else {
-//        		errorInfo = errorCount.getOrDefault(mqObject, new AuthError(0, "", ""));
-//        	}
+
     	    // get the count
         	int count = errorInfo.getCount();
 			ErrorSpike issue;
@@ -154,9 +142,6 @@ public class ErrorMetrics {
                     issueObjectMap.put(mqObject, issue);
             		
             	}
-
-
-             
         } else if (!mqObject.contains("QMGR") && count > queueThreshold) {
         	issue = issueObjectMap.getOrDefault(mqObject, new ErrorSpike("Too_Many_2035s","<QUEUE>",mqObject));
             // add new archieved info
@@ -168,10 +153,8 @@ public class ErrorMetrics {
             issueObjectMap.put(mqObject, issue);
         }
         ConsoleLogger.printQueueCurrentIssues(issueObjectMap, "Error Metrics");
-
     	}
 	}
-
 	public IssueSender getSender() {
 		return sender;
 	}

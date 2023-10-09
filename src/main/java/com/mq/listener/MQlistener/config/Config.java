@@ -233,7 +233,6 @@ public class Config {
 			}
 			
 			// sets new values of this class from a DTO
-			// TODO: for now not changing operations default, this is a possible future extension
 			public void updateFromDTO(QueueDTO dTO) {
 				this.errors.setMax(dTO.getErrorThreshold());
 				// for now the default value is used

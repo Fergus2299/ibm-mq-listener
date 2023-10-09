@@ -191,7 +191,6 @@ public class StatisticsProcessor {
         puts = puts + put1s;
         putsFailed = putsFailed + put1sFailed;
         
-        // TODO: put1s might affect opens and closes - might need to add to them too, research
         Map<String, Integer> statsForQM = new HashMap<>();
         statsForQM.put("CONNS", conns);
         statsForQM.put("CONNS_FAILED", connsFailed);
@@ -252,7 +251,6 @@ public class StatisticsProcessor {
 	        
 
 	        statisticsMetrics.addQTimeSeriesStats(startTimeFormatted, endTimeFormatted, queueStatsMap);
-	        // TODO: logging the time series data to the log files
 	        
 	    } catch (RuntimeException e) {
 	        System.out.println("Error occurred while parsing statistics PCFMessage: " + e.getMessage());

@@ -17,11 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mq.listener.MQlistener.config.ConfigDTO;
 import com.mq.listener.MQlistener.config.ConfigManager;
-import com.mq.listener.MQlistener.config.Config.QMConfig;
-import com.mq.listener.MQlistener.config.Config.QMConfig.AppConfig;
-import com.mq.listener.MQlistener.config.Config.QMConfig.QueueConfig;
-import com.mq.listener.MQlistener.config.Config.QMConfig.QueueManagerConfig;
-import com.mq.listener.MQlistener.processors.AccountingProcessor;
+
 
 import org.springframework.http.HttpStatus;
 
@@ -41,52 +37,6 @@ public class ConfigController {
     @GetMapping("/configurations")
     public ConfigDTO getConfigurations() {
         log.info("Config requested by frontend");
-        System.out.println(configManager
-            	.getConfig());
-        System.out.println(qMgrName);
-//    	QMConfig queueManagerConfig = 
-//    	configManager
-//    	.getConfig()
-//    	.getQms()
-//    	.getOrDefault(
-//    			qMgrName, 
-//    			configManager.getConfig().getQms().get("<DEFAULT>"));
-    	
-    	// loading all subcategories of config
-//    	AppConfig appConfig = queueManagerConfig.getApp();
-//    	QueueManagerConfig QMConfig = queueManagerConfig.getQueueManager();
-//    	QueueConfig queueConfig = queueManagerConfig.getQueue();
-//    	
-//        
-//        ConfigDataTransferObject dataTransferObject = new ConfigDataTransferObject();
-//        ConfigDataTransferObject.RetrievedThresholdsDTO retrievedThresholdsDTO = new ConfigDataTransferObject.RetrievedThresholdsDTO();
-//        
-//        ConfigDataTransferObject.AppDTO appDTO = new ConfigDataTransferObject.AppDTO();
-//        appDTO.setConnThreshold(appConfig.getConnections().getMax());
-//        Number ratioNum = (Number) appConfig.getConnectionOperationsRatio().getMax();
-//        appDTO.setConnOpRatioThreshold(ratioNum.floatValue());
-//        appDTO.setMinimumConns((Integer) appConfig.getConnectionOperationsRatio().getConnections());
-//
-//        ConfigDataTransferObject.QueueManagerDTO queueManagerDTO = new ConfigDataTransferObject.QueueManagerDTO();
-//        queueManagerDTO.setErrorThreshold(QMConfig.getErrors().getMax());
-//        queueManagerDTO.setMaxMQConns(QMConfig.getConnections().getMax());
-//        queueManagerDTO.setMaxMQOps(QMConfig.getOperations().getMax());
-//
-//        ConfigDataTransferObject.QueueDTO queueDTO = new ConfigDataTransferObject.QueueDTO();
-//        queueDTO.setErrorThreshold(queueConfig.getErrors().getMax());
-//        Map<String, Integer> queueActivityMap = queueConfig.getOperationsSpecificQueues();
-//        Map<String, ConfigDataTransferObject.QueueThresholdDTO> queueThresholdsMap = new HashMap<>();
-//        for (String key : queueActivityMap.keySet()) {
-//            ConfigDataTransferObject.QueueThresholdDTO queueThresholdDTO = new ConfigDataTransferObject.QueueThresholdDTO();
-//            queueThresholdDTO.setActivity(queueActivityMap.get(key));
-//            queueThresholdsMap.put(key, queueThresholdDTO);
-//        }
-//        queueDTO.setQueueThresholds(queueThresholdsMap);
-//
-//        // Put all DTOs in RetrievedThresholdsDTO
-//        retrievedThresholdsDTO.setApps(appDTO);
-//        retrievedThresholdsDTO.setQueue_manager(queueManagerDTO);
-//        retrievedThresholdsDTO.setQueues(queueDTO);
     	ConfigDTO dataTransferObject = configManager.getConfig().toConfigDataTransferObject(qMgrName);
 
         log.info("Sent following config to frontend: " + configManager

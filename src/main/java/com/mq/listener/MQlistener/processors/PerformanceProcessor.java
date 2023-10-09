@@ -31,7 +31,6 @@ public class PerformanceProcessor {
 	    		case "MQRC_Q_SERVICE_INTERVAL_HIGH":
 			    	// MQRC_Q_SERVICE_INTERVAL_HIGH) and MQCMD_PERFM_EVENT
 			    	// https://www.ibm.com/docs/en/ibm-mq/9.3?topic=descriptions-queue-service-interval-high
-			    	// TODO: check error handling on getting these
 	    			log.info("Recieved MQRC_Q_SERVICE_INTERVAL_HIGH event.");
 			        String Q = pcfMsg.getStringParameterValue(MQConstants.MQCA_BASE_OBJECT_NAME).trim();
 			        Integer timeSinceReset = pcfMsg.getIntParameterValue(MQConstants.MQIA_TIME_SINCE_RESET);
