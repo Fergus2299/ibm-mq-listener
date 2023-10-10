@@ -1,19 +1,16 @@
 package com.mq.listener.MQlistener.metrics;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.mq.listener.MQlistener.config.ConfigManager;
@@ -21,7 +18,6 @@ import com.mq.listener.MQlistener.models.Issue.Issue;
 import com.mq.listener.MQlistener.testConfig.TestConfig;
 import com.mq.listener.MQlistener.utils.IssueSender;
 
-import org.junit.jupiter.api.Test;
 
 class ApplicationMetricsTest {
     
