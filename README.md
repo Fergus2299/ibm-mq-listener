@@ -4,11 +4,6 @@ This is a component of the MQMerlin application, it can connect to an IBM MQ ins
 
 Link to MQMerlin: https://github.com/Zaid1120/MQMerlin
 
-### Prerequisites
-Java: Supported versions are Java 17 and Java 20.
-IBM MQ: Tested with IBM MQ version 9.
-Maven: Ensure you have Maven installed (https://maven.apache.org/download.cgi).
-
 
 ## Prerequisites
 
